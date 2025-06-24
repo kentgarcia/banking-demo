@@ -1,15 +1,22 @@
 
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import React from "react";
 import {
   ArrowLeft,
   BatteryFull,
   Signal,
   Wifi,
+  User,
+  Mail,
+  Lock,
+  Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const containerVariants = {
   hidden: {},
@@ -93,7 +100,7 @@ function CreditCardContent() {
   );
 }
 
-function OnboardingScreen() {
+function OnboardingScreen({ onGetStarted }: { onGetStarted: () => void }) {
   return (
     <div className="h-full w-full overflow-hidden rounded-[2rem] bg-[#0a2820] text-white">
       <div className="flex h-full flex-col bg-gradient-to-br from-green-500/20 via-transparent to-green-900/20 p-5 font-body">
@@ -129,12 +136,17 @@ function OnboardingScreen() {
             </motion.p>
           </div>
 
-          <div className="relative mt-4 h-52">
+          <div className="relative mt-8 h-48">
             <motion.div
               className="absolute top-0 left-1/2 z-20 w-36 -translate-x-1/2 rounded-xl border border-white/10 bg-white/20 p-3 text-center shadow-lg backdrop-blur-md"
               initial={{ opacity: 0, y: 20, rotate: -5 }}
               animate={{ opacity: 1, y: 0, rotate: -5 }}
-              transition={{ delay: 1, duration: 0.5, type: "spring", stiffness: 100 }}
+              transition={{
+                delay: 1,
+                duration: 0.5,
+                type: "spring",
+                stiffness: 100,
+              }}
             >
               <p className="text-xl font-semibold">$2537.98</p>
               <p className="text-xs text-neutral-200">Balance</p>
@@ -168,6 +180,7 @@ function OnboardingScreen() {
             <Button
               size="lg"
               className="h-14 w-full rounded-full bg-lime-300 font-bold text-green-900 shadow-lg shadow-lime-300/30 transition hover:bg-lime-400"
+              onClick={onGetStarted}
             >
               Get Started
             </Button>
@@ -178,6 +191,240 @@ function OnboardingScreen() {
   );
 }
 
+function CreateAccountScreen({
+  onAccountCreated,
+}: {
+  onAccountCreated: () => void;
+}) {
+  const [status, setStatus] = React.useState<
+    "idle" | "submitting" | "success"
+  >("idle");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (status !== "idle") return;
+
+    setStatus("submitting");
+    setTimeout(() => {
+      setStatus("success");
+      setTimeout(() => {
+        onAccountCreated();
+      }, 2000); // Show success for 2s then transition
+    }, 2500); // Simulate API call
+  };
+
+  return (
+    <div className="h-full w-full overflow-hidden rounded-[2rem] bg-[#f0f2f5] font-body text-neutral-800">
+      <div className="flex h-full flex-col p-5">
+        <header className="flex items-center justify-between text-xs font-light text-neutral-500">
+          <span>9:42</span>
+          <div className="flex items-center gap-1.5">
+            <Signal className="h-4 w-4" />
+            <Wifi className="h-4 w-4" />
+            <BatteryFull className="h-4 w-4" />
+          </div>
+        </header>
+
+        <main className="flex flex-1 flex-col pt-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <h1 className="text-3xl font-bold tracking-tight">
+              Create Account
+            </h1>
+            <p className="mt-2 text-neutral-500">Let's get you started.</p>
+          </motion.div>
+
+          <motion.form
+            className="mt-8 flex-1 space-y-4"
+            onSubmit={handleSubmit}
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.1, delayChildren: 0.3 },
+              },
+            }}
+          >
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              className="space-y-2"
+            >
+              <Label htmlFor="name">Full Name</Label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
+                <Input
+                  id="name"
+                  value="Juan dela Cruz"
+                  readOnly
+                  className="pl-10 bg-white"
+                />
+              </div>
+            </motion.div>
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              className="space-y-2"
+            >
+              <Label htmlFor="email">Email Address</Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="juan.delacruz@email.com"
+                  className="pl-10 bg-white"
+                />
+              </div>
+            </motion.div>
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              className="space-y-2"
+            >
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  className="pl-10 bg-white"
+                />
+              </div>
+            </motion.div>
+          </motion.form>
+        </main>
+
+        <footer className="mt-auto pb-4">
+          <Button
+            size="lg"
+            className="h-14 w-full rounded-full bg-blue-600 font-bold text-white shadow-lg shadow-blue-600/30 transition hover:bg-blue-700 disabled:bg-blue-600/50"
+            onClick={handleSubmit}
+            disabled={status !== "idle"}
+          >
+            {status === "idle" && "Create Account"}
+            {status === "submitting" && "Creating Account..."}
+          </Button>
+        </footer>
+      </div>
+      <AnimatePresence>
+        {status === "success" && (
+          <motion.div
+            className="absolute inset-0 flex flex-col items-center justify-center space-y-4 bg-green-500"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="flex h-24 w-24 items-center justify-center rounded-full bg-white/30"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{
+                delay: 0.2,
+                type: "spring",
+                stiffness: 260,
+                damping: 20,
+              }}
+            >
+              <Check className="h-16 w-16 text-white" />
+            </motion.div>
+            <motion.h2
+              className="text-2xl font-bold text-white"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0, transition: { delay: 0.4 } }}
+            >
+              Account Created!
+            </motion.h2>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function WelcomeScreen() {
+  return (
+    <div className="flex h-full w-full flex-col items-center justify-center space-y-4 rounded-[2rem] bg-white p-5 font-body">
+      <motion.div
+        className="flex h-24 w-24 items-center justify-center rounded-full bg-green-500/20"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: "spring", stiffness: 260, damping: 20 }}
+      >
+        <Check className="h-16 w-16 text-green-600" />
+      </motion.div>
+      <motion.h2
+        className="text-center text-2xl font-bold"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0, transition: { delay: 0.2 } }}
+      >
+        Welcome, Juan!
+      </motion.h2>
+      <motion.p
+        className="text-center text-muted-foreground"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0, transition: { delay: 0.3 } }}
+      >
+        Your account is ready.
+      </motion.p>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0, transition: { delay: 0.4 } }}
+        className="pt-8"
+      >
+        <Button size="lg" className="h-14 rounded-full">
+          Continue to Dashboard
+        </Button>
+      </motion.div>
+    </div>
+  );
+}
+
+function MobileApp() {
+  const [step, setStep] = React.useState("onboarding");
+
+  const renderStep = () => {
+    switch (step) {
+      case "onboarding":
+        return <OnboardingScreen onGetStarted={() => setStep("createAccount")} />;
+      case "createAccount":
+        return <CreateAccountScreen onAccountCreated={() => setStep("welcome")} />;
+      case "welcome":
+        return <WelcomeScreen />;
+      default:
+        return <OnboardingScreen onGetStarted={() => setStep("createAccount")} />;
+    }
+  };
+
+  return (
+    <div className="h-full w-full">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={step}
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -30 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+          className="h-full w-full"
+        >
+          {renderStep()}
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
 
 function DemoSection() {
   return (
@@ -198,7 +445,7 @@ function DemoSection() {
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
             Interact with the Security Bank mobile app prototype, powered by
-            Teemenos.
+            NexusForge.
           </p>
         </motion.div>
 
@@ -211,7 +458,7 @@ function DemoSection() {
         >
           <div className="relative mx-auto h-[700px] w-[350px] rounded-[2.5rem] border-[14px] border-neutral-800 bg-neutral-800 shadow-2xl">
             <div className="absolute top-0 left-1/2 h-8 w-[160px] -translate-x-1/2 rounded-b-xl bg-neutral-800" />
-            <OnboardingScreen />
+            <MobileApp />
           </div>
         </motion.div>
       </div>
