@@ -890,39 +890,39 @@ function DemoSection() {
           </p>
         </motion.div>
 
-        <div className="flex flex-col lg:flex-row items-center justify-center lg:items-start gap-8">
+        <div className="flex min-h-[732px] flex-col items-center justify-center gap-8 lg:flex-row lg:items-start">
           <motion.div
+            layout
+            transition={{ duration: 0.8, ease: "easeInOut" }}
             className="flex justify-center"
-            initial={{ scale: 0.9, opacity: 0 }}
-            whileInView={{ scale: 1, opacity: 1 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
           >
             <div className="relative mx-auto h-[700px] w-[350px] rounded-[2.5rem] border-[14px] border-neutral-800 bg-neutral-800 shadow-2xl">
               <div className="absolute top-0 left-1/2 h-8 w-[160px] -translate-x-1/2 rounded-b-xl bg-neutral-800" />
               <MobileApp step={step} setStep={setStep} />
             </div>
           </motion.div>
-          
+
           <AnimatePresence>
-            {(step === 'welcome') && <DataFlowArrow />}
+            {step === "welcome" && <DataFlowArrow />}
           </AnimatePresence>
 
-          <div className="w-full max-w-lg">
-            <AnimatePresence>
-              {(step === 'welcome' || step === 'dashboard') && (
-                <motion.div
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 50 }}
-                  transition={{ duration: 0.5, ease: 'easeInOut' }}
-                  className="w-full"
-                >
-                  <CrmView customerStatus={step === 'welcome' ? 'onboarding' : 'active'} />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+          <AnimatePresence>
+            {(step === "welcome" || step === "dashboard") && (
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 50 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+                className="w-full max-w-lg"
+              >
+                <CrmView
+                  customerStatus={
+                    step === "welcome" ? "onboarding" : "active"
+                  }
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </section>
@@ -958,5 +958,3 @@ export default function DemoPage() {
     </div>
   );
 }
-
-    
