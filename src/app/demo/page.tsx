@@ -13,10 +13,42 @@ import {
   Mail,
   Lock,
   Check,
+  Bell,
+  Plus,
+  QrCode,
+  Send,
+  Home,
+  Wallet,
+  BarChart2 as BarChartIcon,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell } from "recharts";
 
 const containerVariants = {
   hidden: {},
@@ -354,7 +386,7 @@ function CreateAccountScreen({
   );
 }
 
-function WelcomeScreen() {
+function WelcomeScreen({ onContinue }: { onContinue: () => void }) {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center space-y-4 rounded-[2rem] bg-white p-5 font-body">
       <motion.div
@@ -384,10 +416,289 @@ function WelcomeScreen() {
         animate={{ opacity: 1, y: 0, transition: { delay: 0.4 } }}
         className="pt-8"
       >
-        <Button size="lg" className="h-14 rounded-full">
+        <Button
+          size="lg"
+          className="h-14 rounded-full"
+          onClick={onContinue}
+        >
           Continue to Dashboard
         </Button>
       </motion.div>
+    </div>
+  );
+}
+
+const chartData = [
+  { day: "Sun", income: 2800 },
+  { day: "Mon", income: 3100 },
+  { day: "Tue", income: 3500 },
+  { day: "Wed", income: 2900 },
+  { day: "Thu", income: 4249 },
+  { day: "Fri", income: 3900 },
+];
+
+const chartConfig = {
+  income: {
+    label: "Income",
+    color: "rgba(255, 255, 255, 0.4)",
+  },
+  highlight: {
+    label: "Highlight",
+    color: "hsl(var(--accent))",
+  },
+} satisfies ChartConfig;
+
+function SendMoneyDialog({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const [status, setStatus] = React.useState<"idle" | "sending" | "success">(
+    "idle"
+  );
+  const [amount, setAmount] = React.useState("");
+
+  const handleOpenChange = (isOpen: boolean) => {
+    if (!isOpen) {
+      setTimeout(() => {
+        setStatus("idle");
+        setAmount("");
+      }, 300);
+    }
+    onOpenChange(isOpen);
+  };
+
+  const handleSubmit = () => {
+    if (status !== "idle" || !amount) return;
+    setStatus("sending");
+    setTimeout(() => {
+      setStatus("success");
+      setTimeout(() => {
+        handleOpenChange(false);
+      }, 1500);
+    }, 1500);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent className="sm:max-w-[340px] mx-auto">
+        <DialogHeader>
+          <DialogTitle>Send Money</DialogTitle>
+          <DialogDescription>
+            Enter the amount to transfer to Maria Clara.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="py-4">
+          <Label htmlFor="amount" className="sr-only">
+            Amount
+          </Label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+              $
+            </span>
+            <Input
+              id="amount"
+              type="number"
+              placeholder="0.00"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              className="pl-7 text-2xl h-12 text-center font-bold"
+              disabled={status !== "idle"}
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button
+            onClick={handleSubmit}
+            disabled={status !== "idle"}
+            className="w-full h-12"
+          >
+            {status === "sending" && (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...
+              </>
+            )}
+            {status === "success" && (
+              <>
+                <Check className="mr-2 h-4 w-4" /> Success!
+              </>
+            )}
+            {status === "idle" && "Confirm & Send"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function DashboardScreen() {
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  return (
+    <div className="h-full w-full overflow-hidden rounded-[2rem] bg-neutral-100 font-body text-neutral-800">
+      <div className="flex h-full flex-col">
+        <header className="flex items-center justify-between p-4 text-xs font-light text-neutral-500">
+          <span>9:41</span>
+          <div className="flex items-center gap-1.5">
+            <Signal className="h-4 w-4" />
+            <Wifi className="h-4 w-4" />
+            <BatteryFull className="h-4 w-4" />
+          </div>
+        </header>
+
+        <main className="flex-1 overflow-y-auto px-4 pb-20">
+          {/* User Greeting */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Avatar>
+                <AvatarImage src="https://placehold.co/40x40.png" alt="@juan" data-ai-hint="man" />
+                <AvatarFallback>JD</AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-sm text-muted-foreground">Good morning!</p>
+                <h2 className="font-bold text-lg">Hello, Juan</h2>
+              </div>
+            </div>
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <Bell className="h-5 w-5" />
+            </Button>
+          </div>
+
+          {/* Balance */}
+          <div className="mt-6">
+            <p className="text-sm text-muted-foreground">Available Balance</p>
+            <p className="text-4xl font-bold tracking-tight">$3,945.50</p>
+          </div>
+
+          {/* Actions */}
+          <div className="mt-6 grid grid-cols-3 gap-3">
+            <DialogTrigger asChild>
+              <Button
+                className="h-12 bg-lime-300 text-lime-900 hover:bg-lime-400 font-bold"
+                onClick={() => setDialogOpen(true)}
+              >
+                <Send className="h-5 w-5 mr-2 -ml-1 rotate-[-45deg]" />
+                Send
+              </Button>
+            </DialogTrigger>
+            <Button variant="outline" className="h-12 font-bold">
+              <Plus className="h-5 w-5 mr-2 -ml-1" /> Add
+            </Button>
+            <Button variant="outline" className="h-12 font-bold">
+              <QrCode className="h-5 w-5" />
+            </Button>
+          </div>
+
+          {/* Recent */}
+          <div className="mt-8">
+            <h3 className="font-bold text-lg">Recent</h3>
+            <div className="mt-3 flex items-center gap-3">
+              <Avatar>
+                <AvatarImage src="https://placehold.co/40x40.png" alt="Recipient" data-ai-hint="woman" />
+                <AvatarFallback>MC</AvatarFallback>
+              </Avatar>
+              <Avatar>
+                <AvatarImage src="https://placehold.co/40x40.png" alt="Recipient" data-ai-hint="woman portrait" />
+                <AvatarFallback>SA</AvatarFallback>
+              </Avatar>
+              <Avatar className="bg-black">
+                <span className="font-bold text-white">N</span>
+              </Avatar>
+              <Avatar className="bg-green-500">
+                <span className="font-bold text-white">JP</span>
+              </Avatar>
+              <Avatar>
+                <AvatarFallback>
+                  <User className="text-muted-foreground" />
+                </AvatarFallback>
+              </Avatar>
+            </div>
+          </div>
+
+          {/* Income Chart */}
+          <div className="mt-8">
+            <Card className="bg-gradient-to-br from-green-600 to-green-800 text-white shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span>Income</span>
+                  <span className="text-sm font-medium text-green-200">
+                    Weekly
+                  </span>
+                </CardTitle>
+                <CardDescription className="text-4xl font-bold text-white pt-2">
+                  $3,890.00
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer
+                  config={chartConfig}
+                  className="h-[120px] w-full"
+                >
+                  <BarChart data={chartData} margin={{ left: -20, bottom: -10 }}>
+                    <CartesianGrid
+                      vertical={false}
+                      strokeDasharray="3 3"
+                      stroke="rgba(255,255,255,0.1)"
+                    />
+                    <XAxis
+                      dataKey="day"
+                      tickLine={false}
+                      axisLine={false}
+                      tick={{ fill: "rgba(255,255,255,0.6)", fontSize: 12 }}
+                    />
+                    <ChartTooltip
+                      cursor={false}
+                      content={
+                        <ChartTooltipContent
+                          indicator="dot"
+                          labelClassName="font-bold text-background"
+                          className="bg-foreground text-background"
+                        />
+                      }
+                    />
+                    <Bar dataKey="income" radius={[8, 8, 0, 0]}>
+                      {chartData.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={
+                            entry.day === "Thu"
+                              ? "hsl(var(--accent))"
+                              : "rgba(255, 255, 255, 0.3)"
+                          }
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+
+        <SendMoneyDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+
+        {/* Bottom Nav */}
+        <footer className="absolute bottom-0 left-0 right-0 m-3">
+          <div className="flex h-16 items-center justify-around rounded-full bg-background/80 p-2 shadow-lg backdrop-blur-sm">
+            <Button variant="ghost" className="rounded-full h-12 w-12 flex-col gap-1 text-primary">
+              <Home /> <span className="text-xs">Home</span>
+            </Button>
+            <Button variant="ghost" className="rounded-full h-12 w-12 flex-col gap-1 text-muted-foreground">
+              <Wallet /> <span className="text-xs">Cards</span>
+            </Button>
+            <Button size="icon" className="h-16 w-16 rounded-full bg-lime-300 text-lime-900 shadow-md -translate-y-4">
+              <QrCode className="h-8 w-8" />
+            </Button>
+            <Button variant="ghost" className="rounded-full h-12 w-12 flex-col gap-1 text-muted-foreground">
+              <BarChartIcon /> <span className="text-xs">Stats</span>
+            </Button>
+            <Button variant="ghost" className="rounded-full h-12 w-12 flex-col gap-1 text-muted-foreground">
+              <User /> <span className="text-xs">Me</span>
+            </Button>
+          </div>
+        </footer>
+      </div>
     </div>
   );
 }
@@ -398,13 +709,21 @@ function MobileApp() {
   const renderStep = () => {
     switch (step) {
       case "onboarding":
-        return <OnboardingScreen onGetStarted={() => setStep("createAccount")} />;
+        return (
+          <OnboardingScreen onGetStarted={() => setStep("createAccount")} />
+        );
       case "createAccount":
-        return <CreateAccountScreen onAccountCreated={() => setStep("welcome")} />;
+        return (
+          <CreateAccountScreen onAccountCreated={() => setStep("welcome")} />
+        );
       case "welcome":
-        return <WelcomeScreen />;
+        return <WelcomeScreen onContinue={() => setStep("dashboard")} />;
+      case "dashboard":
+        return <DashboardScreen />;
       default:
-        return <OnboardingScreen onGetStarted={() => setStep("createAccount")} />;
+        return (
+          <OnboardingScreen onGetStarted={() => setStep("createAccount")} />
+        );
     }
   };
 
