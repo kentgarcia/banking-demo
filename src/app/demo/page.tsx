@@ -32,6 +32,7 @@ import {
   Shield,
   Server,
   Network,
+  LineChart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,9 +52,13 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell, Line, Area } from "recharts";
+import { AreaChart } from "recharts";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
+
 
 const containerVariants = {
   hidden: {},
@@ -1015,10 +1020,11 @@ const architectureSteps = [
 ];
 
 
-function ArchitectureFlowSection() {
+function ArchitectureFlowSection({ onComplete }: { onComplete: () => void }) {
     const [stepIndex, setStepIndex] = React.useState(0);
     const currentStep = architectureSteps[stepIndex];
-    
+    const isLastStep = stepIndex >= architectureSteps.length - 1;
+
     return (
         <section
             id="architecture"
@@ -1111,7 +1117,6 @@ function ArchitectureFlowSection() {
                         <path d="M420 365 V 440" strokeWidth="2" stroke="hsl(var(--border))" strokeDasharray="4 4" />
                         <path d="M420 460 V 520" strokeWidth="2" stroke="hsl(var(--border))" strokeDasharray="4 4" />
                     </svg>
-
                 </div>
 
                 <div className="mt-8 text-center max-w-2xl mx-auto">
@@ -1128,17 +1133,203 @@ function ArchitectureFlowSection() {
                         </motion.p>
                     </AnimatePresence>
                     <Button
-                        onClick={() => setStepIndex(stepIndex + 1)}
-                        disabled={stepIndex >= architectureSteps.length - 1}
+                        onClick={() => {
+                            if (isLastStep) {
+                                onComplete();
+                            } else {
+                                setStepIndex(stepIndex + 1);
+                            }
+                        }}
                         className="mt-6"
                         size="lg"
                     >
-                        Next Step <ArrowRight className="ml-2"/>
+                        {isLastStep ? 'Finish & View Dashboard' : 'Next Step'} <ArrowRight className="ml-2"/>
                     </Button>
                 </div>
             </div>
         </section>
     );
+}
+
+const latencyChartData = [
+  { time: "14:29:00", latency: 120 },
+  { time: "14:29:15", latency: 130 },
+  { time: "14:29:30", latency: 110 },
+  { time: "14:29:45", latency: 140 },
+  { time: "14:30:00", latency: 160 },
+  { time: "14:30:15", latency: 150 },
+  { time: "14:30:30", latency: 170 },
+];
+const latencyChartConfig = {
+  latency: {
+    label: "Latency (ms)",
+    color: "hsl(var(--primary))",
+  },
+} satisfies ChartConfig;
+
+const systemHealthData = [
+  { name: "API Gateway", health: 98, fill: "hsl(var(--chart-2))" },
+  { name: "Auth Service", health: 99, fill: "hsl(var(--chart-2))" },
+  { name: "Temenos", health: 95, fill: "hsl(var(--chart-2))" },
+  { name: "Core Banking", health: 100, fill: "hsl(var(--chart-1))" },
+  { name: "D365 Sync", health: 92, fill: "hsl(var(--chart-2))" },
+];
+
+const systemHealthConfig = {
+    health: { label: "Health", color: "hsl(var(--primary))" }
+} satisfies ChartConfig;
+
+const allLogs = [
+    { level: "INFO", text: "[2:30:00 PM] System check initiated by admin." },
+    { level: "INFO", text: "[2:30:01 PM] Traffic from 131.107.x.x passed Palo Alto NGFW inspection. #582910" },
+    { level: "INFO", text: "[2:30:02 PM] New user 'Juan dela Cruz' onboarded via Temenos Infinity. #582910" },
+    { level: "WARN", text: "[2:30:03 PM] High latency detected on Auth Service (180ms)." },
+    { level: "INFO", text: "[2:30:05 PM] API call received by Core Banking System for debit. #582910" },
+    { level: "SUCCESS", text: "[2:30:06 PM] Transaction #582910 complete." },
+    { level: "INFO", text: "[2:30:07 PM] Dynamics 365 timeline updated for contact 'Juan dela Cruz'." },
+    { level: "INFO", text: "[2:30:08 PM] User session for 'maria.clara' initiated." },
+    { level: "INFO", text: "[2:30:10 PM] Health check OK for all services." },
+];
+
+
+function LiveDashboardSection() {
+    const [logs, setLogs] = React.useState<typeof allLogs>([]);
+    const [highlightedTxn, setHighlightedTxn] = React.useState<string | null>(null);
+    const scrollAreaRef = React.useRef<HTMLDivElement>(null);
+
+    React.useEffect(() => {
+        setLogs([]);
+        let logIndex = 0;
+        const intervalId = setInterval(() => {
+            if (logIndex < allLogs.length) {
+                setLogs(prevLogs => [...prevLogs, allLogs[logIndex]]);
+                logIndex++;
+            } else {
+                clearInterval(intervalId);
+            }
+        }, 1200);
+
+        return () => clearInterval(intervalId);
+    }, []);
+
+    React.useEffect(() => {
+        if (scrollAreaRef.current) {
+            scrollAreaRef.current.scrollTo({ top: scrollAreaRef.current.scrollHeight, behavior: 'smooth' });
+        }
+    }, [logs]);
+
+    const getBadgeVariant = (level: string) => {
+        switch (level) {
+            case "SUCCESS": return "default";
+            case "INFO": return "secondary";
+            case "WARN": return "destructive";
+            default: return "outline";
+        }
+    }
+
+    return (
+        <section
+            id="live-dashboard"
+            className="flex-1 flex flex-col items-center justify-center bg-secondary/50 py-16"
+        >
+            <div className="container mx-auto px-4">
+                <motion.div
+                    className="mb-12 text-center"
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.5 }}
+                    variants={itemVariants}
+                >
+                    <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                        Live System Dashboard
+                    </h2>
+                    <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+                        An overview of system health and a real-time event log.
+                    </p>
+                </motion.div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                    {/* Charts Column */}
+                    <div className="lg:col-span-2 space-y-6">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>API Latency</CardTitle>
+                                <CardDescription>Last 90 seconds</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <ChartContainer config={latencyChartConfig} className="h-[200px] w-full">
+                                    <AreaChart data={latencyChartData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false}/>
+                                        <XAxis dataKey="time" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
+                                        <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} domain={[80, 200]}/>
+                                        <ChartTooltip content={<ChartTooltipContent indicator="dot" />} />
+                                        <Area type="monotone" dataKey="latency" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.1} strokeWidth={2}/>
+                                    </AreaChart>
+                                </ChartContainer>
+                            </CardContent>
+                        </Card>
+                         <Card>
+                            <CardHeader>
+                                <CardTitle>System Health</CardTitle>
+                                <CardDescription>Uptime and performance status</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                               <ChartContainer config={systemHealthConfig} className="h-[200px] w-full">
+                                   <BarChart data={systemHealthData} layout="vertical" margin={{ left: 10, right: 10 }}>
+                                       <XAxis type="number" hide />
+                                       <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} width={80}/>
+                                       <Bar dataKey="health" radius={4} />
+                                   </BarChart>
+                               </ChartContainer>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    {/* Log Feed Column */}
+                    <div className="lg:col-span-3">
+                        <Card className="h-full">
+                           <CardHeader className="flex flex-row items-center justify-between">
+                               <div>
+                                   <CardTitle>Live Event Log</CardTitle>
+                                   <CardDescription>Streaming events from the system.</CardDescription>
+                               </div>
+                               <div className="flex gap-2">
+                                   {highlightedTxn && (
+                                       <Button variant="outline" onClick={() => setHighlightedTxn(null)}>Clear Highlight</Button>
+                                   )}
+                                   <Button onClick={() => setHighlightedTxn("#582910")}>
+                                      Show Logs for Txn #582910
+                                   </Button>
+                               </div>
+                           </CardHeader>
+                           <CardContent>
+                               <ScrollArea className="h-[400px] rounded-md border bg-muted/30 p-2" ref={scrollAreaRef}>
+                                   <AnimatePresence>
+                                       {logs.map((log, index) => (
+                                           <motion.div
+                                               key={index}
+                                               layout
+                                               initial={{ opacity: 0, y: 10 }}
+                                               animate={{ opacity: 1, y: 0 }}
+                                               transition={{ duration: 0.3 }}
+                                               className={cn(
+                                                   "flex items-start gap-3 p-2 text-sm rounded-md transition-colors",
+                                                   highlightedTxn && log.text.includes(highlightedTxn) && "bg-primary/10"
+                                               )}
+                                           >
+                                                <Badge variant={getBadgeVariant(log.level)} className="w-20 justify-center shrink-0">{log.level}</Badge>
+                                                <p className="font-mono text-xs flex-1">{log.text}</p>
+                                           </motion.div>
+                                       ))}
+                                   </AnimatePresence>
+                               </ScrollArea>
+                           </CardContent>
+                        </Card>
+                    </div>
+                </div>
+            </div>
+        </section>
+    )
 }
 
 function Footer() {
@@ -1155,7 +1346,7 @@ function Footer() {
 }
 
 export default function DemoPage() {
-  const [currentScreen, setCurrentScreen] = React.useState<'demo' | 'architecture'>('demo');
+  const [currentScreen, setCurrentScreen] = React.useState<'demo' | 'architecture' | 'liveDashboard'>('demo');
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
@@ -1171,9 +1362,13 @@ export default function DemoPage() {
             <motion.div key="demo" exit={{opacity: 0}}>
                 <DemoSection onNavigateToArchitecture={() => setCurrentScreen('architecture')} />
             </motion.div>
-        ) : (
+        ) : currentScreen === 'architecture' ? (
             <motion.div key="architecture" initial={{opacity: 0}} animate={{opacity: 1}}>
-                <ArchitectureFlowSection />
+                <ArchitectureFlowSection onComplete={() => setCurrentScreen('liveDashboard')} />
+            </motion.div>
+        ) : (
+            <motion.div key="liveDashboard" initial={{opacity: 0}} animate={{opacity: 1}}>
+                <LiveDashboardSection />
             </motion.div>
         )}
         </AnimatePresence>
