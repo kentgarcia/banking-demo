@@ -128,7 +128,7 @@ function OnboardingScreen() {
             </motion.p>
           </div>
 
-          <div className="relative mt-8 flex-1">
+          <div className="relative mt-8 h-64">
             <motion.div
               className="absolute top-2 left-1/2 z-20 w-36 -translate-x-1/2 rounded-xl border border-white/10 bg-white/20 p-3 text-center shadow-lg backdrop-blur-md"
               initial={{ opacity: 0, y: 20, rotate: -5 }}
@@ -139,24 +139,22 @@ function OnboardingScreen() {
               <p className="text-xs text-neutral-200">Balance</p>
             </motion.div>
 
-            <div className="absolute top-10 left-0 right-0 h-64">
-              <motion.div
-                className="absolute -left-4 h-40 w-64 origin-bottom-right rounded-2xl border border-white/20 bg-green-400/30 p-4 shadow-2xl backdrop-blur-lg"
-                initial={{ opacity: 0, x: -50, rotate: -30 }}
-                animate={{ opacity: 1, x: 0, rotate: -20 }}
-                transition={{ delay: 0.6, type: "spring" }}
-              >
-                <CreditCardContent />
-              </motion.div>
-              <motion.div
-                className="absolute top-4 left-8 h-40 w-64 origin-bottom-left rounded-2xl border border-white/20 bg-lime-300/30 p-4 shadow-2xl backdrop-blur-lg"
-                initial={{ opacity: 0, x: 50, rotate: 25 }}
-                animate={{ opacity: 1, x: 0, rotate: -5 }}
-                transition={{ delay: 0.8, type: "spring" }}
-              >
-                <CreditCardContent />
-              </motion.div>
-            </div>
+            <motion.div
+              className="absolute top-12 -left-4 h-40 w-64 origin-bottom-right rounded-2xl border border-white/20 bg-green-400/30 p-4 shadow-2xl backdrop-blur-lg"
+              initial={{ opacity: 0, x: -50, rotate: -30 }}
+              animate={{ opacity: 1, x: 0, rotate: -20 }}
+              transition={{ delay: 0.6, type: "spring" }}
+            >
+              <CreditCardContent />
+            </motion.div>
+            <motion.div
+              className="absolute top-16 left-8 h-40 w-64 origin-bottom-left rounded-2xl border border-white/20 bg-lime-300/30 p-4 shadow-2xl backdrop-blur-lg"
+              initial={{ opacity: 0, x: 50, rotate: 25 }}
+              animate={{ opacity: 1, x: 0, rotate: -5 }}
+              transition={{ delay: 0.8, type: "spring" }}
+            >
+              <CreditCardContent />
+            </motion.div>
           </div>
         </main>
 
