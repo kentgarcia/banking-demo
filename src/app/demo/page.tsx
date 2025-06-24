@@ -21,6 +21,9 @@ import {
   Wallet,
   BarChart2 as BarChartIcon,
   Loader2,
+  Building,
+  Phone,
+  CaseSensitive,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,7 +43,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   ChartContainer,
@@ -49,6 +51,8 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell } from "recharts";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const containerVariants = {
   hidden: {},
@@ -701,9 +705,81 @@ function DashboardScreen() {
   );
 }
 
-function MobileApp() {
-  const [step, setStep] = React.useState("onboarding");
+function DynamicsLogo() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M11.9999 1.99902L1.99988 5.99902V17.999L11.9999 21.999L21.9999 17.999V5.99902L11.9999 1.99902Z" stroke="#0078D4" strokeWidth="1.5"/>
+      <path d="M12 22V12L2 6" stroke="#0078D4" strokeWidth="1.5"/>
+      <path d="M12 12L22 6" stroke="#0078D4" strokeWidth="1.5"/>
+      <path d="M7 9L17 4" stroke="#0078D4" strokeWidth="1.5"/>
+    </svg>
+  );
+}
 
+function CrmView({ customerStatus }: { customerStatus: 'onboarding' | 'active' }) {
+  return (
+    <Card className="w-full max-w-lg hidden lg:block">
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div className="flex items-center gap-3">
+          <DynamicsLogo />
+          <CardTitle>Dynamics 365</CardTitle>
+        </div>
+        <Badge variant={customerStatus === 'active' ? 'default': 'secondary'} className={customerStatus === 'active' ? 'bg-green-500 text-white' : ''}>
+            {customerStatus === 'onboarding' ? 'Onboarding' : 'Active Customer'}
+        </Badge>
+      </CardHeader>
+      <CardContent>
+        <Tabs defaultValue="summary">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="summary">Summary</TabsTrigger>
+            <TabsTrigger value="details">Details</TabsTrigger>
+            <TabsTrigger value="timeline">Timeline</TabsTrigger>
+          </TabsList>
+          <TabsContent value="summary" className="pt-4">
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                    <Avatar className="h-16 w-16">
+                        <AvatarImage src="https://placehold.co/64x64.png" alt="@juan" data-ai-hint="man"/>
+                        <AvatarFallback>JD</AvatarFallback>
+                    </Avatar>
+                    <div>
+                        <h3 className="text-xl font-bold">Juan dela Cruz</h3>
+                        <p className="text-muted-foreground">NexusForge Initiative</p>
+                    </div>
+                </div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                        <Mail className="h-4 w-4" />
+                        <span>juan.delacruz@email.com</span>
+                    </div>
+                     <div className="flex items-center gap-2 text-muted-foreground">
+                        <Phone className="h-4 w-4" />
+                        <span>+1 (555) 123-4567</span>
+                    </div>
+                     <div className="flex items-center gap-2 text-muted-foreground">
+                        <Building className="h-4 w-4" />
+                        <span>NexusForge Corp.</span>
+                    </div>
+                     <div className="flex items-center gap-2 text-muted-foreground">
+                        <CaseSensitive className="h-4 w-4" />
+                        <span>Digital Transformation Lead</span>
+                    </div>
+                </div>
+              </div>
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
+  )
+}
+
+function MobileApp({
+  step,
+  setStep,
+}: {
+  step: string;
+  setStep: (step: string) => void;
+}) {
   const renderStep = () => {
     switch (step) {
       case "onboarding":
@@ -744,6 +820,8 @@ function MobileApp() {
 }
 
 function DemoSection() {
+  const [step, setStep] = React.useState("onboarding");
+
   return (
     <section
       id="demo"
@@ -751,7 +829,7 @@ function DemoSection() {
     >
       <div className="container mx-auto px-4">
         <motion.div
-          className="mb-16 text-center"
+          className="mb-12 text-center"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.5 }}
@@ -761,23 +839,41 @@ function DemoSection() {
             Interactive Demo
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-            Interact with the Security Bank mobile app prototype, powered by
-            NexusForge.
+            Interact with the Security Bank mobile app prototype and see the
+            backend CRM update in real-time.
           </p>
         </motion.div>
 
-        <motion.div
-          className="flex justify-center"
-          initial={{ scale: 0.9, opacity: 0 }}
-          whileInView={{ scale: 1, opacity: 1 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <div className="relative mx-auto h-[700px] w-[350px] rounded-[2.5rem] border-[14px] border-neutral-800 bg-neutral-800 shadow-2xl">
-            <div className="absolute top-0 left-1/2 h-8 w-[160px] -translate-x-1/2 rounded-b-xl bg-neutral-800" />
-            <MobileApp />
+        <div className="flex flex-col lg:flex-row items-center justify-center lg:items-start gap-16">
+          <motion.div
+            className="flex justify-center"
+            initial={{ scale: 0.9, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <div className="relative mx-auto h-[700px] w-[350px] rounded-[2.5rem] border-[14px] border-neutral-800 bg-neutral-800 shadow-2xl">
+              <div className="absolute top-0 left-1/2 h-8 w-[160px] -translate-x-1/2 rounded-b-xl bg-neutral-800" />
+              <MobileApp step={step} setStep={setStep} />
+            </div>
+          </motion.div>
+          
+          <div className="w-full max-w-lg">
+            <AnimatePresence>
+              {(step === 'welcome' || step === 'dashboard') && (
+                <motion.div
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 50 }}
+                  transition={{ duration: 0.5, ease: 'easeInOut' }}
+                  className="w-full"
+                >
+                  <CrmView customerStatus={step === 'welcome' ? 'onboarding' : 'active'} />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
