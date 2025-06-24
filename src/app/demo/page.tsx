@@ -37,14 +37,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
@@ -452,27 +444,17 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-function SendMoneyDialog({
-  open,
-  onOpenChange,
+function SendMoneyScreen({
+  onBack,
+  onSendSuccess,
 }: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onBack: () => void;
+  onSendSuccess: () => void;
 }) {
   const [status, setStatus] = React.useState<"idle" | "sending" | "success">(
     "idle"
   );
   const [amount, setAmount] = React.useState("");
-
-  const handleOpenChange = (isOpen: boolean) => {
-    if (!isOpen) {
-      setTimeout(() => {
-        setStatus("idle");
-        setAmount("");
-      }, 300);
-    }
-    onOpenChange(isOpen);
-  };
 
   const handleSubmit = () => {
     if (status !== "idle" || !amount) return;
@@ -480,44 +462,54 @@ function SendMoneyDialog({
     setTimeout(() => {
       setStatus("success");
       setTimeout(() => {
-        handleOpenChange(false);
+        onSendSuccess();
       }, 1500);
     }, 1500);
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[340px] mx-auto">
-        <DialogHeader>
-          <DialogTitle>Send Money</DialogTitle>
-          <DialogDescription>
-            Enter the amount to transfer to Maria Clara.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="py-4">
-          <Label htmlFor="amount" className="sr-only">
-            Amount
-          </Label>
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-              $
-            </span>
-            <Input
-              id="amount"
-              type="number"
-              placeholder="0.00"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="pl-7 text-2xl h-12 text-center font-bold"
-              disabled={status !== "idle"}
-            />
+    <div className="h-full w-full overflow-hidden rounded-[2rem] bg-neutral-100 font-body text-neutral-800">
+      <div className="flex h-full flex-col">
+        <header className="flex items-center p-4">
+          <Button variant="ghost" size="icon" className="rounded-full" onClick={onBack}>
+            <ArrowLeft />
+          </Button>
+          <h2 className="font-bold text-lg mx-auto">Send Money</h2>
+          <div className="w-10" />
+        </header>
+        <main className="flex-1 flex flex-col items-center px-4 pt-8">
+          <Avatar className="h-20 w-20">
+            <AvatarImage src="https://placehold.co/80x80.png" alt="Recipient" data-ai-hint="woman"/>
+            <AvatarFallback>MC</AvatarFallback>
+          </Avatar>
+          <p className="font-bold mt-4">Maria Clara</p>
+          <p className="text-sm text-muted-foreground">in your contacts</p>
+
+          <div className="py-4 mt-8 w-full max-w-xs">
+            <Label htmlFor="amount" className="sr-only">
+              Amount
+            </Label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-2xl">
+                $
+              </span>
+              <Input
+                id="amount"
+                type="number"
+                placeholder="0.00"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="pl-8 text-4xl h-16 text-center font-bold bg-white"
+                disabled={status !== "idle"}
+              />
+            </div>
           </div>
-        </div>
-        <DialogFooter>
+        </main>
+        <footer className="p-4 pb-8">
           <Button
             onClick={handleSubmit}
-            disabled={status !== "idle"}
-            className="w-full h-12"
+            disabled={status !== "idle" || !amount}
+            className="w-full h-14 rounded-full"
           >
             {status === "sending" && (
               <>
@@ -526,19 +518,18 @@ function SendMoneyDialog({
             )}
             {status === "success" && (
               <>
-                <Check className="mr-2 h-4 w-4" /> Success!
+                <Check className="mr-2 h-4 w-4" /> Sent Successfully
               </>
             )}
-            {status === "idle" && "Confirm & Send"}
+            {status === "idle" && "Send"}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </footer>
+      </div>
+    </div>
   );
 }
 
-function DashboardScreen() {
-  const [dialogOpen, setDialogOpen] = React.useState(false);
+function DashboardScreen({ onSendMoney }: { onSendMoney: () => void }) {
   return (
     <div className="h-full w-full overflow-hidden rounded-[2rem] bg-neutral-100 font-body text-neutral-800">
       <div className="flex h-full flex-col">
@@ -579,7 +570,7 @@ function DashboardScreen() {
           <div className="mt-6 grid grid-cols-3 gap-3">
             <Button
               className="h-12 bg-lime-300 text-lime-900 hover:bg-lime-400 font-bold"
-              onClick={() => setDialogOpen(true)}
+              onClick={onSendMoney}
             >
               <Send className="h-5 w-5 mr-2 -ml-1 rotate-[-45deg]" />
               Send
@@ -677,8 +668,6 @@ function DashboardScreen() {
             </Card>
           </div>
         </main>
-
-        <SendMoneyDialog open={dialogOpen} onOpenChange={setDialogOpen} />
 
         {/* Bottom Nav */}
         <footer className="absolute bottom-0 left-0 right-0 m-3">
@@ -793,7 +782,14 @@ function MobileApp({
       case "welcome":
         return <WelcomeScreen onContinue={() => setStep("dashboard")} />;
       case "dashboard":
-        return <DashboardScreen />;
+        return <DashboardScreen onSendMoney={() => setStep("sendMoney")} />;
+      case "sendMoney":
+        return (
+          <SendMoneyScreen
+            onBack={() => setStep("dashboard")}
+            onSendSuccess={() => setStep("dashboard")}
+          />
+        );
       default:
         return (
           <OnboardingScreen onGetStarted={() => setStep("createAccount")} />
@@ -907,7 +903,7 @@ function DemoSection() {
           </AnimatePresence>
 
           <AnimatePresence>
-            {(step === "welcome" || step === "dashboard") && (
+            {(step === "welcome" || step === "dashboard" || step === "sendMoney") && (
               <motion.div
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -958,3 +954,5 @@ export default function DemoPage() {
     </div>
   );
 }
+
+    
