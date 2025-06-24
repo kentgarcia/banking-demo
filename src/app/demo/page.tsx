@@ -573,15 +573,13 @@ function DashboardScreen() {
 
           {/* Actions */}
           <div className="mt-6 grid grid-cols-3 gap-3">
-            <DialogTrigger asChild>
-              <Button
-                className="h-12 bg-lime-300 text-lime-900 hover:bg-lime-400 font-bold"
-                onClick={() => setDialogOpen(true)}
-              >
-                <Send className="h-5 w-5 mr-2 -ml-1 rotate-[-45deg]" />
-                Send
-              </Button>
-            </DialogTrigger>
+            <Button
+              className="h-12 bg-lime-300 text-lime-900 hover:bg-lime-400 font-bold"
+              onClick={() => setDialogOpen(true)}
+            >
+              <Send className="h-5 w-5 mr-2 -ml-1 rotate-[-45deg]" />
+              Send
+            </Button>
             <Button variant="outline" className="h-12 font-bold">
               <Plus className="h-5 w-5 mr-2 -ml-1" /> Add
             </Button>
