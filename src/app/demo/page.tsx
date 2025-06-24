@@ -24,6 +24,8 @@ import {
   Building,
   Phone,
   CaseSensitive,
+  UserPlus,
+  ArrowRightLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -131,7 +133,7 @@ function CreditCardContent() {
 function OnboardingScreen({ onGetStarted }: { onGetStarted: () => void }) {
   return (
     <div className="h-full w-full overflow-hidden rounded-[2rem] bg-[#0a2820] text-white">
-      <div className="flex h-full flex-col bg-gradient-to-br from-green-500/20 via-transparent to-green-900/20 p-5 font-body">
+      <div className="flex h-full flex-col bg-gradient-to-br from-green-500/20 via-transparent to-green-900/20 p-5 font-sans">
         <header className="flex items-center justify-between text-xs font-light text-neutral-300">
           <span>9:41</span>
           <div className="flex items-center gap-1.5">
@@ -164,7 +166,7 @@ function OnboardingScreen({ onGetStarted }: { onGetStarted: () => void }) {
             </motion.p>
           </div>
 
-          <div className="relative mt-8 h-48">
+          <div className="relative mt-12 h-48 flex-shrink-0">
             <motion.div
               className="absolute top-0 left-1/2 z-20 w-36 -translate-x-1/2 rounded-xl border border-white/10 bg-white/20 p-3 text-center shadow-lg backdrop-blur-md"
               initial={{ opacity: 0, y: 20, rotate: -5 }}
@@ -242,7 +244,7 @@ function CreateAccountScreen({
   };
 
   return (
-    <div className="h-full w-full overflow-hidden rounded-[2rem] bg-[#f0f2f5] font-body text-neutral-800">
+    <div className="h-full w-full overflow-hidden rounded-[2rem] bg-[#f0f2f5] font-sans text-neutral-800">
       <div className="flex h-full flex-col p-5">
         <header className="flex items-center justify-between text-xs font-light text-neutral-500">
           <span>9:42</span>
@@ -384,7 +386,7 @@ function CreateAccountScreen({
 
 function WelcomeScreen({ onContinue }: { onContinue: () => void }) {
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center space-y-4 rounded-[2rem] bg-white p-5 font-body">
+    <div className="flex h-full w-full flex-col items-center justify-center space-y-4 rounded-[2rem] bg-white p-5 font-sans">
       <motion.div
         className="flex h-24 w-24 items-center justify-center rounded-full bg-green-500/20"
         initial={{ scale: 0 }}
@@ -468,7 +470,7 @@ function SendMoneyScreen({
   };
 
   return (
-    <div className="h-full w-full overflow-hidden rounded-[2rem] bg-neutral-100 font-body text-neutral-800">
+    <div className="h-full w-full overflow-hidden rounded-[2rem] bg-neutral-100 font-sans text-neutral-800">
       <div className="flex h-full flex-col">
         <header className="flex items-center p-4">
           <Button variant="ghost" size="icon" className="rounded-full" onClick={onBack}>
@@ -531,7 +533,7 @@ function SendMoneyScreen({
 
 function DashboardScreen({ onSendMoney }: { onSendMoney: () => void }) {
   return (
-    <div className="h-full w-full overflow-hidden rounded-[2rem] bg-neutral-100 font-body text-neutral-800">
+    <div className="h-full w-full overflow-hidden rounded-[2rem] bg-neutral-100 font-sans text-neutral-800">
       <div className="flex h-full flex-col">
         <header className="flex items-center justify-between p-4 text-xs font-light text-neutral-500">
           <span>9:41</span>
@@ -705,7 +707,13 @@ function DynamicsLogo() {
   );
 }
 
-function CrmView({ customerStatus }: { customerStatus: 'onboarding' | 'active' }) {
+function CrmView({
+  customerStatus,
+  transferMade,
+}: {
+  customerStatus: "onboarding" | "active";
+  transferMade: boolean;
+}) {
   return (
     <Card className="w-full max-w-lg hidden lg:block">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -756,6 +764,48 @@ function CrmView({ customerStatus }: { customerStatus: 'onboarding' | 'active' }
                 </div>
               </div>
           </TabsContent>
+          <TabsContent value="timeline" className="pt-4">
+            <div className="space-y-6">
+              <AnimatePresence>
+                {transferMade && (
+                  <motion.div
+                    layout
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-start gap-4"
+                  >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
+                      <ArrowRightLeft className="h-4 w-4 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="font-semibold">Fund Transfer</p>
+                      <p className="text-sm text-muted-foreground">
+                        Sent money to Maria Clara.
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Just now
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <motion.div layout className="flex items-start gap-4">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
+                  <UserPlus className="h-4 w-4 text-green-600" />
+                </div>
+                <div>
+                  <p className="font-semibold">Contact Created</p>
+                  <p className="text-sm text-muted-foreground">
+                    Customer successfully onboarded via NexusForge app.
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    A few minutes ago
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+          </TabsContent>
         </Tabs>
       </CardContent>
     </Card>
@@ -765,9 +815,11 @@ function CrmView({ customerStatus }: { customerStatus: 'onboarding' | 'active' }
 function MobileApp({
   step,
   setStep,
+  onTransferSuccess,
 }: {
   step: string;
   setStep: (step: string) => void;
+  onTransferSuccess: () => void;
 }) {
   const renderStep = () => {
     switch (step) {
@@ -787,7 +839,10 @@ function MobileApp({
         return (
           <SendMoneyScreen
             onBack={() => setStep("dashboard")}
-            onSendSuccess={() => setStep("dashboard")}
+            onSendSuccess={() => {
+              setStep("dashboard");
+              onTransferSuccess();
+            }}
           />
         );
       default:
@@ -863,6 +918,7 @@ function DataFlowArrow() {
 
 function DemoSection() {
   const [step, setStep] = React.useState("onboarding");
+  const [transferMade, setTransferMade] = React.useState(false);
 
   return (
     <section
@@ -894,7 +950,11 @@ function DemoSection() {
           >
             <div className="relative mx-auto h-[700px] w-[350px] rounded-[2.5rem] border-[14px] border-neutral-800 bg-neutral-800 shadow-2xl">
               <div className="absolute top-0 left-1/2 h-8 w-[160px] -translate-x-1/2 rounded-b-xl bg-neutral-800" />
-              <MobileApp step={step} setStep={setStep} />
+              <MobileApp
+                step={step}
+                setStep={setStep}
+                onTransferSuccess={() => setTransferMade(true)}
+              />
             </div>
           </motion.div>
 
@@ -915,6 +975,7 @@ function DemoSection() {
                   customerStatus={
                     step === "welcome" ? "onboarding" : "active"
                   }
+                  transferMade={transferMade}
                 />
               </motion.div>
             )}
@@ -954,5 +1015,3 @@ export default function DemoPage() {
     </div>
   );
 }
-
-    
