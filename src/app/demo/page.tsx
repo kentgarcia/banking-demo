@@ -130,7 +130,7 @@ function OnboardingScreen() {
 
           <div className="relative mt-8 flex-1">
             <motion.div
-              className="absolute top-6 left-1/2 z-20 w-36 -translate-x-1/2 rounded-xl border border-white/10 bg-white/20 p-3 text-center shadow-lg backdrop-blur-md"
+              className="absolute top-2 left-1/2 z-20 w-36 -translate-x-1/2 rounded-xl border border-white/10 bg-white/20 p-3 text-center shadow-lg backdrop-blur-md"
               initial={{ opacity: 0, y: 20, rotate: -5 }}
               animate={{ opacity: 1, y: 0, rotate: -5 }}
               transition={{ delay: 1, duration: 0.5, type: "spring", stiffness: 100 }}
@@ -139,7 +139,7 @@ function OnboardingScreen() {
               <p className="text-xs text-neutral-200">Balance</p>
             </motion.div>
 
-            <div className="absolute top-16 left-0 right-0 h-64">
+            <div className="absolute top-10 left-0 right-0 h-64">
               <motion.div
                 className="absolute -left-4 h-40 w-64 origin-bottom-right rounded-2xl border border-white/20 bg-green-400/30 p-4 shadow-2xl backdrop-blur-lg"
                 initial={{ opacity: 0, x: -50, rotate: -30 }}
