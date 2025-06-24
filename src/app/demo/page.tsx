@@ -26,6 +26,12 @@ import {
   CaseSensitive,
   UserPlus,
   ArrowRightLeft,
+  ArrowRight,
+  Smartphone,
+  Cloud,
+  Shield,
+  Server,
+  Network,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +41,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -710,9 +717,11 @@ function DynamicsLogo() {
 function CrmView({
   customerStatus,
   transferMade,
+  onNavigateToArchitecture,
 }: {
   customerStatus: "onboarding" | "active";
   transferMade: boolean;
+  onNavigateToArchitecture: () => void;
 }) {
   return (
     <Card className="w-full max-w-lg hidden lg:block">
@@ -810,6 +819,13 @@ function CrmView({
           </div>
         </div>
       </CardContent>
+      {transferMade && (
+        <CardFooter>
+            <Button onClick={onNavigateToArchitecture} className="w-full">
+                Next: The Architecture Flow <ArrowRight className="ml-2"/>
+            </Button>
+        </CardFooter>
+      )}
     </Card>
   )
 }
@@ -918,7 +934,7 @@ function DataFlowArrow() {
   );
 }
 
-function DemoSection() {
+function DemoSection({ onNavigateToArchitecture }: { onNavigateToArchitecture: () => void }) {
   const [step, setStep] = React.useState("onboarding");
   const [transferMade, setTransferMade] = React.useState(false);
 
@@ -978,6 +994,7 @@ function DemoSection() {
                     step === "welcome" ? "onboarding" : "active"
                   }
                   transferMade={transferMade}
+                  onNavigateToArchitecture={onNavigateToArchitecture}
                 />
               </motion.div>
             )}
@@ -986,6 +1003,142 @@ function DemoSection() {
       </div>
     </section>
   );
+}
+
+const architectureSteps = [
+    { text: "Request originates from the user's device and enters the secure Azure cloud environment.", pos: { top: "25%", left: "12%" } },
+    { text: "Azure's built-in DDoS protection provides the first line of defense against volumetric attacks.", pos: { top: "18%", left: "48%" } },
+    { text: "Next, all traffic is inspected by a Palo Alto Next-Generation Firewall (NGFW) for advanced threats.", pos: { top: "35%", left: "48%" } },
+    { text: "The validated request is routed to Temenos Infinity running on Azure Kubernetes Service (AKS) to process the business logic.", pos: { top: "52%", left: "48%" } },
+    { text: "For core banking actions, the request travels via a private ExpressRoute link, bypassing the public internet for maximum security.", pos: { top: "70%", left: "48%" } },
+    { text: "The on-premise Core Banking System confirms the transaction, and a success message is sent back to the customer along the same secure path.", pos: { top: "85%", left: "48%" } },
+];
+
+
+function ArchitectureFlowSection() {
+    const [stepIndex, setStepIndex] = React.useState(0);
+    const currentStep = architectureSteps[stepIndex];
+    
+    return (
+        <section
+            id="architecture"
+            className="flex flex-1 flex-col items-center justify-center bg-secondary/50 py-16"
+        >
+            <div className="container mx-auto px-4">
+                <motion.div
+                    className="mb-12 text-center"
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.5 }}
+                    variants={itemVariants}
+                >
+                    <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                        Architecture Flow: The Behind the Scenes
+                    </h2>
+                    <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+                        Follow the data as it moves through our secure and robust infrastructure.
+                    </p>
+                </motion.div>
+
+                <div className="relative mx-auto w-full max-w-5xl rounded-lg border bg-background p-4 shadow-lg md:p-8 min-h-[600px]">
+                    {/* Main containers */}
+                    <div className="absolute top-4 left-4 flex flex-col items-center gap-2">
+                        <Smartphone className="h-8 w-8"/>
+                        <span className="font-semibold">Phone</span>
+                    </div>
+
+                    <div className="absolute top-1/2 left-1/2 h-[90%] w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-2xl border-2 border-dashed bg-blue-500/5 p-4">
+                        <div className="flex items-center gap-2 text-blue-800">
+                            <Cloud className="h-6 w-6"/>
+                            <h3 className="text-lg font-bold">Azure Cloud</h3>
+                        </div>
+                    </div>
+
+                    <div className="absolute bottom-4 left-1/2 h-[25%] w-[50%] -translate-x-1/2 rounded-2xl border-2 border-dashed bg-gray-500/5 p-4">
+                         <div className="flex items-center gap-2 text-gray-800">
+                            <Server className="h-6 w-6"/>
+                            <h3 className="text-lg font-bold">On-Premise Data Center</h3>
+                        </div>
+                    </div>
+                    
+                    {/* Diagram Components */}
+                    <div className="absolute top-[18%] left-[48%] -translate-x-1/2 flex flex-col items-center gap-1 text-center">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                            <Shield/>
+                        </div>
+                        <p className="text-xs font-semibold">Azure DDoS</p>
+                    </div>
+                     <div className="absolute top-[35%] left-[48%] -translate-x-1/2 flex flex-col items-center gap-1 text-center">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                            <Shield/>
+                        </div>
+                        <p className="text-xs font-semibold">Palo Alto NGFW</p>
+                    </div>
+                     <div className="absolute top-[52%] left-[48%] -translate-x-1/2 flex flex-col items-center gap-1 text-center">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                           <Server/>
+                        </div>
+                        <p className="text-xs font-semibold">AKS (Temenos)</p>
+                    </div>
+
+                    <div className="absolute top-[70%] left-[48%] -translate-x-1/2 flex flex-col items-center gap-1 text-center">
+                        <div className="flex items-center gap-2 rounded-full border bg-background px-3 py-1">
+                            <Network className="h-4 w-4 text-green-600"/>
+                            <p className="text-xs font-semibold">ExpressRoute</p>
+                        </div>
+                    </div>
+
+                    <div className="absolute top-[85%] left-[48%] -translate-x-1/2 flex flex-col items-center gap-1 text-center">
+                         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-gray-600">
+                           <Server/>
+                        </div>
+                        <p className="text-xs font-semibold">Core Banking</p>
+                    </div>
+
+                    {/* Animated Dot */}
+                    <motion.div
+                        className="absolute h-3 w-3 rounded-full bg-primary ring-4 ring-primary/30"
+                        animate={{ top: currentStep.pos.top, left: currentStep.pos.left }}
+                        transition={{ duration: 1.2, ease: "easeInOut" }}
+                        initial={false}
+                    />
+
+                    {/* Path Lines */}
+                     <svg className="absolute inset-0 h-full w-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M200 160 L 380 160" strokeWidth="2" stroke="hsl(var(--border))" strokeDasharray="4 4" />
+                        <path d="M420 135 V 235" strokeWidth="2" stroke="hsl(var(--border))" strokeDasharray="4 4" />
+                        <path d="M420 265 V 335" strokeWidth="2" stroke="hsl(var(--border))" strokeDasharray="4 4" />
+                        <path d="M420 365 V 440" strokeWidth="2" stroke="hsl(var(--border))" strokeDasharray="4 4" />
+                        <path d="M420 460 V 520" strokeWidth="2" stroke="hsl(var(--border))" strokeDasharray="4 4" />
+                    </svg>
+
+                </div>
+
+                <div className="mt-8 text-center max-w-2xl mx-auto">
+                    <AnimatePresence mode="wait">
+                        <motion.p
+                            key={stepIndex}
+                            className="text-lg text-muted-foreground min-h-[56px]"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.3 }}
+                        >
+                            <span className="font-bold text-foreground">Step {stepIndex + 1}: </span>{currentStep.text}
+                        </motion.p>
+                    </AnimatePresence>
+                    <Button
+                        onClick={() => setStepIndex(stepIndex + 1)}
+                        disabled={stepIndex >= architectureSteps.length - 1}
+                        className="mt-6"
+                        size="lg"
+                    >
+                        Next Step <ArrowRight className="ml-2"/>
+                    </Button>
+                </div>
+            </div>
+        </section>
+    );
 }
 
 function Footer() {
@@ -1002,6 +1155,8 @@ function Footer() {
 }
 
 export default function DemoPage() {
+  const [currentScreen, setCurrentScreen] = React.useState<'demo' | 'architecture'>('demo');
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Header />
@@ -1011,7 +1166,17 @@ export default function DemoPage() {
         initial="hidden"
         animate="visible"
       >
-        <DemoSection />
+        <AnimatePresence mode="wait">
+        {currentScreen === 'demo' ? (
+            <motion.div key="demo" exit={{opacity: 0}}>
+                <DemoSection onNavigateToArchitecture={() => setCurrentScreen('architecture')} />
+            </motion.div>
+        ) : (
+            <motion.div key="architecture" initial={{opacity: 0}} animate={{opacity: 1}}>
+                <ArchitectureFlowSection />
+            </motion.div>
+        )}
+        </AnimatePresence>
       </motion.main>
       <Footer />
     </div>
