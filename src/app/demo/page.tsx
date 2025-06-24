@@ -139,7 +139,7 @@ function OnboardingScreen() {
               <p className="text-xs text-neutral-200">Balance</p>
             </motion.div>
 
-            <div className="absolute inset-0 top-16">
+            <div className="absolute top-16 left-0 right-0 h-64">
               <motion.div
                 className="absolute -left-4 h-40 w-64 origin-bottom-right rounded-2xl border border-white/20 bg-green-400/30 p-4 shadow-2xl backdrop-blur-lg"
                 initial={{ opacity: 0, x: -50, rotate: -30 }}
