@@ -1,3 +1,4 @@
+
 "use client";
 
 import { motion } from "framer-motion";
@@ -169,9 +170,6 @@ function OnboardingScreen() {
               className="h-14 w-full rounded-full bg-lime-300 font-bold text-green-900 shadow-lg shadow-lime-300/30 transition hover:bg-lime-400"
             >
               Get Started
-            </Button>
-            <Button variant="link" className="mt-2 w-full font-semibold text-white">
-              Sign in
             </Button>
           </motion.div>
         </footer>
