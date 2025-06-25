@@ -8,9 +8,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Menu, Smartphone, Waypoints, BarChart2, Scaling } from "lucide-react";
+import { Menu, Smartphone, Waypoints, BarChart2, Scaling, Siren } from "lucide-react";
 
-type DemoScreen = 'demo' | 'architecture' | 'liveDashboard' | 'scalability';
+type DemoScreen = 'demo' | 'architecture' | 'liveDashboard' | 'scalability' | 'threatSimulation';
 
 interface DemoNavigationProps {
   setCurrentScreen: (screen: DemoScreen) => void;
@@ -22,6 +22,7 @@ export function DemoNavigation({ setCurrentScreen }: DemoNavigationProps) {
     { name: "Architecture Flow", screen: "architecture", icon: Waypoints },
     { name: "Live Dashboard", screen: "liveDashboard", icon: BarChart2 },
     { name: "Scalability Demo", screen: "scalability", icon: Scaling },
+    { name: "Live Threat Simulation", screen: "threatSimulation", icon: Siren },
   ];
 
   return (

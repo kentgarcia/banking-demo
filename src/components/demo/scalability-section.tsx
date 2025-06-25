@@ -3,7 +3,7 @@
 
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Smartphone, ShieldCheck, Shapes, Server, ArrowLeft, RotateCcw, Cpu, Forward, Cloud } from "lucide-react";
+import { Smartphone, ShieldCheck, Shapes, Server, ArrowLeft, RotateCcw, Cpu, Forward, Cloud, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
@@ -17,71 +17,50 @@ function FlowArrow({
     showBackward?: boolean;
     isSlow?: boolean;
 }) {
-    const duration = isSlow ? 3 : 1.5;
+    const duration = isSlow ? 4 : 1.5;
     const forwardPath = "M10 25 L140 25";
     const backwardPath = "M140 55 L10 55";
     
+    const renderCircles = (path: string, color: string, delayMultiplier: number) => (
+        [0, 1, 2].map(i => (
+             <motion.circle
+                key={i}
+                r="4"
+                fill={color}
+                style={{
+                    offsetPath: `path('${path}')`
+                }}
+                initial={{ offsetDistance: "0%", opacity: 0 }}
+                animate={{ offsetDistance: "100%", opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{
+                    offsetDistance: {
+                        delay: i * (duration / 3) * delayMultiplier,
+                        duration: duration,
+                        repeat: Infinity,
+                        ease: "linear",
+                    },
+                    opacity: { duration: 0.3 }
+                }}
+            />
+        ))
+    );
+
     return (
         <svg width="150" height="80" viewBox="0 0 150 80" className="flex-shrink-0">
             {/* Forward path drawing */}
-            <path d={forwardPath} stroke="hsl(var(--accent))" strokeWidth="2" strokeDasharray="5 5" className="opacity-50" />
-            <path d="M132 20 L140 25 L132 30" stroke="hsl(var(--accent))" strokeWidth="2" fill="none" className="opacity-50" />
+            <path d={forwardPath} stroke="hsl(var(--accent))" strokeWidth="2" strokeDasharray="5 5" className="opacity-30" />
+            <path d="M132 20 L140 25 L132 30" stroke="hsl(var(--accent))" strokeWidth="2" fill="none" className="opacity-30" />
             
             <AnimatePresence>
-            {isActive && [0, 1].map(i => (
-                 <motion.circle
-                    key={`fwd-${i}`}
-                    r="4"
-                    fill="hsl(var(--accent))"
-                    style={{
-                        offsetPath: `path('${forwardPath}')`,
-                        offsetDistance: "var(--offset)"
-                    }}
-                    initial={{ "--offset": "0%", opacity: 0 }}
-                    animate={{ "--offset": "100%", opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{
-                        "--offset": {
-                            delay: i * (duration / 2),
-                            duration: duration,
-                            repeat: Infinity,
-                            ease: "linear",
-                        },
-                        opacity: { duration: 0.3 }
-                    }}
-                />
-            ))}
+                {isActive && renderCircles(forwardPath, "hsl(var(--accent))", 1)}
             </AnimatePresence>
 
             {/* Backward path drawing and animation */}
+            <path d={backwardPath} stroke="hsl(var(--primary))" strokeWidth="2" strokeDasharray="5 5" className="opacity-30" />
+            <path d="M18 50 L10 55 L18 60" stroke="hsl(var(--primary))" strokeWidth="2" fill="none" className="opacity-30" />
             <AnimatePresence>
-                {showBackward && (
-                    <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                        <path d={backwardPath} stroke="hsl(var(--primary))" strokeWidth="2" strokeDasharray="5 5" className="opacity-50" />
-                        <path d="M18 50 L10 55 L18 60" stroke="hsl(var(--primary))" strokeWidth="2" fill="none" className="opacity-50" />
-                        
-                        {[0, 1].map(i => (
-                            <motion.circle
-                                key={`bwd-${i}`}
-                                r="4"
-                                fill="hsl(var(--primary))"
-                                style={{ offsetPath: `path('${backwardPath}')`, offsetDistance: "var(--offset)" }}
-                                initial={{ "--offset": "0%", opacity: 0 }}
-                                animate={{ "--offset": "100%", opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{
-                                    "--offset": {
-                                        delay: i * (duration / 2),
-                                        duration: duration,
-                                        repeat: Infinity,
-                                        ease: "linear",
-                                    },
-                                    opacity: { duration: 0.3 }
-                                }}
-                            />
-                        ))}
-                    </motion.g>
-                )}
+                {showBackward && renderCircles(backwardPath, "hsl(var(--primary))", 1.2)}
             </AnimatePresence>
         </svg>
     );
@@ -138,7 +117,7 @@ function ScalabilityNode({
                     )}
                 </div>
             </motion.div>
-            <div className="flex flex-col items-center justify-center text-muted-foreground min-h-[4rem]">
+            <div className="flex flex-col items-center justify-center text-muted-foreground min-h-[4rem] h-[4rem]">
                  <AnimatePresence>
                     {isAppLayer && extraInstances > 0 && (
                         <motion.div
@@ -189,7 +168,7 @@ const simulationSteps = [
         buttonText: "Next: Observe CPU Spike"
     },
     {
-        text: "The heavy load causes CPU usage to spike. System performance degrades, slowing down all data processing.",
+        text: "The heavy load causes CPU usage to spike. System performance degrades, slowing down all data processing for both requests and responses.",
         cpu: 95, progressColor: "bg-destructive", isPulsing: true, extraInstances: 0,
         trafficActive: true, isSlow: true, returnTrafficActive: true,
         buttonText: "Next: Initiate Auto-Scaling"
@@ -204,21 +183,21 @@ const simulationSteps = [
         text: "With new instances online, the load is balanced. CPU usage returns to a healthy level and data processing speeds recover.",
         cpu: 40, progressColor: "bg-green-500", isPulsing: false, extraInstances: 2,
         trafficActive: true, isSlow: false, returnTrafficActive: true,
-        buttonText: "Finish"
+        buttonText: "Finish Simulation"
     },
     {
         text: "The system has successfully scaled to meet demand, ensuring a smooth user experience even during peak load.",
         cpu: 40, progressColor: "bg-green-500", isPulsing: false, extraInstances: 2,
         trafficActive: true, isSlow: false, returnTrafficActive: true,
-        buttonText: "Finish"
+        buttonText: null, // This indicates the final state with navigation buttons
     },
 ];
 
 
-export function ScalabilitySection({ onBack, onRestart }: { onBack: () => void, onRestart: () => void }) {
+export function ScalabilitySection({ onBack, onRestart, onNext }: { onBack: () => void, onRestart: () => void, onNext: () => void }) {
     const [stepIndex, setStepIndex] = React.useState(0);
     const currentStep = simulationSteps[stepIndex];
-    const isFinalState = stepIndex >= simulationSteps.length - 1;
+    const isFinalState = !currentStep.buttonText;
 
     const handleNext = () => {
         if (isFinalState) return;
@@ -278,7 +257,7 @@ export function ScalabilitySection({ onBack, onRestart }: { onBack: () => void, 
 
                 <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground mb-8">
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-px bg-accent border-t-2 border-dashed border-accent"/>
+                         <div className="w-8 h-px bg-accent border-t-2 border-dashed border-accent"/>
                         <span>Request</span>
                     </div>
                      <div className="flex items-center gap-2">
@@ -300,8 +279,8 @@ export function ScalabilitySection({ onBack, onRestart }: { onBack: () => void, 
                            {currentStep.text}
                         </motion.p>
                     </AnimatePresence>
-                    <div className="mt-6 flex items-center justify-center gap-4 h-11">
-                       {!isFinalState && (
+                     <div className="mt-6 flex items-center justify-center gap-4 h-11">
+                       {!isFinalState ? (
                            <AnimatePresence mode="wait">
                                 <motion.div
                                     key={stepIndex}
@@ -314,8 +293,7 @@ export function ScalabilitySection({ onBack, onRestart }: { onBack: () => void, 
                                     </Button>
                                 </motion.div>
                            </AnimatePresence>
-                       )}
-                       {isFinalState && (
+                       ) : (
                            <motion.div 
                                 className="flex items-center justify-center gap-4"
                                 initial={{opacity: 0}}
@@ -325,8 +303,11 @@ export function ScalabilitySection({ onBack, onRestart }: { onBack: () => void, 
                                 <Button onClick={onBack} variant="outline" size="lg">
                                     <ArrowLeft className="mr-2"/> Back
                                 </Button>
-                                <Button onClick={onRestart} size="lg">
+                                <Button onClick={onRestart} variant="secondary" size="lg">
                                     Restart Demo <RotateCcw className="ml-2"/>
+                                </Button>
+                                <Button onClick={onNext} size="lg">
+                                    Next: Threat Simulation <ArrowRight className="ml-2" />
                                 </Button>
                            </motion.div>
                        )}

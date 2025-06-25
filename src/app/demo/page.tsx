@@ -8,9 +8,10 @@ import { ArchitectureFlowSection } from "@/components/demo/architecture-flow";
 import { LiveDashboardSection } from "@/components/demo/live-dashboard";
 import { ScalabilitySection } from "@/components/demo/scalability-section";
 import { DemoNavigation } from "@/components/demo/demo-navigation";
+import { LiveThreatSimulationSection } from "@/components/demo/live-threat-simulation";
 
 export default function DemoPage() {
-  const [currentScreen, setCurrentScreen] = React.useState<'demo' | 'architecture' | 'liveDashboard' | 'scalability'>('demo');
+  const [currentScreen, setCurrentScreen] = React.useState<'demo' | 'architecture' | 'liveDashboard' | 'scalability' | 'threatSimulation'>('demo');
   const [simulateFailure, setSimulateFailure] = React.useState(false);
   const [mobileAppStep, setMobileAppStep] = React.useState('onboarding');
   const [transferMade, setTransferMade] = React.useState(false);
@@ -63,9 +64,19 @@ export default function DemoPage() {
           <motion.div key="scalability" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <ScalabilitySection
               onBack={() => setCurrentScreen('liveDashboard')}
+              onNext={() => setCurrentScreen('threatSimulation')}
               onRestart={handleRestart}
             />
           </motion.div>
+        );
+      case 'threatSimulation':
+        return (
+            <motion.div key="threatSimulation" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <LiveThreatSimulationSection
+                onBack={() => setCurrentScreen('scalability')}
+                onRestart={handleRestart}
+              />
+            </motion.div>
         );
       default:
         return null;
