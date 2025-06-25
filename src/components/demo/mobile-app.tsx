@@ -66,7 +66,7 @@ function CreditCardContent() {
 function OnboardingScreen({ onGetStarted }: { onGetStarted: () => void }) {
   return (
     <div className="h-full w-full overflow-hidden rounded-[2rem] bg-[#0a2820] text-white">
-      <div className="flex h-full flex-col bg-gradient-to-br from-green-500/20 via-transparent to-green-900/20 p-5 font-sans">
+      <div className="flex h-full flex-col bg-gradient-to-br from-green-500/20 via-transparent to-green-900/20 p-5 font-body">
         <header className="flex items-center justify-between text-xs font-light text-neutral-300">
           <span>9:41</span>
           <div className="flex items-center gap-1.5">
@@ -177,7 +177,7 @@ function CreateAccountScreen({
   };
 
   return (
-    <div className="h-full w-full overflow-hidden rounded-[2rem] bg-[#f0f2f5] font-sans text-neutral-800">
+    <div className="h-full w-full overflow-hidden rounded-[2rem] bg-[#f0f2f5] font-body text-neutral-800">
       <div className="flex h-full flex-col p-5">
         <header className="flex items-center justify-between text-xs font-light text-neutral-500">
           <span>9:42</span>
@@ -319,7 +319,7 @@ function CreateAccountScreen({
 
 function WelcomeScreen({ onContinue }: { onContinue: () => void }) {
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center space-y-4 rounded-[2rem] bg-white p-5 font-sans">
+    <div className="flex h-full w-full flex-col items-center justify-center space-y-4 rounded-[2rem] bg-white p-5 font-body">
       <motion.div
         className="flex h-24 w-24 items-center justify-center rounded-full bg-green-500/20"
         initial={{ scale: 0 }}
@@ -381,7 +381,7 @@ const chartConfig = {
 
 function DashboardScreen({ onSendMoney }: { onSendMoney: () => void }) {
   return (
-    <div className="h-full w-full overflow-hidden rounded-[2rem] bg-neutral-100 font-sans text-neutral-800">
+    <div className="h-full w-full overflow-hidden rounded-[2rem] bg-neutral-100 font-body text-neutral-800">
       <div className="flex h-full flex-col">
         <header className="flex items-center justify-between p-4 text-xs font-light text-neutral-500">
           <span>9:41</span>
@@ -572,7 +572,7 @@ function SendMoneyScreen({
   };
 
   return (
-    <div className="h-full w-full overflow-hidden rounded-[2rem] bg-neutral-100 font-sans text-neutral-800">
+    <div className="h-full w-full overflow-hidden rounded-[2rem] bg-neutral-100 font-body text-neutral-800">
       <div className="flex h-full flex-col">
         <header className="flex items-center p-4">
           <Button variant="ghost" size="icon" className="rounded-full" onClick={onBack}>
