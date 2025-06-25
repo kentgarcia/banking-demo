@@ -3,39 +3,38 @@
 
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Smartphone, ShieldCheck, Shapes, Server, ArrowLeft, RotateCcw, Cpu, Forward } from "lucide-react";
+import { Smartphone, ShieldCheck, Shapes, Server, ArrowLeft, RotateCcw, Cpu, Forward, Cloud } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 
-function FlowArrow({ isActive }: { isActive: boolean }) {
-    const arrowPath = "M10 40 L140 40";
+function FlowArrow({ 
+    isActive, 
+    showBackward, 
+    isSlow 
+}: { 
+    isActive: boolean; 
+    showBackward?: boolean; 
+    isSlow?: boolean; 
+}) {
+    const duration = isSlow ? 3 : 1.5;
+    const forwardPath = "M10 25 L140 25";
+    const backwardPath = "M140 55 L10 55";
     
     return (
         <svg width="150" height="80" viewBox="0 0 150 80" className="flex-shrink-0">
-            <path
-                d={arrowPath}
-                stroke="hsl(var(--primary))"
-                strokeWidth="2"
-                strokeDasharray="5 5"
-                className="opacity-50"
-            />
-            <path
-                d="M132 35 L140 40 L132 45"
-                stroke="hsl(var(--primary))"
-                strokeWidth="2"
-                fill="none"
-                className="opacity-50"
-            />
+            {/* Forward path drawing */}
+            <path d={forwardPath} stroke="hsl(var(--accent))" strokeWidth="2" strokeDasharray="5 5" className="opacity-50" />
+            <path d="M132 20 L140 25 L132 30" stroke="hsl(var(--accent))" strokeWidth="2" fill="none" className="opacity-50" />
             
             <AnimatePresence>
             {isActive && [0, 1].map(i => (
                  <motion.circle
-                    key={i}
+                    key={`fwd-${i}`}
                     r="4"
                     fill="hsl(var(--accent))"
                     style={{ 
-                        offsetPath: `path('${arrowPath}')`,
+                        offsetPath: `path('${forwardPath}')`,
                         offsetDistance: "var(--offset)"
                     }}
                     initial={{ "--offset": "0%", opacity: 0 }}
@@ -43,8 +42,8 @@ function FlowArrow({ isActive }: { isActive: boolean }) {
                     exit={{ opacity: 0 }}
                     transition={{
                         "--offset": {
-                            delay: i * 0.75,
-                            duration: 1.5,
+                            delay: i * (duration / 2),
+                            duration: duration,
                             repeat: Infinity,
                             ease: "linear",
                         },
@@ -52,6 +51,37 @@ function FlowArrow({ isActive }: { isActive: boolean }) {
                     }}
                 />
             ))}
+            </AnimatePresence>
+
+            {/* Backward path drawing and animation */}
+            <AnimatePresence>
+                {showBackward && (
+                    <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                        <path d={backwardPath} stroke="hsl(var(--primary))" strokeWidth="2" strokeDasharray="5 5" className="opacity-50" />
+                        <path d="M18 50 L10 55 L18 60" stroke="hsl(var(--primary))" strokeWidth="2" fill="none" className="opacity-50" />
+                        
+                        {[0, 1].map(i => (
+                            <motion.circle
+                                key={`bwd-${i}`}
+                                r="4"
+                                fill="hsl(var(--primary))"
+                                style={{ offsetPath: `path('${backwardPath}')`, offsetDistance: "var(--offset)" }}
+                                initial={{ "--offset": "0%", opacity: 0 }}
+                                animate={{ "--offset": "100%", opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{
+                                    "--offset": {
+                                        delay: i * (duration / 2),
+                                        duration: duration,
+                                        repeat: Infinity,
+                                        ease: "linear",
+                                    },
+                                    opacity: { duration: 0.3 }
+                                }}
+                            />
+                        ))}
+                    </motion.g>
+                )}
             </AnimatePresence>
         </svg>
     );
@@ -108,7 +138,7 @@ function ScalabilityNode({
                     )}
                 </div>
             </motion.div>
-            <div className="flex flex-col items-center justify-center text-muted-foreground h-16">
+            <div className="flex flex-col items-center justify-center text-muted-foreground min-h-[4rem]">
                  <AnimatePresence>
                     {isAppLayer && extraInstances > 0 && (
                         <motion.div
@@ -147,43 +177,39 @@ function ScalabilityNode({
 
 const simulationSteps = [
     {
-        text: "The platform's elasticity allows it to handle fluctuating demand without performance degradation. Click below to begin the peak load simulation.",
-        cpu: 15,
-        progressColor: "bg-green-500",
-        isPulsing: false,
-        extraInstances: 0,
+        text: "The platform's elasticity allows it to handle fluctuating demand. Click below to begin the peak load simulation.",
+        cpu: 15, progressColor: "bg-green-500", isPulsing: false, extraInstances: 0,
+        trafficActive: false, isSlow: false, returnTrafficActive: false,
         buttonText: "Simulate Peak Load"
     },
     {
-        text: "A sudden surge in user traffic begins to hit the system. The animated packets indicate the increased flow of data requests to the application layer.",
-        cpu: 50,
-        progressColor: "bg-yellow-400",
-        isPulsing: false,
-        extraInstances: 0,
+        text: "A sudden surge in user traffic begins to hit the system, flowing through the security layer to the application layer.",
+        cpu: 50, progressColor: "bg-yellow-400", isPulsing: false, extraInstances: 0,
+        trafficActive: true, isSlow: false, returnTrafficActive: false,
         buttonText: "Next: Observe CPU Spike"
     },
     {
-        text: "The heavy load causes CPU usage to spike. The system detects the stress, indicated by the pulsing red border, and prepares to scale.",
-        cpu: 95,
-        progressColor: "bg-destructive",
-        isPulsing: true,
-        extraInstances: 0,
+        text: "The heavy load causes CPU usage to spike, and system performance degrades, slowing down data processing.",
+        cpu: 95, progressColor: "bg-destructive", isPulsing: true, extraInstances: 0,
+        trafficActive: true, isSlow: true, returnTrafficActive: false,
         buttonText: "Next: Initiate Auto-Scaling"
     },
     {
         text: "Azure Kubernetes Service automatically provisions additional server instances to distribute the incoming workload.",
-        cpu: 95,
-        progressColor: "bg-destructive",
-        isPulsing: true,
-        extraInstances: 2,
+        cpu: 95, progressColor: "bg-destructive", isPulsing: true, extraInstances: 2,
+        trafficActive: true, isSlow: true, returnTrafficActive: false,
         buttonText: "Next: Stabilize System"
     },
     {
-        text: "With the new instances online, the load is balanced, and CPU usage returns to a stable, healthy level. The platform has scaled seamlessly to meet demand.",
-        cpu: 40,
-        progressColor: "bg-green-500",
-        isPulsing: false,
-        extraInstances: 2,
+        text: "With the new instances online, the load is balanced. CPU usage returns to a healthy level and data processing speeds recover.",
+        cpu: 40, progressColor: "bg-green-500", isPulsing: false, extraInstances: 2,
+        trafficActive: true, isSlow: false, returnTrafficActive: false,
+        buttonText: "Next: View Return Traffic"
+    },
+    {
+        text: "The stabilized system now easily handles the traffic, sending responses back to users, completing the cycle.",
+        cpu: 40, progressColor: "bg-green-500", isPulsing: false, extraInstances: 2,
+        trafficActive: true, isSlow: false, returnTrafficActive: true,
         buttonText: "Finish"
     },
 ];
@@ -210,22 +236,55 @@ export function ScalabilitySection({ onBack, onRestart }: { onBack: () => void, 
                     <p className="text-muted-foreground mt-2">This proves the platform is elastic and can handle peak demand.</p>
                 </div>
 
-                <div className="flex items-start justify-around w-full max-w-7xl mx-auto my-12">
-                    <ScalabilityNode icon={Smartphone} label="User Traffic" description="Mobile & Web"/>
-                    <FlowArrow isActive={stepIndex > 0} />
-                    <ScalabilityNode icon={ShieldCheck} label="Security Layer" description="DDoS & NGFW"/>
-                    <FlowArrow isActive={stepIndex > 0} />
-                    <ScalabilityNode
-                        icon={Shapes}
-                        label="Application Layer"
-                        description="Temenos on AKS"
-                        cpuLevel={currentStep.cpu}
-                        isPulsing={currentStep.isPulsing}
-                        extraInstances={currentStep.extraInstances}
-                        progressColor={currentStep.progressColor}
+                <div className="flex items-start justify-center w-full max-w-7xl mx-auto my-12">
+                     <ScalabilityNode icon={Smartphone} label="User Traffic" description="Mobile & Web" />
+                    <FlowArrow 
+                        isActive={currentStep.trafficActive} 
+                        showBackward={currentStep.returnTrafficActive} 
+                        isSlow={currentStep.isSlow} 
                     />
-                    <FlowArrow isActive={stepIndex > 0} />
-                    <ScalabilityNode icon={Server} label="On-Premise Core" description="Via ExpressRoute"/>
+                    
+                    <div className="relative rounded-lg border-2 border-dashed border-border p-8 pt-12 bg-background/50 mx-4">
+                        <div className="absolute top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 text-muted-foreground">
+                            <Cloud className="h-6 w-6 text-blue-500" />
+                            <span className="font-bold text-lg">Azure Cloud</span>
+                        </div>
+                        <div className="flex items-start justify-around gap-4">
+                            <ScalabilityNode icon={ShieldCheck} label="Security Layer" description="DDoS & NGFW" />
+                            <FlowArrow 
+                                isActive={currentStep.trafficActive} 
+                                showBackward={currentStep.returnTrafficActive} 
+                                isSlow={currentStep.isSlow} 
+                            />
+                            <ScalabilityNode
+                                icon={Shapes}
+                                label="Application Layer"
+                                description="Temenos on AKS"
+                                cpuLevel={currentStep.cpu}
+                                isPulsing={currentStep.isPulsing}
+                                extraInstances={currentStep.extraInstances}
+                                progressColor={currentStep.progressColor}
+                            />
+                        </div>
+                    </div>
+                    
+                    <FlowArrow 
+                        isActive={currentStep.trafficActive} 
+                        showBackward={currentStep.returnTrafficActive} 
+                        isSlow={currentStep.isSlow} 
+                    />
+                    <ScalabilityNode icon={Server} label="On-Premise Core" description="Via ExpressRoute" />
+                </div>
+
+                <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground mb-8">
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-px bg-accent border-t-2 border-dashed border-accent"/>
+                        <span>Request</span>
+                    </div>
+                     <div className="flex items-center gap-2">
+                        <div className="w-8 h-px bg-primary border-t-2 border-dashed border-primary"/>
+                        <span>Response</span>
+                    </div>
                 </div>
 
                 <div className="mt-8 text-center max-w-2xl mx-auto">
