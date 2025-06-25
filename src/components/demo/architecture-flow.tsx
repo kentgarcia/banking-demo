@@ -13,7 +13,9 @@ const successFlowSteps = [
     { text: "At the edge, traffic is inspected by Azure DDoS Protection and a Palo Alto Next-Generation Firewall (NGFW)." },
     { text: "The validated request is routed to the Application Layer, where Temenos on Azure Kubernetes Service (AKS) processes the business logic." },
     { text: "Using a private ExpressRoute link, the request securely reaches the On-Premise Core Banking System." },
-    { text: "The Core Banking System confirms the transaction, sending a success message back to you along the same secure path." },
+    { text: "The Core Banking System confirms the transaction and initiates the response back to the Application Layer." },
+    { text: "The success message travels back through the Security Layer." },
+    { text: "Finally, the confirmation is securely sent back to your device, completing the transaction." },
     { text: "The transaction is complete! This entire flow ensures speed, security, and reliability." },
 ];
 
@@ -22,8 +24,10 @@ const failureFlowSteps = [
     { text: "Your request leaves your device and enters the Azure cloud through an encrypted channel." },
     { text: "At the edge, traffic is inspected by Azure DDoS Protection and a Palo Alto Next-Generation Firewall (NGFW)." },
     { text: "The validated request is routed to the Application Layer, where Temenos on Azure Kubernetes Service (AKS) processes the business logic." },
-    { text: "The request reaches the Core Banking System, but it's declined due to insufficient funds." },
-    { text: "The Core Banking System sends a failure message back along the same secure path, informing the app of the issue." },
+    { text: "Using a private ExpressRoute link, the request securely reaches the On-Premise Core Banking System." },
+    { text: "The Core Banking System declines the transaction due to insufficient funds and initiates the response." },
+    { text: "The failure message travels back through the Security Layer." },
+    { text: "The app is informed of the issue, and the failure message is securely delivered to your device." },
     { text: "The transaction has failed, but the system handled it gracefully, providing clear feedback." },
 ]
 
@@ -158,7 +162,7 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
     const isLastStep = stepIndex >= architectureFlowSteps.length - 1;
 
     React.useEffect(() => {
-        if (simulateFailure && stepIndex === 4) { // Core banking step
+        if (simulateFailure && stepIndex === 5) { // Core banking declines transaction
             setIsFlashingError(true);
         } else {
             setIsFlashingError(false);
@@ -186,7 +190,7 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
 
                 <div className="flex items-center justify-center w-full max-w-7xl mx-auto my-12">
                     <ArchitectureNode icon={Smartphone} label="User's Device" isActive={stepIndex >= 1} />
-                    <AnimatedArrow forward={stepIndex >= 2} backward={stepIndex >= 5} />
+                    <AnimatedArrow forward={stepIndex >= 2} backward={stepIndex >= 7} />
 
                     <div className="relative rounded-lg border-2 border-dashed border-border p-8 pt-12 bg-background/50 mx-4">
                         <div className="absolute top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 text-muted-foreground">
@@ -195,7 +199,7 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
                         </div>
                         <div className="flex items-center justify-around gap-4">
                             <ArchitectureNode icon={ShieldCheck} label="Security Layer" description="DDoS & Palo Alto NGFW" isActive={stepIndex >= 2} />
-                            <AnimatedArrow forward={stepIndex >= 3} backward={stepIndex >= 5} />
+                            <AnimatedArrow forward={stepIndex >= 3} backward={stepIndex >= 6} />
                             <ArchitectureNode icon={Shapes} label="Application Layer" description="Temenos on AKS" isActive={stepIndex >= 3} />
                         </div>
                     </div>
