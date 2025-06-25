@@ -88,6 +88,11 @@ export default {
             height: '0',
           },
         },
+        'border-spin': {
+          '100%': {
+            '--gradient-angle': '360deg',
+          },
+        },
         blob: {
           '0%': {
             transform: 'translate(0px, 0px) scale(1)',
@@ -107,6 +112,7 @@ export default {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         blob: 'blob 7s infinite',
+        'border-spin': 'border-spin 4s linear infinite',
       },
     },
   },

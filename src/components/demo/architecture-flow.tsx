@@ -102,36 +102,17 @@ function ArchitectureNode({
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             className="w-48"
         >
-            <div className="relative">
-                <AnimatePresence>
-                    {isActive && (
-                        <motion.div
-                            className="pointer-events-none absolute -inset-0.5 rounded-lg [background:conic-gradient(from_90deg_at_50%_50%,hsl(var(--primary))_0%,hsl(var(--accent))_50%,hsl(var(--primary))_100%)]"
-                            initial={{ opacity: 0 }}
-                            animate={{
-                                rotate: 360,
-                                opacity: 1,
-                                transition: {
-                                    rotate: {
-                                        repeat: Infinity,
-                                        duration: 4,
-                                        ease: "linear",
-                                    },
-                                    opacity: {
-                                        duration: 0.5
-                                    }
-                                }
-                            }}
-                            exit={{ opacity: 0, transition: { duration: 0.3 } }}
-                            aria-hidden="true"
-                        />
-                    )}
-                </AnimatePresence>
-
+            <div
+                className={cn(
+                    "relative rounded-lg transition-all duration-300",
+                    isActive
+                        ? "animate-border-spin p-0.5 [background:conic-gradient(from_var(--gradient-angle),hsl(var(--primary)),hsl(var(--accent)),hsl(var(--primary)))]"
+                        : "border-2 border-border bg-transparent"
+                )}
+            >
                 <div
                     className={cn(
-                        "relative flex h-full flex-col items-center gap-2 rounded-lg bg-background p-4 text-center transition-colors duration-300",
-                         !isActive && "border-2 border-border"
+                        "flex h-full w-full flex-col items-center gap-2 rounded-[calc(var(--radius)-2px)] bg-background p-4 text-center"
                     )}
                 >
                     <Icon
