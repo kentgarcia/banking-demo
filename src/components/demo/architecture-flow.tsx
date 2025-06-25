@@ -104,7 +104,7 @@ function ArchitectureNode({
         >
             <div
                 className={cn(
-                    "relative rounded-lg transition-all duration-300",
+                    "relative rounded-lg",
                     isActive
                         ? "animate-border-spin p-0.5 [background:conic-gradient(from_var(--gradient-angle),hsl(var(--primary)),hsl(var(--accent)),hsl(var(--primary)))]"
                         : "border-2 border-border bg-transparent"
