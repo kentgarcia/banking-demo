@@ -3,7 +3,7 @@
 
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Smartphone, ShieldCheck, Shapes, Server, ArrowRight, ArrowLeft } from "lucide-react";
+import { Smartphone, ShieldCheck, Shapes, Server, ArrowRight, ArrowLeft, Cloud } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -184,12 +184,22 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
                     <p className="text-muted-foreground mt-2">A look behind the scenes of the transaction.</p>
                 </div>
 
-                <div className="flex items-center justify-around w-full max-w-7xl mx-auto my-12">
+                <div className="flex items-center justify-center w-full max-w-7xl mx-auto my-12">
                     <ArchitectureNode icon={Smartphone} label="User's Device" isActive={stepIndex >= 1} />
                     <AnimatedArrow forward={stepIndex >= 2} backward={stepIndex >= 5} />
-                    <ArchitectureNode icon={ShieldCheck} label="Security Layer" description="DDoS & Palo Alto NGFW" isActive={stepIndex >= 2} />
-                    <AnimatedArrow forward={stepIndex >= 3} backward={stepIndex >= 5} />
-                    <ArchitectureNode icon={Shapes} label="Application Layer" description="Temenos on AKS" isActive={stepIndex >= 3} />
+
+                    <div className="relative rounded-lg border-2 border-dashed border-border p-8 pt-12 bg-background/50 mx-4">
+                        <div className="absolute top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 text-muted-foreground">
+                            <Cloud className="h-6 w-6 text-blue-500" />
+                            <span className="font-bold text-lg">Azure Cloud</span>
+                        </div>
+                        <div className="flex items-center justify-around gap-4">
+                            <ArchitectureNode icon={ShieldCheck} label="Security Layer" description="DDoS & Palo Alto NGFW" isActive={stepIndex >= 2} />
+                            <AnimatedArrow forward={stepIndex >= 3} backward={stepIndex >= 5} />
+                            <ArchitectureNode icon={Shapes} label="Application Layer" description="Temenos on AKS" isActive={stepIndex >= 3} />
+                        </div>
+                    </div>
+                    
                     <AnimatedArrow forward={stepIndex >= 4} backward={stepIndex >= 5} />
                     <ArchitectureNode icon={Server} label="On-Premise Core" description="Via ExpressRoute" isActive={stepIndex >= 4} isError={isFlashingError}/>
                 </div>
