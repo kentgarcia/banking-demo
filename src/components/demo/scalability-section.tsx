@@ -28,13 +28,14 @@ function FlowArrow({
                 r="4"
                 fill={color}
                 style={{
-                    offsetPath: `path('${path}')`
+                    offsetPath: `path('${path}')`,
+                    offsetDistance: "var(--offset, 0%)"
                 }}
-                initial={{ offsetDistance: "0%", opacity: 0 }}
-                animate={{ offsetDistance: "100%", opacity: 1 }}
+                initial={{ "--offset": "0%", opacity: 0 }}
+                animate={{ "--offset": "100%", opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{
-                    offsetDistance: {
+                    "--offset": {
                         delay: i * (duration / 3) * delayMultiplier,
                         duration: duration,
                         repeat: Infinity,
@@ -162,7 +163,7 @@ const simulationSteps = [
         buttonText: "Simulate Peak Load"
     },
     {
-        text: "A sudden surge in user traffic hits the system. Requests and responses flow simultaneously, increasing the load on the application layer.",
+        text: "A sudden surge in user traffic hits the system. Both requests and responses flow simultaneously, increasing the load on the application layer.",
         cpu: 50, progressColor: "bg-yellow-400", isPulsing: false, extraInstances: 0,
         trafficActive: true, isSlow: false, returnTrafficActive: true,
         buttonText: "Next: Observe CPU Spike"
