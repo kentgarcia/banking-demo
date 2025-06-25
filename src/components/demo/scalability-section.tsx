@@ -34,16 +34,22 @@ function FlowArrow({ isActive }: { isActive: boolean }) {
                     key={i}
                     r="4"
                     fill="hsl(var(--accent))"
-                    initial={{ offsetDistance: "0%", opacity: 0 }}
-                    animate={{ offsetDistance: "100%", opacity: 1 }}
+                    style={{ 
+                        offsetPath: `path('${arrowPath}')`,
+                        offsetDistance: "var(--offset)"
+                    }}
+                    initial={{ "--offset": "0%", opacity: 0 }}
+                    animate={{ "--offset": "100%", opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{
-                        delay: i * 0.75,
-                        duration: 1.5,
-                        repeat: Infinity,
-                        ease: "linear",
+                        "--offset": {
+                            delay: i * 0.75,
+                            duration: 1.5,
+                            repeat: Infinity,
+                            ease: "linear",
+                        },
+                        opacity: { duration: 0.3 }
                     }}
-                    style={{ offsetPath: `path('${arrowPath}')` }}
                 />
             ))}
             </AnimatePresence>
