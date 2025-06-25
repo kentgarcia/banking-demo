@@ -63,98 +63,87 @@ function CreditCardContent() {
   );
 }
 
-function OnboardingScreen({ onGetStarted }: { onGetStarted: () => void }) {
+function OnboardingContent({ onGetStarted }: { onGetStarted: () => void }) {
   return (
-    <div className="h-full w-full overflow-hidden rounded-[2rem] bg-[#0a2820] text-white">
-      <div className="flex h-full flex-col bg-gradient-to-br from-green-500/20 via-transparent to-green-900/20 p-5 font-body">
-        <header className="flex items-center justify-between text-xs font-light text-neutral-300">
-          <span>9:41</span>
-          <div className="flex items-center gap-1.5">
-            <Signal className="h-4 w-4" />
-            <Wifi className="h-4 w-4" />
-            <BatteryFull className="h-4 w-4" />
-          </div>
-        </header>
-
-        <main className="flex flex-1 flex-col">
-          <div className="mt-8">
-            <motion.h1
-              className="text-4xl font-bold leading-tight tracking-tight"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-            >
-              Welcome to the
-              <br />
-              Future of Banking
-            </motion.h1>
-            <motion.p
-              className="mt-4 max-w-xs text-base text-neutral-300"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-            >
-              Experience cutting-edge features, top-notch security, and instant
-              access to your banking made better for you
-            </motion.p>
-          </div>
-
-          <div className="relative mt-12 h-40 flex-shrink-0">
-            <motion.div
-              className="absolute top-0 left-1/2 z-20 w-36 -translate-x-1/2 rounded-xl border border-white/10 bg-white/20 p-3 text-center shadow-lg backdrop-blur-md"
-              initial={{ opacity: 0, y: 20, rotate: -5 }}
-              animate={{ opacity: 1, y: 0, rotate: -5 }}
-              transition={{
-                delay: 1,
-                duration: 0.5,
-                type: "spring",
-                stiffness: 100,
-              }}
-            >
-              <p className="text-xl font-semibold">$2537.98</p>
-              <p className="text-xs text-neutral-200">Balance</p>
-            </motion.div>
-
-            <motion.div
-              className="absolute top-8 -left-4 h-40 w-64 origin-bottom-right rounded-2xl border border-white/20 bg-green-400/30 p-4 shadow-2xl backdrop-blur-lg"
-              initial={{ opacity: 0, x: -50, rotate: -30 }}
-              animate={{ opacity: 1, x: 0, rotate: -20 }}
-              transition={{ delay: 0.6, type: "spring" }}
-            >
-              <CreditCardContent />
-            </motion.div>
-            <motion.div
-              className="absolute top-12 left-8 h-40 w-64 origin-bottom-left rounded-2xl border border-white/20 bg-lime-300/30 p-4 shadow-2xl backdrop-blur-lg"
-              initial={{ opacity: 0, x: 50, rotate: 25 }}
-              animate={{ opacity: 1, x: 0, rotate: -5 }}
-              transition={{ delay: 0.8, type: "spring" }}
-            >
-              <CreditCardContent />
-            </motion.div>
-          </div>
-        </main>
-
-        <footer className="mt-auto pb-4">
-          <motion.div
+    <>
+      <main className="flex flex-1 flex-col">
+        <div className="mt-8">
+          <motion.h1
+            className="text-4xl font-bold leading-tight tracking-tight"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.5 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
           >
-            <Button
-              size="lg"
-              className="h-14 w-full rounded-full bg-lime-300 font-bold text-green-900 shadow-lg shadow-lime-300/30 transition hover:bg-lime-400"
-              onClick={onGetStarted}
-            >
-              Get Started
-            </Button>
+            Welcome to the
+            <br />
+            Future of Banking
+          </motion.h1>
+          <motion.p
+            className="mt-4 max-w-xs text-base text-neutral-300"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+          >
+            Experience cutting-edge features, top-notch security, and instant
+            access to your banking made better for you
+          </motion.p>
+        </div>
+
+        <div className="relative mt-12 h-40 flex-shrink-0">
+          <motion.div
+            className="absolute top-0 left-1/2 z-20 w-36 -translate-x-1/2 rounded-xl border border-white/10 bg-white/20 p-3 text-center shadow-lg backdrop-blur-md"
+            initial={{ opacity: 0, y: 20, rotate: -5 }}
+            animate={{ opacity: 1, y: 0, rotate: -5 }}
+            transition={{
+              delay: 1,
+              duration: 0.5,
+              type: "spring",
+              stiffness: 100,
+            }}
+          >
+            <p className="text-xl font-semibold">$2537.98</p>
+            <p className="text-xs text-neutral-200">Balance</p>
           </motion.div>
-        </footer>
-      </div>
-    </div>
+
+          <motion.div
+            className="absolute top-8 -left-4 h-40 w-64 origin-bottom-right rounded-2xl border border-white/20 bg-green-400/30 p-4 shadow-2xl backdrop-blur-lg"
+            initial={{ opacity: 0, x: -50, rotate: -30 }}
+            animate={{ opacity: 1, x: 0, rotate: -20 }}
+            transition={{ delay: 0.6, type: "spring" }}
+          >
+            <CreditCardContent />
+          </motion.div>
+          <motion.div
+            className="absolute top-12 left-8 h-40 w-64 origin-bottom-left rounded-2xl border border-white/20 bg-lime-300/30 p-4 shadow-2xl backdrop-blur-lg"
+            initial={{ opacity: 0, x: 50, rotate: 25 }}
+            animate={{ opacity: 1, x: 0, rotate: -5 }}
+            transition={{ delay: 0.8, type: "spring" }}
+          >
+            <CreditCardContent />
+          </motion.div>
+        </div>
+      </main>
+
+      <footer className="mt-auto pb-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2, duration: 0.5 }}
+        >
+          <Button
+            size="lg"
+            className="h-14 w-full rounded-full bg-lime-300 font-bold text-green-900 shadow-lg shadow-lime-300/30 transition hover:bg-lime-400"
+            onClick={onGetStarted}
+          >
+            Get Started
+          </Button>
+        </motion.div>
+      </footer>
+    </>
   );
 }
 
-function CreateAccountScreen({
+function CreateAccountContent({
   onAccountCreated,
 }: {
   onAccountCreated: () => void;
@@ -177,111 +166,100 @@ function CreateAccountScreen({
   };
 
   return (
-    <div className="h-full w-full overflow-hidden rounded-[2rem] bg-[#0a2820] text-white">
-      <div className="flex h-full flex-col bg-gradient-to-br from-green-500/20 via-transparent to-green-900/20 p-5 font-body">
-        <header className="flex items-center justify-between text-xs font-light text-neutral-300">
-          <span>9:42</span>
-          <div className="flex items-center gap-1.5">
-            <Signal className="h-4 w-4" />
-            <Wifi className="h-4 w-4" />
-            <BatteryFull className="h-4 w-4" />
-          </div>
-        </header>
+    <>
+      <main className="flex flex-1 flex-col pt-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <h1 className="text-3xl font-bold tracking-tight">
+            Create Account
+          </h1>
+          <p className="mt-2 text-base text-neutral-300">Let's get you started.</p>
+        </motion.div>
 
-        <main className="flex flex-1 flex-col pt-8">
+        <motion.form
+          className="mt-8 flex-1 space-y-4"
+          onSubmit={handleSubmit}
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: { staggerChildren: 0.1, delayChildren: 0.3 },
+            },
+          }}
+        >
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <h1 className="text-3xl font-bold tracking-tight">
-              Create Account
-            </h1>
-            <p className="mt-2 text-base text-neutral-300">Let's get you started.</p>
-          </motion.div>
-
-          <motion.form
-            className="mt-8 flex-1 space-y-4"
-            onSubmit={handleSubmit}
-            initial="hidden"
-            animate="visible"
             variants={{
-              hidden: { opacity: 0 },
-              visible: {
-                opacity: 1,
-                transition: { staggerChildren: 0.1, delayChildren: 0.3 },
-              },
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 },
             }}
+            className="space-y-2"
           >
-            <motion.div
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              className="space-y-2"
-            >
-              <Label htmlFor="name">Full Name</Label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
-                <Input
-                  id="name"
-                  value="Juan dela Cruz"
-                  readOnly
-                  className="pl-10 bg-white/5 border-white/20 text-white placeholder:text-neutral-400"
-                />
-              </div>
-            </motion.div>
-            <motion.div
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              className="space-y-2"
-            >
-              <Label htmlFor="email">Email Address</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="juan.delacruz@email.com"
-                  className="pl-10 bg-white/5 border-white/20 text-white placeholder:text-neutral-400"
-                />
-              </div>
-            </motion.div>
-            <motion.div
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              className="space-y-2"
-            >
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  className="pl-10 bg-white/5 border-white/20 text-white placeholder:text-neutral-400"
-                />
-              </div>
-            </motion.div>
-          </motion.form>
-        </main>
+            <Label htmlFor="name">Full Name</Label>
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
+              <Input
+                id="name"
+                value="Juan dela Cruz"
+                readOnly
+                className="pl-10 bg-white/5 border-white/20 text-white placeholder:text-neutral-400"
+              />
+            </div>
+          </motion.div>
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 },
+            }}
+            className="space-y-2"
+          >
+            <Label htmlFor="email">Email Address</Label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
+              <Input
+                id="email"
+                type="email"
+                placeholder="juan.delacruz@email.com"
+                className="pl-10 bg-white/5 border-white/20 text-white placeholder:text-neutral-400"
+              />
+            </div>
+          </motion.div>
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 },
+            }}
+            className="space-y-2"
+          >
+            <Label htmlFor="password">Password</Label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                className="pl-10 bg-white/5 border-white/20 text-white placeholder:text-neutral-400"
+              />
+            </div>
+          </motion.div>
+        </motion.form>
+      </main>
 
-        <footer className="mt-auto pb-4">
-          <Button
-            size="lg"
-            className="h-14 w-full rounded-full bg-lime-300 font-bold text-green-900 shadow-lg shadow-lime-300/30 transition hover:bg-lime-400 disabled:bg-lime-300/50"
-            onClick={handleSubmit}
-            disabled={status !== "idle"}
-          >
-            {status === "idle" && "Create Account"}
-            {status === "submitting" && "Creating Account..."}
-          </Button>
-        </footer>
-      </div>
+      <footer className="mt-auto pb-4">
+        <Button
+          size="lg"
+          className="h-14 w-full rounded-full bg-lime-300 font-bold text-green-900 shadow-lg shadow-lime-300/30 transition hover:bg-lime-400 disabled:bg-lime-300/50"
+          onClick={handleSubmit}
+          disabled={status !== "idle"}
+        >
+          {status === "idle" && "Create Account"}
+          {status === "submitting" && "Creating Account..."}
+        </Button>
+      </footer>
       <AnimatePresence>
         {status === "success" && (
           <motion.div
@@ -313,7 +291,7 @@ function CreateAccountScreen({
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </>
   );
 }
 
@@ -661,16 +639,50 @@ export function MobileApp({
   simulateFailure: boolean;
   onSimulateFailureChange: (value: boolean) => void;
 }) {
+  if (step === "onboarding" || step === "createAccount") {
+    return (
+      <div className="h-full w-full overflow-hidden rounded-[2rem] bg-[#0a2820] font-body text-white">
+        <div className="relative flex h-full flex-col bg-gradient-to-br from-green-500/20 via-transparent to-green-900/20 p-5">
+          <header className="z-10 flex items-center justify-between text-xs font-light text-neutral-300">
+            <span>{step === "onboarding" ? "9:41" : "9:42"}</span>
+            <div className="flex items-center gap-1.5">
+              <Signal className="h-4 w-4" />
+              <Wifi className="h-4 w-4" />
+              <BatteryFull className="h-4 w-4" />
+            </div>
+          </header>
+          <div className="flex-1 flex flex-col overflow-hidden">
+             <AnimatePresence mode="wait">
+              {step === "onboarding" && (
+                <motion.div
+                  key="onboarding"
+                  exit={{ x: "-100%" }}
+                  transition={{ ease: "easeInOut", duration: 0.4 }}
+                  className="flex h-full flex-col"
+                >
+                  <OnboardingContent onGetStarted={() => setStep("createAccount")} />
+                </motion.div>
+              )}
+              {step === "createAccount" && (
+                <motion.div
+                  key="createAccount"
+                  initial={{ x: "100%" }}
+                  animate={{ x: "0%" }}
+                  transition={{ ease: "easeInOut", duration: 0.4 }}
+                  className="flex h-full flex-col"
+                >
+                  <CreateAccountContent onAccountCreated={() => setStep("welcome")} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const renderStep = () => {
     switch (step) {
-      case "onboarding":
-        return (
-          <OnboardingScreen onGetStarted={() => setStep("createAccount")} />
-        );
-      case "createAccount":
-        return (
-          <CreateAccountScreen onAccountCreated={() => setStep("welcome")} />
-        );
       case "welcome":
         return <WelcomeScreen onContinue={() => setStep("dashboard")} />;
       case "dashboard":
@@ -688,9 +700,8 @@ export function MobileApp({
           />
         );
       default:
-        return (
-          <OnboardingScreen onGetStarted={() => setStep("createAccount")} />
-        );
+        // This case should ideally not be reached with the new structure
+        return null;
     }
   };
 
@@ -699,9 +710,9 @@ export function MobileApp({
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -30 }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
           className="h-full w-full"
         >
