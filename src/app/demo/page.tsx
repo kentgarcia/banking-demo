@@ -7,6 +7,7 @@ import { DemoSection } from "@/components/demo/demo-section";
 import { ArchitectureFlowSection } from "@/components/demo/architecture-flow";
 import { LiveDashboardSection } from "@/components/demo/live-dashboard";
 import { ScalabilitySection } from "@/components/demo/scalability-section";
+import { DemoNavigation } from "@/components/demo/demo-navigation";
 
 export default function DemoPage() {
   const [currentScreen, setCurrentScreen] = React.useState<'demo' | 'architecture' | 'liveDashboard' | 'scalability'>('demo');
@@ -17,7 +18,7 @@ export default function DemoPage() {
   const handleRestart = () => {
     setCurrentScreen('demo');
     setSimulateFailure(false);
-    setMobileAppStep('dashboard');
+    setMobileAppStep('onboarding');
     setTransferMade(false);
   };
 
@@ -76,6 +77,7 @@ export default function DemoPage() {
       <AnimatePresence mode="wait">
         {renderCurrentScreen()}
       </AnimatePresence>
+      <DemoNavigation setCurrentScreen={setCurrentScreen} />
     </main>
   );
 }
