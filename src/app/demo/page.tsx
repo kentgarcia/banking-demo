@@ -7,11 +7,6 @@ import { DemoSection } from "@/components/demo/demo-section";
 import { ArchitectureFlowSection } from "@/components/demo/architecture-flow";
 import { LiveDashboardSection } from "@/components/demo/live-dashboard";
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.2, delayChildren: 0.2 } },
-};
-
 export default function DemoPage() {
   const [currentScreen, setCurrentScreen] = React.useState<'demo' | 'architecture' | 'liveDashboard'>('demo');
   const [simulateFailure, setSimulateFailure] = React.useState(false);
@@ -55,17 +50,10 @@ export default function DemoPage() {
   };
 
   return (
-    <div className="bg-background text-foreground">
-      <motion.main
-        className="flex flex-col"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <AnimatePresence mode="wait">
-          {renderCurrentScreen()}
-        </AnimatePresence>
-      </main>
-    </div>
+    <main className="bg-background text-foreground">
+      <AnimatePresence mode="wait">
+        {renderCurrentScreen()}
+      </AnimatePresence>
+    </main>
   );
 }
