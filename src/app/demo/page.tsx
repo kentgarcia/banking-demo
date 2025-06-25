@@ -990,8 +990,40 @@ function ArchitectureFlowSection({ onComplete }: { onComplete: () => void }) {
     const currentStep = architectureFlowSteps[stepIndex];
     const isLastStep = stepIndex >= architectureFlowSteps.length - 1;
 
-    const azureSteps = ['ddos', 'ngfw', 'aks'];
-    const onPremSteps = ['core'];
+    const StepItem = ({ step, index }: { step: typeof architectureFlowSteps[0], index: number }) => {
+        const isActive = stepIndex === index;
+        const isDone = stepIndex > index;
+        return (
+            <motion.div
+                className="flex flex-col items-center text-center"
+                animate={{ opacity: isDone || isActive ? 1 : 0.5 }}
+            >
+                <motion.div
+                    className={cn("flex h-14 w-14 items-center justify-center rounded-full border-2", isActive ? 'border-primary bg-primary/10' : 'bg-background')}
+                    animate={{ scale: isActive ? 1.15 : 1 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                >
+                    <step.icon className={cn("h-7 w-7", isActive ? 'text-primary' : 'text-muted-foreground')} />
+                </motion.div>
+                <p className="text-sm font-semibold mt-2">{step.label}</p>
+            </motion.div>
+        );
+    };
+
+    const Connector = ({ index }: { index: number }) => {
+        const isDone = stepIndex > index;
+        return (
+            <motion.div
+                className="w-px h-8 bg-border"
+                initial={{ scaleY: 0 }}
+                animate={{ scaleY: isDone ? 1 : 0, transition: { delay: 0.2 } }}
+                style={{ transformOrigin: 'top' }}
+            />
+        );
+    };
+
+    const azureStepsData = [architectureFlowSteps[1], architectureFlowSteps[2], architectureFlowSteps[3]];
+    const onPremStepData = architectureFlowSteps[5];
 
     return (
         <section
@@ -1001,95 +1033,48 @@ function ArchitectureFlowSection({ onComplete }: { onComplete: () => void }) {
             <div className="container mx-auto px-4">
                 <div className="w-full max-w-4xl mx-auto rounded-lg border bg-background p-4 shadow-lg md:p-8">
                     <div className="flex flex-col items-center gap-4">
-                        {architectureFlowSteps.map((step, index) => {
-                            if (step.id === 'phone_success') return null; // We handle this as the last step on the phone
-                            const isActive = stepIndex === index;
-                            const isDone = stepIndex > index;
+                        {/* Step 0: Phone */}
+                        <StepItem step={architectureFlowSteps[0]} index={0} />
+                        <Connector index={0} />
+                        
+                        {/* Azure Cloud Section */}
+                        <div className="w-full p-4 border-2 border-dashed rounded-lg flex flex-col items-center gap-4">
+                            <div className="flex items-center gap-2 text-blue-800 self-start">
+                                <Cloud className="h-6 w-6"/>
+                                <h3 className="text-lg font-bold">Azure Cloud</h3>
+                            </div>
+                            <Connector index={0} />
 
-                            const isAzure = azureSteps.includes(step.id);
-                            const isFirstAzure = step.id === azureSteps[0];
-                            const isLastAzure = step.id === azureSteps[azureSteps.length - 1];
-                            const isExpressRoute = step.id === 'expressroute';
-                            const isOnPrem = onPremSteps.includes(step.id);
-                            const isFirstOnPrem = step.id === onPremSteps[0];
-                            const isLastOnPrem = step.id === onPremSteps[onPremSteps.length - 1];
+                            {/* Steps 1, 2, 3 */}
+                            {azureStepsData.map((step, i) => {
+                                const overallIndex = i + 1; // 1, 2, 3
+                                return (
+                                    <React.Fragment key={step.id}>
+                                        <StepItem step={step} index={overallIndex} />
+                                        {i < azureStepsData.length - 1 && <Connector index={overallIndex} />}
+                                    </React.Fragment>
+                                );
+                            })}
+                        </div>
+                        <Connector index={3} />
 
-                            return (
-                                <React.Fragment key={step.id}>
-                                    {isFirstAzure && (
-                                        <div className="w-full p-4 border-2 border-dashed rounded-lg flex flex-col items-center gap-4 mb-2">
-                                            <div className="flex items-center gap-2 text-blue-800 self-start">
-                                                <Cloud className="h-6 w-6"/>
-                                                <h3 className="text-lg font-bold">Azure Cloud</h3>
-                                            </div>
-                                            <motion.div
-                                                className="w-px h-8 bg-border"
-                                                initial={{ scaleY: 0 }}
-                                                animate={{ scaleY: isDone || isActive ? 1 : 0, transition: { delay: 0.2 } }}
-                                                style={{transformOrigin: 'top'}}
-                                            />
-                                    {/* Azure wrapper opens here */}
+                        {/* Step 4: ExpressRoute */}
+                        <StepItem step={architectureFlowSteps[4]} index={4} />
+                        <Connector index={4} />
 
-                                    {isFirstOnPrem && (
-                                        <div className="w-full p-4 border-2 border-dashed rounded-lg flex flex-col items-center gap-4 mt-2">
-                                            <div className="flex items-center gap-2 text-gray-800 self-start">
-                                                <Server className="h-6 w-6"/>
-                                                <h3 className="text-lg font-bold">On-Premise Data Center</h3>
-                                            </div>
-                                            <motion.div
-                                                className="w-px h-8 bg-border"
-                                                initial={{ scaleY: 0 }}
-                                                animate={{ scaleY: isDone || isActive ? 1 : 0, transition: { delay: 0.2 } }}
-                                                style={{transformOrigin: 'top'}}
-                                            />
-                                    {/* On-prem wrapper opens here */}
+                        {/* On-Premise Section */}
+                        <div className="w-full p-4 border-2 border-dashed rounded-lg flex flex-col items-center gap-4">
+                            <div className="flex items-center gap-2 text-gray-800 self-start">
+                                <Server className="h-6 w-6"/>
+                                <h3 className="text-lg font-bold">On-Premise Data Center</h3>
+                            </div>
+                            <Connector index={4} />
+                            <StepItem step={onPremStepData} index={5} />
+                        </div>
+                        <Connector index={5} />
 
-                                    <motion.div
-                                        className="flex flex-col items-center text-center"
-                                        animate={{ opacity: isDone || isActive ? 1 : 0.5 }}
-                                    >
-                                        <motion.div
-                                            className={cn("flex h-14 w-14 items-center justify-center rounded-full border-2", isActive ? 'border-primary bg-primary/10' : 'bg-background')}
-                                            animate={{ scale: isActive ? 1.15 : 1 }}
-                                            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                                        >
-                                            <step.icon className={cn("h-7 w-7", isActive ? 'text-primary' : 'text-muted-foreground')} />
-                                        </motion.div>
-                                        <p className="text-sm font-semibold mt-2">{step.label}</p>
-                                    </motion.div>
-
-                                    {/* Closing wrappers */}
-                                    {isLastAzure && (
-                                        <motion.div
-                                            className="w-px h-8 bg-border"
-                                            initial={{ scaleY: 0 }}
-                                            animate={{ scaleY: isDone || isActive ? 1 : 0, transition: { delay: 0.2 } }}
-                                            style={{transformOrigin: 'top'}}
-                                        />
-                                        </div>
-                                    )}
-                                    {isLastOnPrem && (
-                                        <motion.div
-                                            className="w-px h-8 bg-border"
-                                            initial={{ scaleY: 0 }}
-                                            animate={{ scaleY: isDone || isActive ? 1 : 0, transition: { delay: 0.2 } }}
-                                            style={{transformOrigin: 'top'}}
-                                        />
-                                        </div>
-                                    )}
-
-                                    {/* Connectors */}
-                                    {!isLastOnPrem && !isExpressRoute && (
-                                        <motion.div
-                                            className="w-px h-8 bg-border"
-                                            initial={{ scaleY: 0 }}
-                                            animate={{ scaleY: isDone ? 1 : 0, transition: { delay: 0.2 } }}
-                                            style={{transformOrigin: 'top'}}
-                                        />
-                                    )}
-                                </React.Fragment>
-                            );
-                        })}
+                        {/* Step 6: Phone Success */}
+                        <StepItem step={architectureFlowSteps[6]} index={6} />
                     </div>
                 </div>
 
@@ -1124,6 +1109,7 @@ function ArchitectureFlowSection({ onComplete }: { onComplete: () => void }) {
         </section>
     );
 }
+
 
 const latencyChartData = [
   { time: "14:29:00", latency: 120 },
