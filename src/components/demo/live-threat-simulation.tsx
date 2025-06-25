@@ -43,8 +43,8 @@ function ThreatNode({
                     <h3 className="text-base font-bold">{label}</h3>
                     {description && <p className="mt-1 text-xs text-muted-foreground">{description}</p>}
                 </div>
-            </div >
-        </div >
+            </motion.div>
+        </div>
     );
 }
 
@@ -60,7 +60,7 @@ function AttackArrow({ isActive, isBlocked }: { isActive?: boolean; isBlocked?: 
                         fill="hsl(var(--destructive))"
                         style={{
                             offsetPath: `path('${path}')`,
-                            offsetDistance: "var(--offset, 0%)"
+                            'offset-distance': "var(--offset, 0%)"
                         }}
                         initial={{ "--offset": "0%" }}
                         animate={{ "--offset": "100%" }}
@@ -70,7 +70,7 @@ function AttackArrow({ isActive, isBlocked }: { isActive?: boolean; isBlocked?: 
             )}
             {isBlocked && (
                 <motion.g initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", delay: 0.2 }}>
-                    <X className="text-destructive" size={48} absoluteStrokeWidth strokeWidth={3} transform="translate(51, 16)" />
+                    <X className="text-destructive" size={48} strokeWidth={3} transform="translate(51, 16)" />
                 </motion.g>
             )}
         </svg>
@@ -217,3 +217,5 @@ export function LiveThreatSimulationSection({ onBack, onRestart }: { onBack: () 
         </section>
     );
 }
+
+    
