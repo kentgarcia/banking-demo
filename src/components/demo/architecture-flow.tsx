@@ -106,9 +106,22 @@ function ArchitectureNode({
                 <AnimatePresence>
                     {isActive && (
                         <motion.div
-                            className="pointer-events-none absolute -inset-0.5 rounded-lg [background:conic-gradient(from_90deg_at_50%_50%,hsl(var(--primary))_0%,hsl(var(--accent))_50%,hsl(var(--primary))_100%)] animate-border-spin"
+                            className="pointer-events-none absolute -inset-0.5 rounded-lg [background:conic-gradient(from_90deg_at_50%_50%,hsl(var(--primary))_0%,hsl(var(--accent))_50%,hsl(var(--primary))_100%)]"
                             initial={{ opacity: 0 }}
-                            animate={{ opacity: 1, transition: { duration: 0.5 } }}
+                            animate={{
+                                rotate: 360,
+                                opacity: 1,
+                                transition: {
+                                    rotate: {
+                                        repeat: Infinity,
+                                        duration: 4,
+                                        ease: "linear",
+                                    },
+                                    opacity: {
+                                        duration: 0.5
+                                    }
+                                }
+                            }}
                             exit={{ opacity: 0, transition: { duration: 0.3 } }}
                             aria-hidden="true"
                         />
