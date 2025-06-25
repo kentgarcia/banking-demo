@@ -177,9 +177,9 @@ function CreateAccountScreen({
   };
 
   return (
-    <div className="h-full w-full overflow-hidden rounded-[2rem] bg-[#f0f2f5] font-body text-neutral-800">
-      <div className="flex h-full flex-col p-5">
-        <header className="flex items-center justify-between text-xs font-light text-neutral-500">
+    <div className="h-full w-full overflow-hidden rounded-[2rem] bg-[#0a2820] text-white">
+      <div className="flex h-full flex-col bg-gradient-to-br from-green-500/20 via-transparent to-green-900/20 p-5 font-body">
+        <header className="flex items-center justify-between text-xs font-light text-neutral-300">
           <span>9:42</span>
           <div className="flex items-center gap-1.5">
             <Signal className="h-4 w-4" />
@@ -197,7 +197,7 @@ function CreateAccountScreen({
             <h1 className="text-3xl font-bold tracking-tight">
               Create Account
             </h1>
-            <p className="mt-2 text-neutral-500">Let's get you started.</p>
+            <p className="mt-2 text-base text-neutral-300">Let's get you started.</p>
           </motion.div>
 
           <motion.form
@@ -227,7 +227,7 @@ function CreateAccountScreen({
                   id="name"
                   value="Juan dela Cruz"
                   readOnly
-                  className="pl-10 bg-white"
+                  className="pl-10 bg-white/5 border-white/20 text-white placeholder:text-neutral-400"
                 />
               </div>
             </motion.div>
@@ -245,7 +245,7 @@ function CreateAccountScreen({
                   id="email"
                   type="email"
                   placeholder="juan.delacruz@email.com"
-                  className="pl-10 bg-white"
+                  className="pl-10 bg-white/5 border-white/20 text-white placeholder:text-neutral-400"
                 />
               </div>
             </motion.div>
@@ -263,7 +263,7 @@ function CreateAccountScreen({
                   id="password"
                   type="password"
                   placeholder="••••••••"
-                  className="pl-10 bg-white"
+                  className="pl-10 bg-white/5 border-white/20 text-white placeholder:text-neutral-400"
                 />
               </div>
             </motion.div>
@@ -273,7 +273,7 @@ function CreateAccountScreen({
         <footer className="mt-auto pb-4">
           <Button
             size="lg"
-            className="h-14 w-full rounded-full bg-blue-600 font-bold text-white shadow-lg shadow-blue-600/30 transition hover:bg-blue-700 disabled:bg-blue-600/50"
+            className="h-14 w-full rounded-full bg-lime-300 font-bold text-green-900 shadow-lg shadow-lime-300/30 transition hover:bg-lime-400 disabled:bg-lime-300/50"
             onClick={handleSubmit}
             disabled={status !== "idle"}
           >
@@ -695,7 +695,7 @@ export function MobileApp({
   };
 
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full font-body">
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
