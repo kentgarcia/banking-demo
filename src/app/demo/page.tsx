@@ -975,98 +975,122 @@ function DemoSection({ onNavigateToArchitecture }: { onNavigateToArchitecture: (
   );
 }
 
-const architectureSteps = [
-    { text: "Request originates from the user's device and enters the secure Azure cloud environment.", pos: { top: "25%", left: "12%" } },
-    { text: "Azure's built-in DDoS protection provides the first line of defense against volumetric attacks.", pos: { top: "18%", left: "48%" } },
-    { text: "Next, all traffic is inspected by a Palo Alto Next-Generation Firewall (NGFW) for advanced threats.", pos: { top: "35%", left: "48%" } },
-    { text: "The validated request is routed to Temenos Infinity running on Azure Kubernetes Service (AKS) to process the business logic.", pos: { top: "52%", left: "48%" } },
-    { text: "For core banking actions, the request travels via a private ExpressRoute link, bypassing the public internet for maximum security.", pos: { top: "70%", left: "48%" } },
-    { text: "The on-premise Core Banking System confirms the transaction, and a success message is sent back to the customer along the same secure path.", pos: { top: "85%", left: "48%" } },
+const architectureFlowSteps = [
+    { id: 'phone', icon: Smartphone, label: "User's Device", text: "Request originates from the user's device and enters the secure Azure cloud environment." },
+    { id: 'ddos', icon: Shield, label: "Azure DDoS Protection", text: "Azure's built-in DDoS protection provides the first line of defense against volumetric attacks." },
+    { id: 'ngfw', icon: Shield, label: "Palo Alto NGFW", text: "Next, all traffic is inspected by a Palo Alto Next-Generation Firewall (NGFW) for advanced threats." },
+    { id: 'aks', icon: Server, label: "AKS (Temenos)", text: "The validated request is routed to Temenos Infinity running on Azure Kubernetes Service (AKS) to process the business logic." },
+    { id: 'expressroute', icon: Network, label: "ExpressRoute", text: "For core banking actions, the request travels via a private ExpressRoute link, bypassing the public internet for maximum security." },
+    { id: 'core', icon: Server, label: "On-Premise Core", text: "The on-premise Core Banking System confirms the transaction." },
+    { id: 'phone_success', icon: Smartphone, label: "User's Device", text: "A success message is sent back to the customer along the same secure path." },
 ];
-
 
 function ArchitectureFlowSection({ onComplete }: { onComplete: () => void }) {
     const [stepIndex, setStepIndex] = React.useState(0);
-    const currentStep = architectureSteps[stepIndex];
-    const isLastStep = stepIndex >= architectureSteps.length - 1;
+    const currentStep = architectureFlowSteps[stepIndex];
+    const isLastStep = stepIndex >= architectureFlowSteps.length - 1;
+
+    const azureSteps = ['ddos', 'ngfw', 'aks'];
+    const onPremSteps = ['core'];
 
     return (
         <section
             id="architecture"
-            className="flex w-full flex-col items-center justify-center bg-secondary/50 min-h-screen"
+            className="flex w-full flex-col items-center justify-center bg-secondary/50 min-h-screen py-12"
         >
             <div className="container mx-auto px-4">
-                <div className="relative mx-auto w-full max-w-5xl rounded-lg border bg-background p-4 shadow-lg md:p-8 min-h-[600px]">
-                    {/* Main containers */}
-                    <div className="absolute top-4 left-4 flex flex-col items-center gap-2">
-                        <Smartphone className="h-8 w-8"/>
-                        <span className="font-semibold">Phone</span>
-                    </div>
+                <div className="w-full max-w-4xl mx-auto rounded-lg border bg-background p-4 shadow-lg md:p-8">
+                    <div className="flex flex-col items-center gap-4">
+                        {architectureFlowSteps.map((step, index) => {
+                            if (step.id === 'phone_success') return null; // We handle this as the last step on the phone
+                            const isActive = stepIndex === index;
+                            const isDone = stepIndex > index;
 
-                    <div className="absolute top-1/2 left-1/2 h-[90%] w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-2xl border-2 border-dashed bg-blue-500/5 p-4">
-                        <div className="flex items-center gap-2 text-blue-800">
-                            <Cloud className="h-6 w-6"/>
-                            <h3 className="text-lg font-bold">Azure Cloud</h3>
-                        </div>
-                    </div>
+                            const isAzure = azureSteps.includes(step.id);
+                            const isFirstAzure = step.id === azureSteps[0];
+                            const isLastAzure = step.id === azureSteps[azureSteps.length - 1];
+                            const isExpressRoute = step.id === 'expressroute';
+                            const isOnPrem = onPremSteps.includes(step.id);
+                            const isFirstOnPrem = step.id === onPremSteps[0];
+                            const isLastOnPrem = step.id === onPremSteps[onPremSteps.length - 1];
 
-                    <div className="absolute bottom-4 left-1/2 h-[25%] w-[50%] -translate-x-1/2 rounded-2xl border-2 border-dashed bg-gray-500/5 p-4">
-                         <div className="flex items-center gap-2 text-gray-800">
-                            <Server className="h-6 w-6"/>
-                            <h3 className="text-lg font-bold">On-Premise Data Center</h3>
-                        </div>
-                    </div>
-                    
-                    {/* Diagram Components */}
-                    <div className="absolute top-[18%] left-[48%] -translate-x-1/2 flex flex-col items-center gap-1 text-center">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                            <Shield/>
-                        </div>
-                        <p className="text-xs font-semibold">Azure DDoS</p>
-                    </div>
-                     <div className="absolute top-[35%] left-[48%] -translate-x-1/2 flex flex-col items-center gap-1 text-center">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                            <Shield/>
-                        </div>
-                        <p className="text-xs font-semibold">Palo Alto NGFW</p>
-                    </div>
-                     <div className="absolute top-[52%] left-[48%] -translate-x-1/2 flex flex-col items-center gap-1 text-center">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                           <Server/>
-                        </div>
-                        <p className="text-xs font-semibold">AKS (Temenos)</p>
-                    </div>
+                            return (
+                                <React.Fragment key={step.id}>
+                                    {isFirstAzure && (
+                                        <div className="w-full p-4 border-2 border-dashed rounded-lg flex flex-col items-center gap-4 mb-2">
+                                            <div className="flex items-center gap-2 text-blue-800 self-start">
+                                                <Cloud className="h-6 w-6"/>
+                                                <h3 className="text-lg font-bold">Azure Cloud</h3>
+                                            </div>
+                                            <motion.div
+                                                className="w-px h-8 bg-border"
+                                                initial={{ scaleY: 0 }}
+                                                animate={{ scaleY: isDone || isActive ? 1 : 0, transition: { delay: 0.2 } }}
+                                                style={{transformOrigin: 'top'}}
+                                            />
+                                    {/* Azure wrapper opens here */}
 
-                    <div className="absolute top-[70%] left-[48%] -translate-x-1/2 flex flex-col items-center gap-1 text-center">
-                        <div className="flex items-center gap-2 rounded-full border bg-background px-3 py-1">
-                            <Network className="h-4 w-4 text-green-600"/>
-                            <p className="text-xs font-semibold">ExpressRoute</p>
-                        </div>
+                                    {isFirstOnPrem && (
+                                        <div className="w-full p-4 border-2 border-dashed rounded-lg flex flex-col items-center gap-4 mt-2">
+                                            <div className="flex items-center gap-2 text-gray-800 self-start">
+                                                <Server className="h-6 w-6"/>
+                                                <h3 className="text-lg font-bold">On-Premise Data Center</h3>
+                                            </div>
+                                            <motion.div
+                                                className="w-px h-8 bg-border"
+                                                initial={{ scaleY: 0 }}
+                                                animate={{ scaleY: isDone || isActive ? 1 : 0, transition: { delay: 0.2 } }}
+                                                style={{transformOrigin: 'top'}}
+                                            />
+                                    {/* On-prem wrapper opens here */}
+
+                                    <motion.div
+                                        className="flex flex-col items-center text-center"
+                                        animate={{ opacity: isDone || isActive ? 1 : 0.5 }}
+                                    >
+                                        <motion.div
+                                            className={cn("flex h-14 w-14 items-center justify-center rounded-full border-2", isActive ? 'border-primary bg-primary/10' : 'bg-background')}
+                                            animate={{ scale: isActive ? 1.15 : 1 }}
+                                            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                                        >
+                                            <step.icon className={cn("h-7 w-7", isActive ? 'text-primary' : 'text-muted-foreground')} />
+                                        </motion.div>
+                                        <p className="text-sm font-semibold mt-2">{step.label}</p>
+                                    </motion.div>
+
+                                    {/* Closing wrappers */}
+                                    {isLastAzure && (
+                                        <motion.div
+                                            className="w-px h-8 bg-border"
+                                            initial={{ scaleY: 0 }}
+                                            animate={{ scaleY: isDone || isActive ? 1 : 0, transition: { delay: 0.2 } }}
+                                            style={{transformOrigin: 'top'}}
+                                        />
+                                        </div>
+                                    )}
+                                    {isLastOnPrem && (
+                                        <motion.div
+                                            className="w-px h-8 bg-border"
+                                            initial={{ scaleY: 0 }}
+                                            animate={{ scaleY: isDone || isActive ? 1 : 0, transition: { delay: 0.2 } }}
+                                            style={{transformOrigin: 'top'}}
+                                        />
+                                        </div>
+                                    )}
+
+                                    {/* Connectors */}
+                                    {!isLastOnPrem && !isExpressRoute && (
+                                        <motion.div
+                                            className="w-px h-8 bg-border"
+                                            initial={{ scaleY: 0 }}
+                                            animate={{ scaleY: isDone ? 1 : 0, transition: { delay: 0.2 } }}
+                                            style={{transformOrigin: 'top'}}
+                                        />
+                                    )}
+                                </React.Fragment>
+                            );
+                        })}
                     </div>
-
-                    <div className="absolute top-[85%] left-[48%] -translate-x-1/2 flex flex-col items-center gap-1 text-center">
-                         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-gray-600">
-                           <Server/>
-                        </div>
-                        <p className="text-xs font-semibold">Core Banking</p>
-                    </div>
-
-                    {/* Animated Dot */}
-                    <motion.div
-                        className="absolute h-3 w-3 rounded-full bg-primary ring-4 ring-primary/30"
-                        animate={{ top: currentStep.pos.top, left: currentStep.pos.left }}
-                        transition={{ duration: 1.2, ease: "easeInOut" }}
-                        initial={false}
-                    />
-
-                    {/* Path Lines */}
-                     <svg className="absolute inset-0 h-full w-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M200 160 L 380 160" strokeWidth="2" stroke="hsl(var(--border))" strokeDasharray="4 4" />
-                        <path d="M420 135 V 235" strokeWidth="2" stroke="hsl(var(--border))" strokeDasharray="4 4" />
-                        <path d="M420 265 V 335" strokeWidth="2" stroke="hsl(var(--border))" strokeDasharray="4 4" />
-                        <path d="M420 365 V 440" strokeWidth="2" stroke="hsl(var(--border))" strokeDasharray="4 4" />
-                        <path d="M420 460 V 520" strokeWidth="2" stroke="hsl(var(--border))" strokeDasharray="4 4" />
-                    </svg>
                 </div>
 
                 <div className="mt-8 text-center max-w-2xl mx-auto">
