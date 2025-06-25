@@ -11,14 +11,19 @@ export function DemoSection({
   onNavigateToArchitecture,
   simulateFailure,
   onSimulateFailureChange,
+  step,
+  setStep,
+  transferMade,
+  onTransferSuccess,
 }: {
   onNavigateToArchitecture: () => void;
   simulateFailure: boolean;
   onSimulateFailureChange: (value: boolean) => void;
+  step: string;
+  setStep: (step: string) => void;
+  transferMade: boolean;
+  onTransferSuccess: () => void;
 }) {
-  const [step, setStep] = React.useState("onboarding");
-  const [transferMade, setTransferMade] = React.useState(false);
-
   const crmVisible = step === "welcome" || step === "dashboard" || step === "sendMoney";
 
   return (
@@ -38,7 +43,7 @@ export function DemoSection({
               <MobileApp
                 step={step}
                 setStep={setStep}
-                onTransferSuccess={() => setTransferMade(true)}
+                onTransferSuccess={onTransferSuccess}
                 simulateFailure={simulateFailure}
                 onSimulateFailureChange={onSimulateFailureChange}
               />

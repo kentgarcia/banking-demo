@@ -10,6 +10,15 @@ import { LiveDashboardSection } from "@/components/demo/live-dashboard";
 export default function DemoPage() {
   const [currentScreen, setCurrentScreen] = React.useState<'demo' | 'architecture' | 'liveDashboard'>('demo');
   const [simulateFailure, setSimulateFailure] = React.useState(false);
+  const [mobileAppStep, setMobileAppStep] = React.useState('onboarding');
+  const [transferMade, setTransferMade] = React.useState(false);
+
+  const handleRestart = () => {
+    setCurrentScreen('demo');
+    setSimulateFailure(false);
+    setMobileAppStep('dashboard');
+    setTransferMade(false);
+  };
 
   const renderCurrentScreen = () => {
     switch (currentScreen) {
@@ -20,6 +29,10 @@ export default function DemoPage() {
               onNavigateToArchitecture={() => setCurrentScreen('architecture')}
               simulateFailure={simulateFailure}
               onSimulateFailureChange={setSimulateFailure}
+              step={mobileAppStep}
+              setStep={setMobileAppStep}
+              transferMade={transferMade}
+              onTransferSuccess={() => setTransferMade(true)}
             />
           </motion.div>
         );
@@ -39,10 +52,7 @@ export default function DemoPage() {
             <LiveDashboardSection
               simulateFailure={simulateFailure}
               onBack={() => setCurrentScreen('architecture')}
-              onRestart={() => {
-                setCurrentScreen('demo');
-                setSimulateFailure(false);
-              }}
+              onRestart={handleRestart}
             />
           </motion.div>
         );
