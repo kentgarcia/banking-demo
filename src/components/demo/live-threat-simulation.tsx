@@ -58,9 +58,12 @@ function AttackArrow({ isActive, isBlocked }: { isActive?: boolean; isBlocked?: 
                     <motion.circle
                         r="5"
                         fill="hsl(var(--destructive))"
-                        style={{ offsetPath: `path('${path}')` }}
-                        initial={{ offsetDistance: "0%" }}
-                        animate={{ offsetDistance: "100%" }}
+                        style={{ 
+                            offsetPath: `path('${path}')`,
+                            offsetDistance: "var(--offset, 0%)"
+                        }}
+                        initial={{ "--offset": "0%" }}
+                        animate={{ "--offset": "100%" }}
                         transition={{ duration: 1.5, ease: "linear" }}
                     />
                  </motion.g>
