@@ -6,9 +6,10 @@ import React from "react";
 import { DemoSection } from "@/components/demo/demo-section";
 import { ArchitectureFlowSection } from "@/components/demo/architecture-flow";
 import { LiveDashboardSection } from "@/components/demo/live-dashboard";
+import { ScalabilitySection } from "@/components/demo/scalability-section";
 
 export default function DemoPage() {
-  const [currentScreen, setCurrentScreen] = React.useState<'demo' | 'architecture' | 'liveDashboard'>('demo');
+  const [currentScreen, setCurrentScreen] = React.useState<'demo' | 'architecture' | 'liveDashboard' | 'scalability'>('demo');
   const [simulateFailure, setSimulateFailure] = React.useState(false);
   const [mobileAppStep, setMobileAppStep] = React.useState('onboarding');
   const [transferMade, setTransferMade] = React.useState(false);
@@ -52,6 +53,15 @@ export default function DemoPage() {
             <LiveDashboardSection
               simulateFailure={simulateFailure}
               onBack={() => setCurrentScreen('architecture')}
+              onNext={() => setCurrentScreen('scalability')}
+            />
+          </motion.div>
+        );
+      case 'scalability':
+        return (
+          <motion.div key="scalability" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <ScalabilitySection
+              onBack={() => setCurrentScreen('liveDashboard')}
               onRestart={handleRestart}
             />
           </motion.div>
