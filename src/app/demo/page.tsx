@@ -16,6 +16,44 @@ export default function DemoPage() {
   const [currentScreen, setCurrentScreen] = React.useState<'demo' | 'architecture' | 'liveDashboard'>('demo');
   const [simulateFailure, setSimulateFailure] = React.useState(false);
 
+  const renderCurrentScreen = () => {
+    switch (currentScreen) {
+      case 'demo':
+        return (
+          <motion.div key="demo" exit={{ opacity: 0 }}>
+            <DemoSection
+              onNavigateToArchitecture={() => setCurrentScreen('architecture')}
+              simulateFailure={simulateFailure}
+              onSimulateFailureChange={setSimulateFailure}
+            />
+          </motion.div>
+        );
+      case 'architecture':
+        return (
+          <motion.div key="architecture" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <ArchitectureFlowSection
+              onComplete={() => setCurrentScreen('liveDashboard')}
+              simulateFailure={simulateFailure}
+            />
+          </motion.div>
+        );
+      case 'liveDashboard':
+        return (
+          <motion.div key="liveDashboard" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <LiveDashboardSection
+              simulateFailure={simulateFailure}
+              onRestart={() => {
+                setCurrentScreen('demo');
+                setSimulateFailure(false);
+              }}
+            />
+          </motion.div>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="bg-background text-foreground">
       <motion.main
@@ -25,32 +63,7 @@ export default function DemoPage() {
         animate="visible"
       >
         <AnimatePresence mode="wait">
-        {currentScreen === 'demo' ? (
-            <motion.div key="demo" exit={{opacity: 0}}>
-                <DemoSection
-                  onNavigateToArchitecture={() => setCurrentScreen('architecture')}
-                  simulateFailure={simulateFailure}
-                  onSimulateFailureChange={setSimulateFailure}
-                />
-            </motion.div>
-        ) : currentScreen === 'architecture' ? (
-            <motion.div key="architecture" initial={{opacity: 0}} animate={{opacity: 1}}>
-                <ArchitectureFlowSection
-                  onComplete={() => setCurrentScreen('liveDashboard')}
-                  simulateFailure={simulateFailure}
-                />
-            </motion.div>
-        ) : (
-            <motion.div key="liveDashboard" initial={{opacity: 0}} animate={{opacity: 1}}>
-                <LiveDashboardSection 
-                    simulateFailure={simulateFailure} 
-                    onRestart={() => {
-                        setCurrentScreen('demo');
-                        setSimulateFailure(false);
-                    }}
-                />
-            </motion.div>
-        )}
+          {renderCurrentScreen()}
         </AnimatePresence>
       </main>
     </div>
