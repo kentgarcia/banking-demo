@@ -375,7 +375,7 @@ function DashboardScreen({ onSendMoney }: { onSendMoney: () => void }) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Avatar>
-                <AvatarImage src="https://placehold.co/40x40.png" alt="@juan" data-ai-hint="man" />
+                <AvatarImage src="https://randomuser.me/api/portraits/men/32.jpg" alt="@juan" />
                 <AvatarFallback>JD</AvatarFallback>
               </Avatar>
               <div>
@@ -529,7 +529,7 @@ function SendMoneyScreen({
         </header>
         <main className="flex-1 flex flex-col items-center px-4 pt-8">
           <Avatar className="h-20 w-20">
-            <AvatarImage src="https://placehold.co/80x80.png" alt="Recipient" data-ai-hint="woman"/>
+            <AvatarImage src="https://randomuser.me/api/portraits/women/44.jpg" alt="Recipient" />
             <AvatarFallback>MC</AvatarFallback>
           </Avatar>
           <p className="font-bold mt-4">Maria Clara</p>

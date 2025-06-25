@@ -63,7 +63,7 @@ export function CrmView({
         <div className="space-y-4">
           <div className="flex items-center gap-4">
               <Avatar className="h-16 w-16">
-                  <AvatarImage src="https://placehold.co/64x64.png" alt="@juan" data-ai-hint="man"/>
+                  <AvatarImage src="https://randomuser.me/api/portraits/men/32.jpg" alt="@juan" />
                   <AvatarFallback>JD</AvatarFallback>
               </Avatar>
               <div>
