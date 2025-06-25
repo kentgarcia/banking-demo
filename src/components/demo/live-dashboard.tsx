@@ -6,6 +6,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -75,7 +76,13 @@ const failureLogs = [
 ]
 
 
-export function LiveDashboardSection({ simulateFailure }: { simulateFailure: boolean }) {
+export function LiveDashboardSection({ 
+    simulateFailure,
+    onRestart,
+ }: { 
+    simulateFailure: boolean,
+    onRestart?: () => void,
+ }) {
     const [logs, setLogs] = React.useState<(typeof successLogs)>([]);
     const [highlightedTxn, setHighlightedTxn] = React.useState<string | null>(null);
     const scrollAreaRef = React.useRef<HTMLDivElement>(null);
@@ -115,7 +122,7 @@ export function LiveDashboardSection({ simulateFailure }: { simulateFailure: boo
     return (
         <section
             id="live-dashboard"
-            className="w-full flex flex-col items-center justify-center bg-secondary/50 min-h-screen"
+            className="w-full flex flex-col items-center justify-center bg-secondary/50 min-h-screen py-12"
         >
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
@@ -157,7 +164,7 @@ export function LiveDashboardSection({ simulateFailure }: { simulateFailure: boo
 
                     {/* Log Feed Column */}
                     <div className="lg:col-span-3">
-                        <Card className="h-full">
+                        <Card className="h-full flex flex-col">
                            <CardHeader className="flex flex-row items-center justify-between">
                                <div>
                                    <CardTitle>Live Event Log</CardTitle>
@@ -172,7 +179,7 @@ export function LiveDashboardSection({ simulateFailure }: { simulateFailure: boo
                                    </Button>
                                </div>
                            </CardHeader>
-                           <CardContent>
+                           <CardContent className="flex-1">
                                <ScrollArea className="h-[400px] rounded-md border bg-muted/30 p-2" ref={scrollAreaRef}>
                                    <AnimatePresence>
                                        {logs.map((log, index) => (
@@ -194,6 +201,11 @@ export function LiveDashboardSection({ simulateFailure }: { simulateFailure: boo
                                    </AnimatePresence>
                                </ScrollArea>
                            </CardContent>
+                           {simulateFailure && onRestart && (
+                                <CardFooter>
+                                    <Button onClick={onRestart} className="w-full">Next</Button>
+                                </CardFooter>
+                           )}
                         </Card>
                     </div>
                 </div>

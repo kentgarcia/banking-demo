@@ -42,11 +42,17 @@ export default function DemoPage() {
             </motion.div>
         ) : (
             <motion.div key="liveDashboard" initial={{opacity: 0}} animate={{opacity: 1}}>
-                <LiveDashboardSection simulateFailure={simulateFailure} />
+                <LiveDashboardSection 
+                    simulateFailure={simulateFailure} 
+                    onRestart={() => {
+                        setCurrentScreen('demo');
+                        setSimulateFailure(false);
+                    }}
+                />
             </motion.div>
         )}
         </AnimatePresence>
-      </motion.main>
+      </main>
     </div>
   );
 }
