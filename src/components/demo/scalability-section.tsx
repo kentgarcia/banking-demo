@@ -3,7 +3,7 @@
 
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Smartphone, ShieldCheck, Shapes, Server, ArrowLeft, RotateCcw, Cpu, ArrowRight } from "lucide-react";
+import { Smartphone, ShieldCheck, Shapes, Server, ArrowLeft, RotateCcw, Cpu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
@@ -57,23 +57,34 @@ function ScalabilityNode({
     description,
     cpuLevel,
     isScaling,
+    isPulsing,
+    progressColor,
 }: {
     icon: React.ElementType;
     label: string;
     description?: string;
     cpuLevel?: number;
     isScaling?: boolean;
+    isPulsing?: boolean;
+    progressColor?: string;
 }) {
     const isAppLayer = label === "Application Layer";
 
     return (
         <div className="w-48 flex flex-col items-center gap-2">
             <motion.div
-                className="relative w-full rounded-lg border-2 border-border bg-transparent p-0.5"
+                className="w-full rounded-lg"
+                animate={{
+                    boxShadow: isPulsing ? '0 0 20px hsl(var(--destructive) / 0.7)' : '0 0 0px hsl(var(--destructive) / 0)',
+                }}
+                transition={{
+                    boxShadow: isPulsing ? { yoyo: Infinity, duration: 0.8, ease: 'easeInOut' } : { duration: 0.5 }
+                }}
             >
                 <div
                     className={cn(
-                        "flex h-full w-full flex-col items-center gap-2 rounded-[calc(var(--radius)-2px)] bg-background p-4 text-center min-h-[140px] justify-center"
+                        "flex h-full w-full flex-col items-center gap-2 rounded-lg bg-background p-4 text-center min-h-[140px] justify-center border-2",
+                        isPulsing ? "border-destructive" : "border-border"
                     )}
                 >
                     <Icon className="h-10 w-10 text-primary" />
@@ -85,19 +96,22 @@ function ScalabilityNode({
                                 <Cpu size={16}/>
                                 <span>CPU Usage</span>
                             </div>
-                            <Progress value={cpuLevel} className="h-2" />
+                            <Progress value={cpuLevel} indicatorClassName={progressColor} className="h-2" />
                         </div>
                     )}
                 </div>
             </motion.div>
             {isScaling && isAppLayer && (
-                <div className="flex justify-center gap-2 mt-2">
-                    <motion.div initial={{opacity:0, y: 10}} animate={{opacity: 1, y: 0, transition:{delay: 0.2}}}>
-                        <Server className="h-8 w-8 text-muted-foreground" />
+                 <div className="flex items-center justify-center gap-2 mt-2 text-muted-foreground">
+                     <motion.div className="flex items-center gap-1" initial={{opacity:0, y: 10}} animate={{opacity: 1, y: 0, transition:{delay: 0.2}}}>
+                        <Server className="h-8 w-8" />
                     </motion.div>
-                     <motion.div initial={{opacity:0, y: 10}} animate={{opacity: 1, y: 0, transition:{delay: 0.4}}}>
-                        <Server className="h-8 w-8 text-muted-foreground" />
+                     <motion.div className="flex items-center gap-1" initial={{opacity:0, y: 10}} animate={{opacity: 1, y: 0, transition:{delay: 0.4}}}>
+                        <Server className="h-8 w-8" />
                     </motion.div>
+                    <motion.p className="text-xs font-semibold" initial={{opacity:0}} animate={{opacity: 1, transition:{delay: 0.6}}}>
+                        +2 Instances
+                    </motion.p>
                 </div>
             )}
         </div>
@@ -109,21 +123,29 @@ const simulationSteps = {
         text: "The platform's elasticity allows it to handle fluctuating demand without performance degradation. Click below to simulate a peak load scenario.",
         cpu: 15,
         isScaling: false,
+        progressColor: "bg-green-500",
+        isPulsing: false,
     },
     spiking: {
-        text: "A sudden surge in traffic causes CPU usage to spike on the Application Layer, threatening performance.",
+        text: "A sudden surge in traffic causes CPU usage to spike on the Application Layer. The system is under heavy load, indicated by the pulsing red border.",
         cpu: 95,
         isScaling: false,
+        progressColor: "bg-destructive",
+        isPulsing: true,
     },
     scaling: {
         text: "Azure Kubernetes Service automatically detects the high load and begins provisioning additional server instances to distribute the workload.",
         cpu: 95,
         isScaling: true,
+        progressColor: "bg-destructive",
+        isPulsing: true,
     },
     stabilized: {
         text: "With the new instances online, the load is balanced, and CPU usage returns to a stable level. The platform has scaled seamlessly to meet demand.",
         cpu: 40,
         isScaling: true,
+        progressColor: "bg-green-500",
+        isPulsing: false,
     },
 };
 
@@ -160,6 +182,8 @@ export function ScalabilitySection({ onBack, onRestart }: { onBack: () => void, 
                         description="Temenos on AKS"
                         cpuLevel={currentStep.cpu}
                         isScaling={currentStep.isScaling}
+                        isPulsing={currentStep.isPulsing}
+                        progressColor={currentStep.progressColor}
                     />
                     <AnimatedArrow />
                     <ScalabilityNode icon={Server} label="On-Premise Core" description="Via ExpressRoute"/>
