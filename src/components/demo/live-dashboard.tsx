@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from "react";
@@ -49,7 +50,7 @@ const systemHealthConfig = {
     health: { label: "Health", color: "hsl(var(--primary))" }
 } satisfies ChartConfig;
 
-const allLogs = [
+const successLogs = [
     { level: "INFO", text: "[2:30:00 PM] System check initiated by admin." },
     { level: "INFO", text: "[2:30:01 PM] Traffic from 131.107.x.x passed Palo Alto NGFW inspection. #582910" },
     { level: "INFO", text: "[2:30:02 PM] New user 'Juan dela Cruz' onboarded via Temenos Infinity. #582910" },
@@ -61,14 +62,27 @@ const allLogs = [
     { level: "INFO", text: "[2:30:10 PM] Health check OK for all services." },
 ];
 
+const failureLogs = [
+    { level: "INFO", text: "[2:30:00 PM] System check initiated by admin." },
+    { level: "INFO", text: "[2:30:01 PM] Traffic from 131.107.x.x passed Palo Alto NGFW inspection. #582910" },
+    { level: "INFO", text: "[2:30:02 PM] New user 'Juan dela Cruz' onboarded via Temenos Infinity. #582910" },
+    { level: "WARN", text: "[2:30:03 PM] High latency detected on Auth Service (180ms)." },
+    { level: "INFO", text: "[2:30:05 PM] API call received by Core Banking System for debit. #582910" },
+    { level: "FAILED", text: "[2:30:06 PM] FAILED: Transaction #582910 declined by Core Banking. Reason: NSF." },
+    { level: "INFO", text: "[2:30:07 PM] Dynamics 365 timeline updated for contact 'Juan dela Cruz'." },
+    { level: "INFO", text: "[2:30:08 PM] User session for 'maria.clara' initiated." },
+    { level: "INFO", text: "[2:30:10 PM] Health check OK for all services." },
+]
 
-export function LiveDashboardSection() {
-    const [logs, setLogs] = React.useState<typeof allLogs>([]);
+
+export function LiveDashboardSection({ simulateFailure }: { simulateFailure: boolean }) {
+    const [logs, setLogs] = React.useState<(typeof successLogs)>([]);
     const [highlightedTxn, setHighlightedTxn] = React.useState<string | null>(null);
     const scrollAreaRef = React.useRef<HTMLDivElement>(null);
 
     React.useEffect(() => {
         setLogs([]);
+        const allLogs = simulateFailure ? failureLogs : successLogs;
         let logIndex = 0;
         const intervalId = setInterval(() => {
             if (logIndex < allLogs.length) {
@@ -80,7 +94,7 @@ export function LiveDashboardSection() {
         }, 1200);
 
         return () => clearInterval(intervalId);
-    }, []);
+    }, [simulateFailure]);
 
     React.useEffect(() => {
         if (scrollAreaRef.current) {
@@ -93,6 +107,7 @@ export function LiveDashboardSection() {
             case "SUCCESS": return "default";
             case "INFO": return "secondary";
             case "WARN": return "destructive";
+            case "FAILED": return "destructive";
             default: return "outline";
         }
     }

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,6 +14,7 @@ const containerVariants = {
 
 export default function DemoPage() {
   const [currentScreen, setCurrentScreen] = React.useState<'demo' | 'architecture' | 'liveDashboard'>('demo');
+  const [simulateFailure, setSimulateFailure] = React.useState(false);
 
   return (
     <div className="bg-background text-foreground">
@@ -25,15 +27,22 @@ export default function DemoPage() {
         <AnimatePresence mode="wait">
         {currentScreen === 'demo' ? (
             <motion.div key="demo" exit={{opacity: 0}}>
-                <DemoSection onNavigateToArchitecture={() => setCurrentScreen('architecture')} />
+                <DemoSection
+                  onNavigateToArchitecture={() => setCurrentScreen('architecture')}
+                  simulateFailure={simulateFailure}
+                  onSimulateFailureChange={setSimulateFailure}
+                />
             </motion.div>
         ) : currentScreen === 'architecture' ? (
             <motion.div key="architecture" initial={{opacity: 0}} animate={{opacity: 1}}>
-                <ArchitectureFlowSection onComplete={() => setCurrentScreen('liveDashboard')} />
+                <ArchitectureFlowSection
+                  onComplete={() => setCurrentScreen('liveDashboard')}
+                  simulateFailure={simulateFailure}
+                />
             </motion.div>
         ) : (
             <motion.div key="liveDashboard" initial={{opacity: 0}} animate={{opacity: 1}}>
-                <LiveDashboardSection />
+                <LiveDashboardSection simulateFailure={simulateFailure} />
             </motion.div>
         )}
         </AnimatePresence>

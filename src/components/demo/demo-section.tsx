@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from "react";
@@ -6,7 +7,15 @@ import { MobileApp } from "./mobile-app";
 import { DataFlowArrow } from "./data-flow-arrow";
 import { CrmView } from "./crm-view";
 
-export function DemoSection({ onNavigateToArchitecture }: { onNavigateToArchitecture: () => void }) {
+export function DemoSection({
+  onNavigateToArchitecture,
+  simulateFailure,
+  onSimulateFailureChange,
+}: {
+  onNavigateToArchitecture: () => void;
+  simulateFailure: boolean;
+  onSimulateFailureChange: (value: boolean) => void;
+}) {
   const [step, setStep] = React.useState("onboarding");
   const [transferMade, setTransferMade] = React.useState(false);
 
@@ -30,6 +39,8 @@ export function DemoSection({ onNavigateToArchitecture }: { onNavigateToArchitec
                 step={step}
                 setStep={setStep}
                 onTransferSuccess={() => setTransferMade(true)}
+                simulateFailure={simulateFailure}
+                onSimulateFailureChange={onSimulateFailureChange}
               />
             </div>
           </motion.div>
@@ -52,6 +63,7 @@ export function DemoSection({ onNavigateToArchitecture }: { onNavigateToArchitec
                     step === "welcome" ? "onboarding" : "active"
                   }
                   transferMade={transferMade}
+                  simulateFailure={simulateFailure}
                   onNavigateToArchitecture={onNavigateToArchitecture}
                 />
               </motion.div>

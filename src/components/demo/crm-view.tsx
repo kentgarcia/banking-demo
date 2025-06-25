@@ -1,3 +1,4 @@
+
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
@@ -10,6 +11,7 @@ import {
   UserPlus,
   ArrowRightLeft,
   ArrowRight,
+  AlertCircle,
 } from "lucide-react";
 import {
   Card,
@@ -37,10 +39,12 @@ function DynamicsLogo() {
 export function CrmView({
   customerStatus,
   transferMade,
+  simulateFailure,
   onNavigateToArchitecture,
 }: {
   customerStatus: "onboarding" | "active";
   transferMade: boolean;
+  simulateFailure: boolean;
   onNavigateToArchitecture: () => void;
 }) {
   return (
@@ -103,13 +107,17 @@ export function CrmView({
                   transition={{ type: 'spring', stiffness: 100, delay: 0.1 }}
                   className="flex items-start gap-4"
                 >
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
-                    <ArrowRightLeft className="h-4 w-4 text-blue-600" />
+                  <div className={`flex h-8 w-8 items-center justify-center rounded-full ${simulateFailure ? 'bg-red-100' : 'bg-blue-100'}`}>
+                    {simulateFailure ? (
+                        <AlertCircle className="h-4 w-4 text-red-600" />
+                    ) : (
+                        <ArrowRightLeft className="h-4 w-4 text-blue-600" />
+                    )}
                   </div>
                   <div>
-                    <p className="font-semibold">Fund Transfer</p>
+                    <p className="font-semibold">{simulateFailure ? 'Fund Transfer Failed' : 'Fund Transfer'}</p>
                     <p className="text-sm text-muted-foreground">
-                      Sent money to Maria Clara.
+                        {simulateFailure ? 'Reason: Insufficient funds.' : 'Sent money to Maria Clara.'}
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">
                       Just now

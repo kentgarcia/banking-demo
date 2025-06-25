@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from "react";
@@ -6,7 +7,7 @@ import { Smartphone, ShieldCheck, Shapes, Server, ArrowRight } from "lucide-reac
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-const architectureFlowSteps = [
+const successFlowSteps = [
     { text: "This diagram shows the secure, multi-layered journey of your transaction." },
     { text: "Your request leaves your device and enters the Azure cloud through an encrypted channel." },
     { text: "At the edge, traffic is inspected by Azure DDoS Protection and a Palo Alto Next-Generation Firewall (NGFW)." },
@@ -15,6 +16,16 @@ const architectureFlowSteps = [
     { text: "The Core Banking System confirms the transaction, sending a success message back to you along the same secure path." },
     { text: "The transaction is complete! This entire flow ensures speed, security, and reliability." },
 ];
+
+const failureFlowSteps = [
+    { text: "This diagram shows the secure, multi-layered journey of your transaction." },
+    { text: "Your request leaves your device and enters the Azure cloud through an encrypted channel." },
+    { text: "At the edge, traffic is inspected by Azure DDoS Protection and a Palo Alto Next-Generation Firewall (NGFW)." },
+    { text: "The validated request is routed to the Application Layer, where Temenos on Azure Kubernetes Service (AKS) processes the business logic." },
+    { text: "The request reaches the Core Banking System, but it's declined due to insufficient funds." },
+    { text: "The Core Banking System sends a failure message back along the same secure path, informing the app of the issue." },
+    { text: "The transaction has failed, but the system handled it gracefully, providing clear feedback." },
+]
 
 
 const arrowVariants = {
@@ -90,16 +101,23 @@ function ArchitectureNode({
     label,
     description,
     isActive,
+    isError,
 }: {
     icon: React.ElementType;
     label: string;
     description?: string;
     isActive: boolean;
+    isError?: boolean;
 }) {
     return (
         <motion.div
-            animate={{ scale: isActive ? 1.05 : 1 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            animate={{ scale: isActive ? 1.05 : 1,
+                boxShadow: isError ? '0 0 25px hsl(var(--destructive))' : 'none'
+             }}
+            transition={{ 
+                scale: { type: "spring", stiffness: 300, damping: 20 },
+                boxShadow: isError ? { yoyo: Infinity, duration: 0.5, ease: 'easeInOut' } : { duration: 0.2 }
+            }}
             className="w-48"
         >
             <div
@@ -118,7 +136,8 @@ function ArchitectureNode({
                     <Icon
                         className={cn(
                             "h-10 w-10 transition-colors duration-300",
-                            isActive ? "text-primary" : "text-muted-foreground"
+                            isActive ? "text-primary" : "text-muted-foreground",
+                            isError && "text-destructive"
                         )}
                     />
                     <h3 className="text-base font-bold">{label}</h3>
@@ -130,10 +149,21 @@ function ArchitectureNode({
 }
 
 
-export function ArchitectureFlowSection({ onComplete }: { onComplete: () => void }) {
+export function ArchitectureFlowSection({ onComplete, simulateFailure }: { onComplete: () => void, simulateFailure: boolean }) {
     const [stepIndex, setStepIndex] = React.useState(0);
+    const [isFlashingError, setIsFlashingError] = React.useState(false);
+    
+    const architectureFlowSteps = simulateFailure ? failureFlowSteps : successFlowSteps;
     const currentStep = architectureFlowSteps[stepIndex];
     const isLastStep = stepIndex >= architectureFlowSteps.length - 1;
+
+    React.useEffect(() => {
+        if (simulateFailure && stepIndex === 4) { // Core banking step
+            setIsFlashingError(true);
+        } else {
+            setIsFlashingError(false);
+        }
+    }, [stepIndex, simulateFailure]);
 
     const handleNext = () => {
         if (isLastStep) {
@@ -161,7 +191,7 @@ export function ArchitectureFlowSection({ onComplete }: { onComplete: () => void
                     <AnimatedArrow forward={stepIndex >= 3} backward={stepIndex >= 5} />
                     <ArchitectureNode icon={Shapes} label="Application Layer" description="Temenos on AKS" isActive={stepIndex >= 3} />
                     <AnimatedArrow forward={stepIndex >= 4} backward={stepIndex >= 5} />
-                    <ArchitectureNode icon={Server} label="On-Premise Core" description="Via ExpressRoute" isActive={stepIndex >= 4} />
+                    <ArchitectureNode icon={Server} label="On-Premise Core" description="Via ExpressRoute" isActive={stepIndex >= 4} isError={isFlashingError}/>
                 </div>
                 
                 <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground mb-8">

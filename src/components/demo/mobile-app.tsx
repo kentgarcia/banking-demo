@@ -1,3 +1,4 @@
+
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,11 +20,13 @@ import {
   Wallet,
   BarChart2 as BarChartIcon,
   Loader2,
+  AlertCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Card,
   CardContent,
@@ -544,20 +547,24 @@ function DashboardScreen({ onSendMoney }: { onSendMoney: () => void }) {
 function SendMoneyScreen({
   onBack,
   onSendSuccess,
+  simulateFailure,
+  onSimulateFailureChange,
 }: {
   onBack: () => void;
   onSendSuccess: () => void;
+  simulateFailure: boolean;
+  onSimulateFailureChange: (value: boolean) => void;
 }) {
-  const [status, setStatus] = React.useState<"idle" | "sending" | "success">(
+  const [status, setStatus] = React.useState<"idle" | "sending" | "success" | "failed">(
     "idle"
   );
-  const [amount, setAmount] = React.useState("");
+  const [amount, setAmount] = React.useState("50.00");
 
   const handleSubmit = () => {
     if (status !== "idle" || !amount) return;
     setStatus("sending");
     setTimeout(() => {
-      setStatus("success");
+      setStatus(simulateFailure ? "failed" : "success");
       setTimeout(() => {
         onSendSuccess();
       }, 1500);
@@ -600,6 +607,15 @@ function SendMoneyScreen({
                 disabled={status !== "idle"}
               />
             </div>
+            <div className="flex items-center space-x-2 mt-4 justify-center">
+              <Checkbox id="simulate-failure" checked={simulateFailure} onCheckedChange={onSimulateFailureChange} />
+              <label
+                htmlFor="simulate-failure"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-muted-foreground"
+              >
+                Simulate 'Insufficient Funds'
+              </label>
+            </div>
           </div>
         </main>
         <footer className="p-4 pb-8">
@@ -607,6 +623,7 @@ function SendMoneyScreen({
             onClick={handleSubmit}
             disabled={status !== "idle" || !amount}
             className="w-full h-14 rounded-full"
+            variant={status === "failed" ? "destructive" : "default"}
           >
             {status === "sending" && (
               <>
@@ -617,6 +634,11 @@ function SendMoneyScreen({
               <>
                 <Check className="mr-2 h-4 w-4" /> Sent Successfully
               </>
+            )}
+            {status === 'failed' && (
+                <>
+                    <AlertCircle className="mr-2 h-4 w-4" /> Transaction Failed
+                </>
             )}
             {status === "idle" && "Send"}
           </Button>
@@ -630,10 +652,14 @@ export function MobileApp({
   step,
   setStep,
   onTransferSuccess,
+  simulateFailure,
+  onSimulateFailureChange,
 }: {
   step: string;
   setStep: (step: string) => void;
   onTransferSuccess: () => void;
+  simulateFailure: boolean;
+  onSimulateFailureChange: (value: boolean) => void;
 }) {
   const renderStep = () => {
     switch (step) {
@@ -657,6 +683,8 @@ export function MobileApp({
               setStep("dashboard");
               onTransferSuccess();
             }}
+            simulateFailure={simulateFailure}
+            onSimulateFailureChange={onSimulateFailureChange}
           />
         );
       default:
