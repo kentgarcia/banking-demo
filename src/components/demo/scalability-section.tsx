@@ -8,14 +8,14 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 
-function FlowArrow({ 
-    isActive, 
-    showBackward, 
-    isSlow 
-}: { 
-    isActive: boolean; 
-    showBackward?: boolean; 
-    isSlow?: boolean; 
+function FlowArrow({
+    isActive,
+    showBackward,
+    isSlow
+}: {
+    isActive: boolean;
+    showBackward?: boolean;
+    isSlow?: boolean;
 }) {
     const duration = isSlow ? 3 : 1.5;
     const forwardPath = "M10 25 L140 25";
@@ -33,7 +33,7 @@ function FlowArrow({
                     key={`fwd-${i}`}
                     r="4"
                     fill="hsl(var(--accent))"
-                    style={{ 
+                    style={{
                         offsetPath: `path('${forwardPath}')`,
                         offsetDistance: "var(--offset)"
                     }}
@@ -183,31 +183,31 @@ const simulationSteps = [
         buttonText: "Simulate Peak Load"
     },
     {
-        text: "A sudden surge in user traffic begins to hit the system, flowing through the security layer to the application layer.",
+        text: "A sudden surge in user traffic hits the system. Requests and responses flow simultaneously, increasing the load on the application layer.",
         cpu: 50, progressColor: "bg-yellow-400", isPulsing: false, extraInstances: 0,
-        trafficActive: true, isSlow: false, returnTrafficActive: false,
+        trafficActive: true, isSlow: false, returnTrafficActive: true,
         buttonText: "Next: Observe CPU Spike"
     },
     {
-        text: "The heavy load causes CPU usage to spike, and system performance degrades, slowing down data processing.",
+        text: "The heavy load causes CPU usage to spike. System performance degrades, slowing down all data processing.",
         cpu: 95, progressColor: "bg-destructive", isPulsing: true, extraInstances: 0,
-        trafficActive: true, isSlow: true, returnTrafficActive: false,
+        trafficActive: true, isSlow: true, returnTrafficActive: true,
         buttonText: "Next: Initiate Auto-Scaling"
     },
     {
         text: "Azure Kubernetes Service automatically provisions additional server instances to distribute the incoming workload.",
         cpu: 95, progressColor: "bg-destructive", isPulsing: true, extraInstances: 2,
-        trafficActive: true, isSlow: true, returnTrafficActive: false,
+        trafficActive: true, isSlow: true, returnTrafficActive: true,
         buttonText: "Next: Stabilize System"
     },
     {
-        text: "With the new instances online, the load is balanced. CPU usage returns to a healthy level and data processing speeds recover.",
+        text: "With new instances online, the load is balanced. CPU usage returns to a healthy level and data processing speeds recover.",
         cpu: 40, progressColor: "bg-green-500", isPulsing: false, extraInstances: 2,
-        trafficActive: true, isSlow: false, returnTrafficActive: false,
-        buttonText: "Next: View Return Traffic"
+        trafficActive: true, isSlow: false, returnTrafficActive: true,
+        buttonText: "Finish"
     },
     {
-        text: "The stabilized system now easily handles the traffic, sending responses back to users, completing the cycle.",
+        text: "The system has successfully scaled to meet demand, ensuring a smooth user experience even during peak load.",
         cpu: 40, progressColor: "bg-green-500", isPulsing: false, extraInstances: 2,
         trafficActive: true, isSlow: false, returnTrafficActive: true,
         buttonText: "Finish"
@@ -218,10 +218,10 @@ const simulationSteps = [
 export function ScalabilitySection({ onBack, onRestart }: { onBack: () => void, onRestart: () => void }) {
     const [stepIndex, setStepIndex] = React.useState(0);
     const currentStep = simulationSteps[stepIndex];
-    const isLastStep = stepIndex >= simulationSteps.length - 1;
+    const isFinalState = stepIndex >= simulationSteps.length - 1;
 
     const handleNext = () => {
-        if (isLastStep) return;
+        if (isFinalState) return;
         setStepIndex(stepIndex + 1);
     };
 
@@ -236,7 +236,7 @@ export function ScalabilitySection({ onBack, onRestart }: { onBack: () => void, 
                     <p className="text-muted-foreground mt-2">This proves the platform is elastic and can handle peak demand.</p>
                 </div>
 
-                <div className="flex items-start justify-center w-full max-w-7xl mx-auto my-12">
+                <div className="flex items-center justify-center w-full max-w-7xl mx-auto my-12">
                      <ScalabilityNode icon={Smartphone} label="User Traffic" description="Mobile & Web" />
                     <FlowArrow 
                         isActive={currentStep.trafficActive} 
@@ -249,7 +249,7 @@ export function ScalabilitySection({ onBack, onRestart }: { onBack: () => void, 
                             <Cloud className="h-6 w-6 text-blue-500" />
                             <span className="font-bold text-lg">Azure Cloud</span>
                         </div>
-                        <div className="flex items-start justify-around gap-4">
+                        <div className="flex items-center justify-around gap-4">
                             <ScalabilityNode icon={ShieldCheck} label="Security Layer" description="DDoS & NGFW" />
                             <FlowArrow 
                                 isActive={currentStep.trafficActive} 
@@ -301,7 +301,7 @@ export function ScalabilitySection({ onBack, onRestart }: { onBack: () => void, 
                         </motion.p>
                     </AnimatePresence>
                     <div className="mt-6 flex items-center justify-center gap-4 h-11">
-                       {!isLastStep && (
+                       {!isFinalState && (
                            <AnimatePresence mode="wait">
                                 <motion.div
                                     key={stepIndex}
@@ -315,7 +315,7 @@ export function ScalabilitySection({ onBack, onRestart }: { onBack: () => void, 
                                 </motion.div>
                            </AnimatePresence>
                        )}
-                       {isLastStep && (
+                       {isFinalState && (
                            <motion.div 
                                 className="flex items-center justify-center gap-4"
                                 initial={{opacity: 0}}
