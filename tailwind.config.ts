@@ -112,7 +112,7 @@ export default {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         blob: 'blob 7s infinite',
-        'border-spin': 'border-spin 20s linear infinite',
+        'border-spin': 'border-spin 60s linear infinite',
       },
     },
   },
