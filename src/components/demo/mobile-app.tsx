@@ -395,7 +395,7 @@ function DashboardScreen({ onSendMoney }: { onSendMoney: () => void }) {
           </div>
 
           {/* Actions */}
-          <div className="mt-6 grid grid-cols-3 gap-3">
+          <div className="mt-6 grid grid-cols-2 gap-3">
             <Button
               className="h-12 bg-lime-300 text-lime-900 hover:bg-lime-400 font-bold"
               onClick={onSendMoney}
@@ -406,35 +406,6 @@ function DashboardScreen({ onSendMoney }: { onSendMoney: () => void }) {
             <Button variant="outline" className="h-12 font-bold">
               <Plus className="h-5 w-5 mr-2 -ml-1" /> Add
             </Button>
-            <Button variant="outline" className="h-12 font-bold">
-              <QrCode className="h-5 w-5" />
-            </Button>
-          </div>
-
-          {/* Recent */}
-          <div className="mt-8">
-            <h3 className="font-bold text-lg">Recent</h3>
-            <div className="mt-3 flex items-center gap-3">
-              <Avatar>
-                <AvatarImage src="https://placehold.co/40x40.png" alt="Recipient" data-ai-hint="woman" />
-                <AvatarFallback>MC</AvatarFallback>
-              </Avatar>
-              <Avatar>
-                <AvatarImage src="https://placehold.co/40x40.png" alt="Recipient" data-ai-hint="woman portrait" />
-                <AvatarFallback>SA</AvatarFallback>
-              </Avatar>
-              <Avatar className="bg-black">
-                <span className="font-bold text-white">N</span>
-              </Avatar>
-              <Avatar className="bg-green-500">
-                <span className="font-bold text-white">JP</span>
-              </Avatar>
-              <Avatar>
-                <AvatarFallback>
-                  <User className="text-muted-foreground" />
-                </AvatarFallback>
-              </Avatar>
-            </div>
           </div>
 
           {/* Income Chart */}
@@ -505,9 +476,6 @@ function DashboardScreen({ onSendMoney }: { onSendMoney: () => void }) {
             </Button>
             <Button variant="ghost" className="rounded-full h-12 w-12 flex-col gap-1 text-muted-foreground">
               <Wallet /> <span className="text-xs">Cards</span>
-            </Button>
-            <Button size="icon" className="h-16 w-16 rounded-full bg-lime-300 text-lime-900 shadow-md -translate-y-4">
-              <QrCode className="h-8 w-8" />
             </Button>
             <Button variant="ghost" className="rounded-full h-12 w-12 flex-col gap-1 text-muted-foreground">
               <BarChartIcon /> <span className="text-xs">Stats</span>
