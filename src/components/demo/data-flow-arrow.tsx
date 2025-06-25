@@ -1,4 +1,3 @@
-
 "use client";
 
 import { motion } from "framer-motion";
@@ -20,8 +19,8 @@ function DynamicsLogo() {
     <Image
       src="/dynamics-logo.svg"
       alt="Dynamics 365 Logo"
-      width={32}
-      height={32}
+      width={40}
+      height={40}
     />
   );
 }
