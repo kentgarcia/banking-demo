@@ -160,7 +160,7 @@ function OnboardingScreen({ onGetStarted }: { onGetStarted: () => void }) {
             </motion.p>
           </div>
 
-          <div className="relative mt-8 h-48 flex-shrink-0">
+          <div className="relative mt-12 h-40 flex-shrink-0">
             <motion.div
               className="absolute top-0 left-1/2 z-20 w-36 -translate-x-1/2 rounded-xl border border-white/10 bg-white/20 p-3 text-center shadow-lg backdrop-blur-md"
               initial={{ opacity: 0, y: 20, rotate: -5 }}
@@ -925,6 +925,8 @@ function DemoSection({ onNavigateToArchitecture }: { onNavigateToArchitecture: (
   const [step, setStep] = React.useState("onboarding");
   const [transferMade, setTransferMade] = React.useState(false);
 
+  const crmVisible = step === "welcome" || step === "dashboard" || step === "sendMoney";
+
   return (
     <section
       id="demo"
@@ -948,11 +950,11 @@ function DemoSection({ onNavigateToArchitecture }: { onNavigateToArchitecture: (
           </motion.div>
 
           <AnimatePresence>
-            {step === "welcome" && <DataFlowArrow />}
+            {crmVisible && <DataFlowArrow />}
           </AnimatePresence>
 
           <AnimatePresence>
-            {(step === "welcome" || step === "dashboard" || step === "sendMoney") && (
+            {crmVisible && (
               <motion.div
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -1294,7 +1296,7 @@ export default function DemoPage() {
             </motion.div>
         )}
         </AnimatePresence>
-      </motion.main>
+      </main>
     </div>
   );
 }
