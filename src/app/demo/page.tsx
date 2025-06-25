@@ -104,24 +104,6 @@ function Logo() {
   );
 }
 
-function Header() {
-  return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-sm">
-      <div className="container mx-auto flex h-20 items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-3">
-          <Logo />
-          <span className="text-xl font-bold tracking-wider">NexusForge</span>
-        </Link>
-        <Button asChild variant="outline">
-          <Link href="/">
-            <ArrowLeft className="mr-2" /> Back to Home
-          </Link>
-        </Button>
-      </div>
-    </header>
-  );
-}
-
 function CreditCardContent() {
   return (
     <div className="flex h-full flex-col justify-between text-white">
@@ -946,25 +928,9 @@ function DemoSection({ onNavigateToArchitecture }: { onNavigateToArchitecture: (
   return (
     <section
       id="demo"
-      className="flex flex-1 flex-col items-center justify-center bg-secondary/50 py-16"
+      className="flex w-full flex-col items-center justify-center bg-secondary/50 min-h-screen"
     >
       <div className="container mx-auto px-4">
-        <motion.div
-          className="mb-12 text-center"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.5 }}
-          variants={itemVariants}
-        >
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Interactive Demo
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-            Interact with the Security Bank mobile app prototype and see the
-            backend CRM update in real-time.
-          </p>
-        </motion.div>
-
         <div className="flex min-h-[732px] flex-col items-center justify-center gap-8 lg:flex-row lg:items-start">
           <motion.div
             layout
@@ -1028,24 +994,9 @@ function ArchitectureFlowSection({ onComplete }: { onComplete: () => void }) {
     return (
         <section
             id="architecture"
-            className="flex flex-1 flex-col items-center justify-center bg-secondary/50 py-16"
+            className="flex w-full flex-col items-center justify-center bg-secondary/50 min-h-screen"
         >
             <div className="container mx-auto px-4">
-                <motion.div
-                    className="mb-12 text-center"
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, amount: 0.5 }}
-                    variants={itemVariants}
-                >
-                    <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                        Architecture Flow: The Behind the Scenes
-                    </h2>
-                    <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-                        Follow the data as it moves through our secure and robust infrastructure.
-                    </p>
-                </motion.div>
-
                 <div className="relative mx-auto w-full max-w-5xl rounded-lg border bg-background p-4 shadow-lg md:p-8 min-h-[600px]">
                     {/* Main containers */}
                     <div className="absolute top-4 left-4 flex flex-col items-center gap-2">
@@ -1230,24 +1181,9 @@ function LiveDashboardSection() {
     return (
         <section
             id="live-dashboard"
-            className="flex-1 flex flex-col items-center justify-center bg-secondary/50 py-16"
+            className="w-full flex flex-col items-center justify-center bg-secondary/50 min-h-screen"
         >
             <div className="container mx-auto px-4">
-                <motion.div
-                    className="mb-12 text-center"
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, amount: 0.5 }}
-                    variants={itemVariants}
-                >
-                    <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                        Live System Dashboard
-                    </h2>
-                    <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-                        An overview of system health and a real-time event log.
-                    </p>
-                </motion.div>
-
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
                     {/* Charts Column */}
                     <div className="lg:col-span-2 space-y-6">
@@ -1332,27 +1268,13 @@ function LiveDashboardSection() {
     )
 }
 
-function Footer() {
-  return (
-    <footer className="border-t">
-      <div className="container mx-auto flex flex-col items-center justify-between py-6 px-4 text-sm text-muted-foreground sm:flex-row">
-        <p>
-          &copy; {new Date().getFullYear()} NexusForge. A PoC for Security Bank.
-        </p>
-        <p className="mt-2 sm:mt-0">Digital Transformation Initiative</p>
-      </div>
-    </footer>
-  );
-}
-
 export default function DemoPage() {
   const [currentScreen, setCurrentScreen] = React.useState<'demo' | 'architecture' | 'liveDashboard'>('demo');
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <Header />
+    <div className="bg-background text-foreground">
       <motion.main
-        className="flex flex-1 flex-col"
+        className="flex flex-col"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -1373,7 +1295,6 @@ export default function DemoPage() {
         )}
         </AnimatePresence>
       </motion.main>
-      <Footer />
     </div>
   );
 }
