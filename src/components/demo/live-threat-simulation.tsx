@@ -43,8 +43,8 @@ function ThreatNode({
                     <h3 className="text-base font-bold">{label}</h3>
                     {description && <p className="mt-1 text-xs text-muted-foreground">{description}</p>}
                 </div>
-            </motion.div>
-        </div>
+            </div >
+        </div >
     );
 }
 
@@ -53,12 +53,12 @@ function AttackArrow({ isActive, isBlocked }: { isActive?: boolean; isBlocked?: 
     return (
         <svg width="150" height="80" viewBox="0 0 150 80" className="flex-shrink-0">
             {isActive && (
-                 <motion.g>
+                <motion.g>
                     <path d={path} stroke="hsl(var(--destructive))" strokeWidth="2" strokeDasharray="6 6" />
                     <motion.circle
                         r="5"
                         fill="hsl(var(--destructive))"
-                        style={{ 
+                        style={{
                             offsetPath: `path('${path}')`,
                             offsetDistance: "var(--offset, 0%)"
                         }}
@@ -66,7 +66,7 @@ function AttackArrow({ isActive, isBlocked }: { isActive?: boolean; isBlocked?: 
                         animate={{ "--offset": "100%" }}
                         transition={{ duration: 1.5, ease: "linear" }}
                     />
-                 </motion.g>
+                </motion.g>
             )}
             {isBlocked && (
                 <motion.g initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", delay: 0.2 }}>
@@ -78,19 +78,23 @@ function AttackArrow({ isActive, isBlocked }: { isActive?: boolean; isBlocked?: 
 }
 
 function NotifyArrow({ isActive }: { isActive?: boolean }) {
-    const path = "M10 40 L140 40";
+    const path = "M75 10 L75 70";
     return (
         <svg width="150" height="80" viewBox="0 0 150 80" className="flex-shrink-0">
             {isActive && (
-                 <motion.g>
+                <motion.g
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                >
                     <path d={path} stroke="hsl(var(--primary))" strokeWidth="2" strokeDasharray="6 6" />
                     <motion.path
-                        d="M132 35 L140 40 L132 45"
+                        d="M70 62 L75 70 L80 62"
                         stroke="hsl(var(--primary))"
                         strokeWidth="2"
                         fill="none"
                     />
-                 </motion.g>
+                </motion.g>
             )}
         </svg>
     )
@@ -125,39 +129,43 @@ export function LiveThreatSimulationSection({ onBack, onRestart }: { onBack: () 
                     <p className="text-muted-foreground mt-2">Demonstrating real-time account takeover defense.</p>
                 </div>
 
-                <div className="flex flex-col items-center w-full max-w-5xl mx-auto my-12">
-                    <div className="flex items-start justify-between w-full">
+                <div className="flex flex-col items-center w-full max-w-7xl mx-auto my-12 min-h-[300px]">
+                    <AnimatePresence>
+                        {stepIndex === 3 && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                className="w-full max-w-md"
+                            >
+                                <Alert variant="destructive" className="mb-4">
+                                    <ShieldAlert className="h-4 w-4" />
+                                    <AlertTitle>Threat Detected: Impossible Travel</AlertTitle>
+                                    <AlertDescription>
+                                        Login attempt from unrecognized location blocked.
+                                    </AlertDescription>
+                                </Alert>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                    <div className="flex items-start justify-center w-full gap-4">
                         <ThreatNode icon={Bug} label="Attacker" description="Malicious Actor" isPulsing={stepIndex === 1} />
-                        <div className="flex flex-col items-center pt-8">
-                            <AnimatePresence>
-                                {stepIndex === 3 && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: -20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -20 }}
-                                    className="w-full max-w-md"
-                                >
-                                    <Alert variant="destructive" className="mb-4">
-                                        <ShieldAlert className="h-4 w-4" />
-                                        <AlertTitle>Threat Detected: Impossible Travel</AlertTitle>
-                                        <AlertDescription>
-                                            Login attempt from unrecognized location blocked.
-                                        </AlertDescription>
-                                    </Alert>
-                                </motion.div>
-                                )}
-                            </AnimatePresence>
-                            <div className="flex items-center">
-                                <AttackArrow isActive={stepIndex >= 1} isBlocked={stepIndex >= 3} />
-                                <ThreatNode icon={ShieldAlert} label="Security Layer" description="Palo Alto NGFW & Sentinel" isPulsing={stepIndex === 2} isSuccess={stepIndex >= 3}/>
-                                <AttackArrow isActive={false} />
-                                <ThreatNode icon={Server} label="User Accounts" description="Core Banking System" isPulsing={stepIndex >= 3} isSuccess={stepIndex >=3} />
-                            </div>
+
+                        <div className="pt-10">
+                            <AttackArrow isActive={stepIndex >= 1} isBlocked={stepIndex >= 3} />
                         </div>
-                    </div>
-                     <div className="flex items-center justify-end w-full mt-[-80px] mr-[-120px]">
-                         <NotifyArrow isActive={stepIndex >= 3} />
-                         <ThreatNode icon={Smartphone} label="Legitimate User" description="Secure Notification Sent" isPulsing={stepIndex === 3} isSuccess={stepIndex >=3} />
+
+                        <ThreatNode icon={ShieldAlert} label="Security Layer" description="Palo Alto NGFW & Sentinel" isPulsing={stepIndex === 2} isSuccess={stepIndex >= 3} />
+
+                        <div className="pt-10">
+                            <AttackArrow isActive={stepIndex >= 2} isBlocked={stepIndex >= 3} />
+                        </div>
+
+                        <div className="flex flex-col items-center gap-y-2">
+                             <ThreatNode icon={Server} label="User Accounts" description="Core Banking System" isSuccess={stepIndex >= 3} />
+                             <NotifyArrow isActive={stepIndex >= 3} />
+                             <ThreatNode icon={Smartphone} label="Legitimate User" description="Secure Notification Sent" isPulsing={stepIndex === 3} isSuccess={stepIndex >= 3} />
+                        </div>
                     </div>
                 </div>
 
@@ -171,38 +179,38 @@ export function LiveThreatSimulationSection({ onBack, onRestart }: { onBack: () 
                             exit={{ opacity: 0, y: -20 }}
                             transition={{ duration: 0.3 }}
                         >
-                           {currentStep.text}
+                            {currentStep.text}
                         </motion.p>
                     </AnimatePresence>
                     <div className="mt-6 flex items-center justify-center gap-4 h-11">
-                       {!isFinalState ? (
-                           <AnimatePresence mode="wait">
+                        {!isFinalState ? (
+                            <AnimatePresence mode="wait">
                                 <motion.div
                                     key={stepIndex}
-                                    initial={{ opacity: 0, y: 10}}
+                                    initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
                                 >
                                     <Button onClick={handleNext} size="lg">
-                                        {currentStep.button} <Forward className="ml-2"/>
+                                        {currentStep.button} <Forward className="ml-2" />
                                     </Button>
                                 </motion.div>
-                           </AnimatePresence>
-                       ) : (
-                           <motion.div 
+                            </AnimatePresence>
+                        ) : (
+                            <motion.div
                                 className="flex items-center justify-center gap-4"
-                                initial={{opacity: 0}}
-                                animate={{opacity: 1}}
-                                transition={{delay: 0.5}}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.5 }}
                             >
                                 <Button onClick={onBack} variant="outline" size="lg">
-                                    <ArrowLeft className="mr-2"/> Back
+                                    <ArrowLeft className="mr-2" /> Back
                                 </Button>
                                 <Button onClick={onRestart} size="lg">
-                                    Restart Demo <RotateCcw className="ml-2"/>
+                                    Restart Demo <RotateCcw className="ml-2" />
                                 </Button>
-                           </motion.div>
-                       )}
+                            </motion.div>
+                        )}
                     </div>
                 </div>
             </div>
