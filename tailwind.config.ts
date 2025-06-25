@@ -102,11 +102,17 @@ export default {
             transform: 'translate(0px, 0px) scale(1)',
           },
         },
+        'border-spin': {
+          '100%': {
+            transform: 'rotate(360deg)',
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         blob: 'blob 7s infinite',
+        'border-spin': 'border-spin 4s linear infinite',
       },
     },
   },

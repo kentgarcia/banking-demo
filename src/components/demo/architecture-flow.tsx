@@ -98,21 +98,39 @@ function ArchitectureNode({
 }) {
     return (
         <motion.div
-            className={cn(
-                "flex flex-col items-center text-center gap-2 p-4 rounded-lg border-2 w-48 transition-colors duration-300",
-                isActive ? "border-primary bg-primary/10 shadow-lg" : "bg-background"
-            )}
             animate={{ scale: isActive ? 1.05 : 1 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="w-48"
         >
-            <Icon
-                className={cn(
-                    "h-10 w-10 transition-colors duration-300",
-                    isActive ? "text-primary" : "text-muted-foreground"
-                )}
-            />
-            <h3 className="text-base font-bold">{label}</h3>
-            {description && <p className="text-xs text-muted-foreground mt-1">{description}</p>}
+            <div className="relative">
+                <AnimatePresence>
+                    {isActive && (
+                        <motion.div
+                            className="pointer-events-none absolute -inset-0.5 rounded-lg [background:conic-gradient(from_90deg_at_50%_50%,hsl(var(--primary))_0%,hsl(var(--accent))_50%,hsl(var(--primary))_100%)] animate-border-spin"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1, transition: { duration: 0.5 } }}
+                            exit={{ opacity: 0, transition: { duration: 0.3 } }}
+                            aria-hidden="true"
+                        />
+                    )}
+                </AnimatePresence>
+
+                <div
+                    className={cn(
+                        "relative flex h-full flex-col items-center gap-2 rounded-lg bg-background p-4 text-center transition-colors duration-300",
+                         !isActive && "border-2 border-border"
+                    )}
+                >
+                    <Icon
+                        className={cn(
+                            "h-10 w-10 transition-colors duration-300",
+                            isActive ? "text-primary" : "text-muted-foreground"
+                        )}
+                    />
+                    <h3 className="text-base font-bold">{label}</h3>
+                    {description && <p className="mt-1 text-xs text-muted-foreground">{description}</p>}
+                </div>
+            </div>
         </motion.div>
     );
 }
