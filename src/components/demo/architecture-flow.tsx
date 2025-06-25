@@ -2,17 +2,18 @@
 
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Smartphone, Cloud, Server, ArrowRight } from "lucide-react";
+import { Smartphone, ShieldCheck, Shapes, Server, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const architectureFlowSteps = [
     { text: "This diagram shows the secure, multi-layered journey of your transaction." },
-    { text: "Your request leaves your device and enters the secure Azure cloud environment through an encrypted channel." },
-    { text: "Traffic is first inspected by Azure DDoS Protection and a Palo Alto Next-Generation Firewall (NGFW) for any threats." },
-    { text: "The validated request is routed to Temenos Infinity on Azure Kubernetes Service (AKS) to process the business logic." },
-    { text: "For core banking, the request travels via a private ExpressRoute link, bypassing the public internet for maximum security." },
-    { text: "The Core Banking System confirms the transaction and sends a success message back to you along the same secure path." },
+    { text: "Your request leaves your device and enters the Azure cloud through an encrypted channel." },
+    { text: "At the edge, traffic is inspected by Azure DDoS Protection and a Palo Alto Next-Generation Firewall (NGFW)." },
+    { text: "The validated request is routed to the Application Layer, where Temenos on Azure Kubernetes Service (AKS) processes the business logic." },
+    { text: "Using a private ExpressRoute link, the request securely reaches the On-Premise Core Banking System." },
+    { text: "The Core Banking System confirms the transaction, sending a success message back to you along the same secure path." },
+    { text: "The transaction is complete! This entire flow ensures speed, security, and reliability." },
 ];
 
 
@@ -87,10 +88,12 @@ function AnimatedArrow({
 function ArchitectureNode({
     icon: Icon,
     label,
+    description,
     isActive,
 }: {
     icon: React.ElementType;
     label: string;
+    description?: string;
     isActive: boolean;
 }) {
     return (
@@ -109,6 +112,7 @@ function ArchitectureNode({
                 )}
             />
             <h3 className="text-base font-bold">{label}</h3>
+            {description && <p className="text-xs text-muted-foreground mt-1">{description}</p>}
         </motion.div>
     );
 }
@@ -138,12 +142,14 @@ export function ArchitectureFlowSection({ onComplete }: { onComplete: () => void
                     <p className="text-muted-foreground mt-2">A look behind the scenes of the transaction.</p>
                 </div>
 
-                <div className="flex items-center justify-around w-full max-w-5xl mx-auto my-12">
+                <div className="flex items-center justify-around w-full max-w-7xl mx-auto my-12">
                     <ArchitectureNode icon={Smartphone} label="User's Device" isActive={stepIndex >= 1} />
-                    <AnimatedArrow forward={stepIndex >= 1} backward={stepIndex >= 5} />
-                    <ArchitectureNode icon={Cloud} label="Azure Cloud" isActive={stepIndex >= 1} />
+                    <AnimatedArrow forward={stepIndex >= 2} backward={stepIndex >= 5} />
+                    <ArchitectureNode icon={ShieldCheck} label="Security Layer" description="DDoS & Palo Alto NGFW" isActive={stepIndex >= 2} />
+                    <AnimatedArrow forward={stepIndex >= 3} backward={stepIndex >= 5} />
+                    <ArchitectureNode icon={Shapes} label="Application Layer" description="Temenos on AKS" isActive={stepIndex >= 3} />
                     <AnimatedArrow forward={stepIndex >= 4} backward={stepIndex >= 5} />
-                    <ArchitectureNode icon={Server} label="On-Premise Core" isActive={stepIndex >= 4} />
+                    <ArchitectureNode icon={Server} label="On-Premise Core" description="Via ExpressRoute" isActive={stepIndex >= 4} />
                 </div>
                 
                 <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground mb-8">
