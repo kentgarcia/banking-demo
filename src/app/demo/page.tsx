@@ -1,4 +1,3 @@
-
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -806,13 +805,11 @@ function CrmView({
           </div>
         </div>
       </CardContent>
-      {transferMade && (
-        <CardFooter>
+      <CardFooter>
             <Button onClick={onNavigateToArchitecture} className="w-full">
                 Next: The Architecture Flow <ArrowRight className="ml-2"/>
             </Button>
         </CardFooter>
-      )}
     </Card>
   )
 }
@@ -1267,7 +1264,7 @@ function LiveDashboardSection() {
                 </div>
             </div>
         </section>
-    )
+    );
 }
 
 export default function DemoPage() {
@@ -1296,7 +1293,7 @@ export default function DemoPage() {
             </motion.div>
         )}
         </AnimatePresence>
-      </main>
+      </motion.main>
     </div>
   );
 }
