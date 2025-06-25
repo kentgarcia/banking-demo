@@ -22,6 +22,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
+import { ArrowLeft, RotateCcw } from "lucide-react";
 
 const latencyChartData = [
   { time: "14:29:00", latency: 120 },
@@ -78,10 +79,12 @@ const failureLogs = [
 
 export function LiveDashboardSection({ 
     simulateFailure,
+    onBack,
     onRestart,
  }: { 
     simulateFailure: boolean,
-    onRestart?: () => void,
+    onBack: () => void,
+    onRestart: () => void,
  }) {
     const [logs, setLogs] = React.useState<(typeof successLogs)>([]);
     const [highlightedTxn, setHighlightedTxn] = React.useState<string | null>(null);
@@ -201,11 +204,14 @@ export function LiveDashboardSection({
                                    </AnimatePresence>
                                </ScrollArea>
                            </CardContent>
-                           {simulateFailure && onRestart && (
-                                <CardFooter>
-                                    <Button onClick={onRestart} className="w-full">Next</Button>
-                                </CardFooter>
-                           )}
+                            <CardFooter className="flex justify-between">
+                                <Button onClick={onBack} variant="outline">
+                                    <ArrowLeft className="mr-2" /> Back
+                                </Button>
+                                <Button onClick={onRestart}>
+                                    Restart Demo <RotateCcw className="ml-2" />
+                                </Button>
+                            </CardFooter>
                         </Card>
                     </div>
                 </div>

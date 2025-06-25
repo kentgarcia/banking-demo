@@ -3,7 +3,7 @@
 
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Smartphone, ShieldCheck, Shapes, Server, ArrowRight } from "lucide-react";
+import { Smartphone, ShieldCheck, Shapes, Server, ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -135,7 +135,7 @@ function ArchitectureNode({
                 >
                     <Icon
                         className={cn(
-                            "h-10 w-10 transition-colors duration-300",
+                            "h-10 w-10 transition-colors",
                             isActive ? "text-primary" : "text-muted-foreground",
                             isError && "text-destructive"
                         )}
@@ -149,7 +149,7 @@ function ArchitectureNode({
 }
 
 
-export function ArchitectureFlowSection({ onComplete, simulateFailure }: { onComplete: () => void, simulateFailure: boolean }) {
+export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }: { onComplete: () => void, onBack: () => void, simulateFailure: boolean }) {
     const [stepIndex, setStepIndex] = React.useState(0);
     const [isFlashingError, setIsFlashingError] = React.useState(false);
     
@@ -218,13 +218,17 @@ export function ArchitectureFlowSection({ onComplete, simulateFailure }: { onCom
                             <span className="font-bold text-foreground">Step {stepIndex + 1}: </span>{currentStep.text}
                         </motion.p>
                     </AnimatePresence>
-                    <Button
-                        onClick={handleNext}
-                        className="mt-6"
-                        size="lg"
-                    >
-                        {isLastStep ? 'Finish & View Dashboard' : 'Next Step'} <ArrowRight className="ml-2"/>
-                    </Button>
+                    <div className="mt-6 flex items-center justify-center gap-4">
+                        <Button onClick={onBack} variant="outline" size="lg">
+                            <ArrowLeft className="mr-2"/> Back
+                        </Button>
+                        <Button
+                            onClick={handleNext}
+                            size="lg"
+                        >
+                            {isLastStep ? 'Finish & View Dashboard' : 'Next Step'} <ArrowRight className="ml-2"/>
+                        </Button>
+                    </div>
                 </div>
             </div>
         </section>

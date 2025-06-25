@@ -28,6 +28,7 @@ export default function DemoPage() {
           <motion.div key="architecture" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <ArchitectureFlowSection
               onComplete={() => setCurrentScreen('liveDashboard')}
+              onBack={() => setCurrentScreen('demo')}
               simulateFailure={simulateFailure}
             />
           </motion.div>
@@ -37,6 +38,7 @@ export default function DemoPage() {
           <motion.div key="liveDashboard" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <LiveDashboardSection
               simulateFailure={simulateFailure}
+              onBack={() => setCurrentScreen('architecture')}
               onRestart={() => {
                 setCurrentScreen('demo');
                 setSimulateFailure(false);
