@@ -338,11 +338,11 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
                             <span className="font-bold text-lg">Azure Cloud</span>
                         </div>
                         <div className="flex items-center justify-around gap-4">
-                            <ArchitectureNode 
-                                icon={isFrontDoorStep ? Waypoints : ShieldCheck}
-                                label={isFrontDoorStep ? "Edge Gateway" : "Security Layer"}
-                                description={isFrontDoorStep ? "Front Door, WAF, SSL" : "DDoS & Palo Alto NGFW"}
-                                isActive={stepIndex === 2 || stepIndex === 3 || stepIndex === 7} 
+                            <ArchitectureNode
+                                icon={ShieldCheck}
+                                label="Security Checkpoint"
+                                description="Front Door, WAF & Firewall"
+                                isActive={stepIndex === 2 || stepIndex === 3 || stepIndex === 7}
                                 isPulsing={isFrontDoorStep || isFirewallStep}
                                 overlayIcon={Lock}
                                 overlayActive={isFrontDoorStep}
