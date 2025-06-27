@@ -10,98 +10,169 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-
-const latencyChartData = [
-  { time: "14:29:00", latency: 120 },
-  { time: "14:29:15", latency: 130 },
-  { time: "14:29:30", latency: 110 },
-  { time: "14:29:45", latency: 140 },
-  { time: "14:30:00", latency: 160 },
-  { time: "14:30:15", latency: 150 },
-  { time: "14:30:30", latency: 170 },
-];
-const latencyChartConfig = {
-  latency: {
-    label: "Latency (ms)",
-    color: "hsl(var(--primary))",
-  },
-} satisfies ChartConfig;
-
-const systemHealthData = [
-  { name: "API Gateway", health: 98, fill: "hsl(var(--chart-2))" },
-  { name: "Auth Service", health: 99, fill: "hsl(var(--chart-2))" },
-  { name: "Temenos", health: 95, fill: "hsl(var(--chart-2))" },
-  { name: "Core Banking", health: 100, fill: "hsl(var(--chart-1))" },
-  { name: "D365 Sync", health: 92, fill: "hsl(var(--chart-2))" },
-];
-
-const systemHealthConfig = {
-    health: { label: "Health", color: "hsl(var(--primary))" }
-} satisfies ChartConfig;
+import { ArrowLeft, ArrowRight, Smartphone, ShieldCheck, Shapes, Server, Cloud } from "lucide-react";
 
 const successLogs = [
-    { level: "INFO", text: "[2:30:00 PM] System check initiated by admin." },
-    { level: "INFO", text: "[2:30:01 PM] Traffic from 131.107.x.x passed Palo Alto NGFW inspection. #582910" },
-    { level: "INFO", text: "[2:30:02 PM] New user 'Juan dela Cruz' onboarded via Temenos Infinity. #582910" },
-    { level: "WARN", text: "[2:30:03 PM] High latency detected on Auth Service (180ms)." },
-    { level: "INFO", text: "[2:30:05 PM] API call received by Core Banking System for debit. #582910" },
-    { level: "SUCCESS", text: "[2:30:06 PM] Transaction #582910 complete." },
-    { level: "INFO", text: "[2:30:07 PM] Dynamics 365 timeline updated for contact 'Juan dela Cruz'." },
-    { level: "INFO", text: "[2:30:08 PM] User session for 'maria.clara' initiated." },
-    { level: "INFO", text: "[2:30:10 PM] Health check OK for all services." },
+    { level: "INFO", text: "[12:01:03] Transaction #582910 initiated by User 'Juan dela Cruz'." },
+    { level: "INFO", text: "[12:01:04] Inbound request received by Azure Front Door. SSL handshake complete." },
+    { level: "INFO", text: "[12:01:04] Traffic scrubbing by Azure DDoS Protection. Status: CLEAN." },
+    { level: "INFO", text: "[12:01:05] Deep packet inspection by Palo Alto NGFW. Status: PASSED." },
+    { level: "INFO", text: "[12:01:06] Request routed to Temenos microservice on AKS." },
+    { level: "INFO", text: "[12:01:07] API call to On-Prem Core Banking via private ExpressRoute." },
+    { level: "SUCCESS", text: "[12:01:08] Transaction #582910 validated & completed by Core Banking." },
+    { level: "INFO", text: "[12:01:09] Success response propagating back through security layers." },
+    { level: "INFO", text: "[12:01:10] Confirmation delivered to user device." },
 ];
 
 const failureLogs = [
-    { level: "INFO", text: "[2:30:00 PM] System check initiated by admin." },
-    { level: "INFO", text: "[2:30:01 PM] Traffic from 131.107.x.x passed Palo Alto NGFW inspection. #582910" },
-    { level: "INFO", text: "[2:30:02 PM] New user 'Juan dela Cruz' onboarded via Temenos Infinity. #582910" },
-    { level: "WARN", text: "[2:30:03 PM] High latency detected on Auth Service (180ms)." },
-    { level: "INFO", text: "[2:30:05 PM] API call received by Core Banking System for debit. #582910" },
-    { level: "FAILED", text: "[2:30:06 PM] FAILED: Transaction #582910 declined by Core Banking. Reason: NSF." },
-    { level: "INFO", text: "[2:30:07 PM] Dynamics 365 timeline updated for contact 'Juan dela Cruz'." },
-    { level: "INFO", text: "[2:30:08 PM] User session for 'maria.clara' initiated." },
-    { level: "INFO", text: "[2:30:10 PM] Health check OK for all services." },
-]
+    { level: "INFO", text: "[12:01:03] Transaction #582910 initiated by User 'Juan dela Cruz'." },
+    { level: "INFO", text: "[12:01:04] Inbound request received by Azure Front Door. SSL handshake complete." },
+    { level: "INFO", text: "[12:01:04] Traffic scrubbing by Azure DDoS Protection. Status: CLEAN." },
+    { level: "INFO", text: "[12:01:05] Deep packet inspection by Palo Alto NGFW. Status: PASSED." },
+    { level: "INFO", text: "[12:01:06] Request routed to Temenos microservice on AKS." },
+    { level: "INFO", text: "[12:01:07] API call to On-Prem Core Banking via private ExpressRoute." },
+    { level: "FAILED", text: "[12:01:08] FAILED: Transaction #582910 declined by Core Banking. Reason: NSF." },
+    { level: "INFO", text: "[12:01:09] Failure response propagating back through security layers." },
+    { level: "INFO", text: "[12:01:10] Failure notification delivered to user device." },
+];
+
+function FlowArrow({
+    forward,
+    backward,
+}: {
+    forward: boolean;
+    backward: boolean;
+}) {
+    const duration = 2;
+    const forwardPath = "M10 25 L140 25";
+    const backwardPath = "M140 55 L10 55";
+
+    const renderPackets = (path: string, color: string) => {
+        return [0, 1, 2].map(i => (
+            <motion.circle
+                key={i}
+                r="4"
+                fill={color}
+                style={{
+                    offsetPath: `path("${path}")`,
+                    offsetDistance: "var(--offset, 0%)"
+                }}
+                initial={{ "--offset": "0%" }}
+                animate={{ "--offset": "100%" }}
+                transition={{
+                    duration: duration,
+                    delay: i * (duration / 3),
+                    repeat: Infinity,
+                    ease: "linear",
+                }}
+            />
+        ));
+    };
+
+    return (
+        <div className="relative flex-shrink-0" style={{ width: 150, height: 80 }}>
+            <svg width="150" height="80" viewBox="0 0 150 80" className="absolute inset-0">
+                <path d={forwardPath} stroke="hsl(var(--primary))" strokeWidth="2" strokeDasharray="5 5" opacity={0.3} />
+                <path d="M132 20 L140 25 L132 30" stroke="hsl(var(--primary))" strokeWidth="2" fill="none" opacity={0.3} />
+                <AnimatePresence>
+                    {forward && renderPackets(forwardPath, 'hsl(var(--primary))')}
+                </AnimatePresence>
+
+                <path d={backwardPath} stroke="hsl(var(--accent))" strokeWidth="2" strokeDasharray="5 5" opacity={0.3} />
+                <path d="M18 50 L10 55 L18 60" stroke="hsl(var(--accent))" strokeWidth="2" fill="none" opacity={0.3} />
+                <AnimatePresence>
+                    {backward && renderPackets(backwardPath, 'hsl(var(--accent))')}
+                </AnimatePresence>
+            </svg>
+        </div>
+    );
+}
+
+function ArchitectureNode({
+    icon: Icon,
+    label,
+    isActive,
+    isError,
+}: {
+    icon: React.ElementType;
+    label: string;
+    isActive: boolean;
+    isError?: boolean;
+}) {
+    return (
+        <motion.div
+            animate={{
+                scale: isActive ? 1.05 : 1,
+                boxShadow: isError ? '0 0 25px hsl(var(--destructive))' : (isActive ? '0 0 25px hsl(var(--primary))' : 'none')
+            }}
+            transition={{
+                scale: { type: "spring", stiffness: 300, damping: 20 },
+                boxShadow: { yoyo: Infinity, duration: 0.8, ease: 'easeInOut' }
+            }}
+            className="w-48"
+        >
+            <div
+                className={cn(
+                    "relative rounded-lg",
+                    isActive
+                        ? "animate-border-spin p-0.5 [background:conic-gradient(from_var(--gradient-angle),hsl(var(--primary)),hsl(var(--accent)),hsl(var(--primary)))]"
+                        : "border-2 border-border bg-transparent"
+                )}
+            >
+                <div
+                    className={cn(
+                        "relative flex h-full w-full flex-col items-center gap-2 rounded-[calc(var(--radius)-2px)] bg-background p-4 text-center min-h-[150px] justify-center"
+                    )}
+                >
+                    <Icon
+                        className={cn(
+                            "h-10 w-10 transition-colors",
+                            isActive ? "text-primary" : "text-muted-foreground",
+                            isError && "text-destructive"
+                        )}
+                    />
+                    <h3 className="text-base font-bold">{label}</h3>
+                </div>
+            </div>
+        </motion.div>
+    );
+}
 
 
-export function LiveDashboardSection({ 
+export function LiveDashboardSection({
     simulateFailure,
     onBack,
     onNext,
- }: { 
+}: {
     simulateFailure: boolean,
     onBack: () => void,
     onNext: () => void,
- }) {
+}) {
     const [logs, setLogs] = React.useState<(typeof successLogs)>([]);
-    const [highlightedTxn, setHighlightedTxn] = React.useState<string | null>(null);
+    const [logIndex, setLogIndex] = React.useState(-1);
     const scrollAreaRef = React.useRef<HTMLDivElement>(null);
 
     React.useEffect(() => {
         setLogs([]);
+        setLogIndex(-1);
         const allLogs = simulateFailure ? failureLogs : successLogs;
-        let logIndex = 0;
         const intervalId = setInterval(() => {
-            if (logIndex < allLogs.length) {
-                setLogs(prevLogs => [...prevLogs, allLogs[logIndex]]);
-                logIndex++;
-            } else {
-                clearInterval(intervalId);
-            }
-        }, 1200);
+            setLogIndex(prevIndex => {
+                const nextIndex = prevIndex + 1;
+                if (nextIndex < allLogs.length) {
+                    setLogs(prevLogs => [...prevLogs, allLogs[nextIndex]]);
+                    return nextIndex;
+                } else {
+                    clearInterval(intervalId);
+                    return prevIndex;
+                }
+            });
+        }, 1500);
 
         return () => clearInterval(intervalId);
     }, [simulateFailure]);
@@ -121,6 +192,8 @@ export function LiveDashboardSection({
             default: return "outline";
         }
     }
+    
+    const isErrorState = simulateFailure && logIndex >= 6;
 
     return (
         <section
@@ -128,82 +201,66 @@ export function LiveDashboardSection({
             className="w-full flex flex-col items-center justify-center bg-secondary/50 min-h-screen py-12"
         >
             <div className="container mx-auto px-4">
-                <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                    {/* Charts Column */}
-                    <div className="lg:col-span-2 space-y-6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>API Latency</CardTitle>
-                                <CardDescription>Last 90 seconds</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <ChartContainer config={latencyChartConfig} className="h-[200px] w-full">
-                                    <AreaChart data={latencyChartData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-                                        <CartesianGrid strokeDasharray="3 3" vertical={false}/>
-                                        <XAxis dataKey="time" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
-                                        <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} domain={[80, 200]}/>
-                                        <ChartTooltip content={<ChartTooltipContent indicator="dot" />} />
-                                        <Area type="monotone" dataKey="latency" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.1} strokeWidth={2}/>
-                                    </AreaChart>
-                                </ChartContainer>
-                            </CardContent>
-                        </Card>
-                         <Card>
-                            <CardHeader>
-                                <CardTitle>System Health</CardTitle>
-                                <CardDescription>Uptime and performance status</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                               <ChartContainer config={systemHealthConfig} className="h-[200px] w-full">
-                                   <BarChart data={systemHealthData} layout="vertical" margin={{ left: 10, right: 10 }}>
-                                       <XAxis type="number" hide />
-                                       <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} width={80}/>
-                                       <Bar dataKey="health" radius={4} />
-                                   </BarChart>
-                               </ChartContainer>
-                            </CardContent>
-                        </Card>
+                <div className="text-center mb-8">
+                    <h2 className="text-3xl font-bold tracking-tight">Live Dashboard</h2>
+                    <p className="text-muted-foreground mt-2">Traceability, monitoring, and auditability of a live transaction.</p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Architecture Diagram Column */}
+                    <div className="flex flex-col items-center justify-center">
+                        <div className="flex items-center justify-center w-full flex-col gap-y-4">
+                            <ArchitectureNode icon={Smartphone} label="User's Device" isActive={logIndex === 0 || logIndex >= 8} />
+
+                            <FlowArrow forward={logIndex >= 1 && logIndex <= 6} backward={logIndex >= 7} />
+                            
+                            <div className="relative rounded-lg border-2 border-dashed border-border p-8 bg-background/50">
+                                <div className="absolute top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 text-muted-foreground">
+                                    <Cloud className="h-6 w-6 text-blue-500" />
+                                    <span className="font-bold text-lg">Azure Cloud</span>
+                                </div>
+                                <div className="flex items-center justify-around gap-4">
+                                     <ArchitectureNode
+                                        icon={ShieldCheck}
+                                        label="Security Layer"
+                                        isActive={logIndex >= 1 && logIndex <= 3}
+                                    />
+                                    <FlowArrow forward={logIndex >= 4 && logIndex <= 6} backward={logIndex >= 7} />
+                                    <ArchitectureNode icon={Shapes} label="Application Layer" isActive={logIndex >= 4 && logIndex <= 5} />
+                                </div>
+                            </div>
+                           
+                            <FlowArrow forward={logIndex >= 5 && logIndex <= 6} backward={logIndex >= 7} />
+                            <ArchitectureNode icon={Server} label="On-Premise Core" isActive={logIndex >= 6 && logIndex <= 7} isError={isErrorState} />
+                        </div>
                     </div>
 
                     {/* Log Feed Column */}
-                    <div className="lg:col-span-3">
-                        <Card className="h-full flex flex-col">
-                           <CardHeader className="flex flex-row items-center justify-between">
-                               <div>
-                                   <CardTitle>Live Event Log</CardTitle>
-                                   <CardDescription>Streaming events from the system.</CardDescription>
-                               </div>
-                               <div className="flex gap-2">
-                                   {highlightedTxn && (
-                                       <Button variant="outline" onClick={() => setHighlightedTxn(null)}>Clear Highlight</Button>
-                                   )}
-                                   <Button onClick={() => setHighlightedTxn("#582910")}>
-                                      Show Logs for Txn #582910
-                                   </Button>
-                               </div>
-                           </CardHeader>
-                           <CardContent className="flex-1">
-                               <ScrollArea className="h-[400px] rounded-md border bg-muted/30 p-2" ref={scrollAreaRef}>
-                                   <AnimatePresence>
-                                       {logs.map((log, index) => (
-                                           <motion.div
-                                               key={index}
-                                               layout
-                                               initial={{ opacity: 0, y: 10 }}
-                                               animate={{ opacity: 1, y: 0 }}
-                                               transition={{ duration: 0.3 }}
-                                               className={cn(
-                                                   "flex items-start gap-3 p-2 text-sm rounded-md transition-colors",
-                                                   highlightedTxn && log.text.includes(highlightedTxn) && "bg-primary/10"
-                                               )}
-                                           >
+                    <div>
+                        <Card className="h-full flex flex-col max-h-[700px]">
+                            <CardHeader>
+                                <CardTitle>Live Event Log</CardTitle>
+                                <CardDescription>Streaming events for Transaction #582910</CardDescription>
+                            </CardHeader>
+                            <CardContent className="flex-1">
+                                <ScrollArea className="h-[450px] rounded-md border bg-muted/30 p-2" ref={scrollAreaRef}>
+                                    <AnimatePresence>
+                                        {logs.map((log, index) => (
+                                            <motion.div
+                                                key={index}
+                                                layout
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ duration: 0.3 }}
+                                                className="flex items-start gap-3 p-2 text-sm rounded-md transition-colors"
+                                            >
                                                 <Badge variant={getBadgeVariant(log.level)} className="w-20 justify-center shrink-0">{log.level}</Badge>
                                                 <p className="font-mono text-xs flex-1">{log.text}</p>
-                                           </motion.div>
-                                       ))}
-                                   </AnimatePresence>
-                               </ScrollArea>
-                           </CardContent>
+                                            </motion.div>
+                                        ))}
+                                    </AnimatePresence>
+                                </ScrollArea>
+                            </CardContent>
                             <CardFooter className="flex justify-between">
                                 <Button onClick={onBack} variant="outline">
                                     <ArrowLeft className="mr-2" /> Back
