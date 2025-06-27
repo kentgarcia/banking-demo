@@ -11,7 +11,7 @@ const successFlowSteps = [
     { text: "This diagram shows the secure, multi-layered journey of your transaction. Click 'Next Step' to begin." },
     { text: "A user initiates a fund transfer. The request is sent securely over HTTPS to the Azure cloud." },
     { text: "The request hits Azure Front Door, which provides load balancing, SSL offloading, and Web Application Firewall (WAF) protection." },
-    { text: "Next, traffic is inspected by Azure DDoS Protection and a Palo Alto Next-Generation Firewall (NGFW) for advanced threats." },
+    { text: "The request is actively scanned. Azure DDoS Protection handles traffic scrubbing while the Palo Alto NGFW performs deep packet inspection for advanced threats." },
     { text: "The validated request is routed to the Application Layer, where Temenos on Azure Kubernetes Service (AKS) processes the business logic." },
     { text: "Using a private ExpressRoute link, the request securely reaches the On-Premise Core Banking System." },
     { text: "The Core Banking System confirms the transaction and initiates the response back to the Application Layer." },
@@ -24,7 +24,7 @@ const failureFlowSteps = [
     { text: "This diagram shows the secure, multi-layered journey of your transaction. Click 'Next Step' to begin." },
     { text: "A user initiates a fund transfer. The request is sent securely over HTTPS to the Azure cloud." },
     { text: "The request hits Azure Front Door, which provides load balancing, SSL offloading, and Web Application Firewall (WAF) protection." },
-    { text: "Next, traffic is inspected by Azure DDoS Protection and a Palo Alto Next-Generation Firewall (NGFW) for advanced threats." },
+    { text: "The request is actively scanned. Azure DDoS Protection handles traffic scrubbing while the Palo Alto NGFW performs deep packet inspection for advanced threats." },
     { text: "The validated request is routed to the Application Layer, where Temenos on Azure Kubernetes Service (AKS) processes the business logic." },
     { text: "Using a private ExpressRoute link, the request securely reaches the On-Premise Core Banking System." },
     { text: "The Core Banking System declines the transaction due to insufficient funds and initiates the response." },
@@ -221,7 +221,7 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
                                 label={isFrontDoorStep ? "Edge Gateway" : "Security Layer"}
                                 description={isFrontDoorStep ? "Front Door, WAF, SSL" : "DDoS & Palo Alto NGFW"}
                                 isActive={stepIndex === 2 || stepIndex === 3 || stepIndex === 7} 
-                                isPulsing={isFrontDoorStep}
+                                isPulsing={isFrontDoorStep || isFirewallStep}
                                 overlayIcon={Lock}
                                 overlayActive={isFrontDoorStep}
                             />
@@ -284,4 +284,5 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
     );
 }
 
+    
     
