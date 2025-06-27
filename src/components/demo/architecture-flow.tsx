@@ -14,7 +14,7 @@ const successFlowSteps = [
     { text: "The request is actively scanned. Azure DDoS Protection handles traffic scrubbing while the Palo Alto NGFW performs deep packet inspection for advanced threats." },
     { text: "The request is routed to the Application Layer, where Temenos Digital Banking Microservices on AKS process the business logic in a secure Private VNet." },
     { text: "Using a dedicated ExpressRoute link, the request securely reaches the On-Premise Core Banking System without touching the public internet." },
-    { text: "The Core Banking System confirms the transaction and initiates the response back to the Application Layer." },
+    { text: "The Core Banking System validates the transaction and updates the ledger, then initiates the response back to the Application Layer." },
     { text: "The success message travels back through the security layers, confirming a secure and complete transaction." },
     { text: "Finally, the confirmation is securely sent back to the user's device, completing the transaction." },
     { text: "The transaction is complete! This entire flow ensures speed, security, and reliability." },
@@ -283,7 +283,3 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
         </section>
     );
 }
-
-    
-    
-    
