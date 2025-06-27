@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import {
+    Activity,
     ArrowLeft,
     ArrowRight,
     CheckCircle2,
@@ -27,11 +28,13 @@ import {
     ShieldAlert,
     Timer,
     User,
+    Users,
     Wallet,
     XCircle,
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const timelineSteps = [
     { name: "Initiated", service: "Mobile App", duration: 1000, icon: User },
@@ -40,6 +43,27 @@ const timelineSteps = [
     { name: "Processed", service: "Temenos & On-Prem Core", duration: 2000, icon: Cpu },
     { name: "Confirmed", service: "System-wide", duration: 1000, icon: CheckCircle2 },
 ];
+
+const developerSuccessLogs = [
+  { time: '12:01:03', service: 'MobileGateway', level: 'INFO', msg: 'Received POST /api/v1/transfers from 123.45.67.89' },
+  { time: '12:01:03', service: 'AuthService', level: 'DEBUG', msg: 'Token validation successful for user: juan.delacruz' },
+  { time: '12:01:04', service: 'AzureFrontDoor', level: 'INFO', msg: 'SSL Handshake OK. Routing to aks-main-cluster.' },
+  { time: '12:01:04', service: 'PaloAlto-NGFW', level: 'SECURITY', msg: 'Rule #34 matched: ALLOW_INTERNAL_P2P. Src: 10.0.1.5' },
+  { time: '12:01:05', service: 'TransactionSvc', level: 'DEBUG', msg: 'Processing transfer #TXN2025... Amount: 50.00' },
+  { time: '12:01:06', service: 'ExpressRoute', level: 'INFO', msg: 'Initiating secure tunnel to onprem-core-banking-1' },
+  { time: '12:01:07', service: 'CoreBanking', level: 'DEBUG', msg: 'Ledger update initiated for Acct #XXXX-4455' },
+  { time: '12:01:08', service: 'CoreBanking', level: 'INFO', msg: 'DEBIT OK. Balance updated.' },
+  { time: '12:01:08', service: 'TransactionSvc', level: 'INFO', msg: 'Core banking confirmed success.' },
+  { time: '12:01:09', service: 'NotificationSvc', level: 'INFO', msg: 'Dispatching confirmation to user device.' },
+  { time: '12:01:10', service: 'CRMSyncSvc', level: 'DEBUG', msg: 'Pushing transaction record to Dynamics 365.' },
+];
+const developerFailureLogs = [
+  ...developerSuccessLogs.slice(0, 7),
+  { time: '12:01:08', service: 'CoreBanking', level: 'ERROR', msg: 'DEBIT FAILED. Insufficient funds.' },
+  { time: '12:01:08', service: 'TransactionSvc', level: 'WARN', msg: 'Core banking reported failure. Aborting.' },
+  { time: '12:01:09', service: 'NotificationSvc', level: 'INFO', msg: 'Dispatching failure reason to user device.' },
+];
+
 
 const TransactionSummaryCard = ({ status }: { status: 'In Progress' | 'Completed' | 'Failed' }) => {
     const getStatusColor = () => {
@@ -204,6 +228,53 @@ const SystemHealthPanel = ({ isOverloaded } : { isOverloaded: boolean }) => {
     );
 };
 
+const DeveloperLogView = ({ logs, visibleCount }: { logs: typeof developerSuccessLogs, visibleCount: number }) => {
+    const scrollRef = React.useRef<HTMLDivElement>(null);
+    
+    React.useEffect(() => {
+        if (scrollRef.current) {
+            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        }
+    }, [visibleCount]);
+    
+    const getLogLevelColor = (level: string) => {
+        switch (level) {
+            case 'INFO': return 'text-blue-400';
+            case 'DEBUG': return 'text-gray-500';
+            case 'WARN': return 'text-yellow-400';
+            case 'ERROR': return 'text-red-500';
+            case 'SECURITY': return 'text-purple-400';
+            default: return 'text-white';
+        }
+    };
+    
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>Live System Logs</CardTitle>
+                <CardDescription>Streaming logs from all system components.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div ref={scrollRef} className="bg-neutral-900 text-white font-mono text-xs rounded-md p-4 h-[550px] overflow-y-auto">
+                    {logs.slice(0, visibleCount).map((log, index) => (
+                        <motion.p 
+                            key={index} 
+                            initial={{ opacity: 0 }} 
+                            animate={{ opacity: 1 }} 
+                            transition={{ delay: 0.1 }}
+                            className="mb-1"
+                        >
+                            <span className="text-gray-400">{log.time}</span>
+                            <span className={cn("font-bold mx-2", getLogLevelColor(log.level))}>[{log.level}]</span>
+                            <span className="text-green-400">[{log.service}]</span>
+                            <span className="text-gray-200 ml-2">{log.msg}</span>
+                        </motion.p>
+                    ))}
+                </div>
+            </CardContent>
+        </Card>
+    );
+};
 
 export function LiveDashboardSection({
     simulateFailure,
@@ -214,6 +285,7 @@ export function LiveDashboardSection({
     onBack: () => void,
     onNext: () => void,
 }) {
+    const [viewMode, setViewMode] = React.useState<'business' | 'developer'>('business');
     const [currentStepIndex, setCurrentStepIndex] = React.useState(0);
     const [failedStepIndex, setFailedStepIndex] = React.useState<number | null>(null);
     const [isComplete, setIsComplete] = React.useState(false);
@@ -262,43 +334,76 @@ export function LiveDashboardSection({
         return 'In Progress';
     };
 
+    const devLogsToShow = React.useMemo(() => {
+        if (failedStepIndex !== null) {
+          if (failedStepIndex === 3) return 8;
+          return developerFailureLogs.length;
+        }
+        if (isComplete) return developerSuccessLogs.length;
+    
+        switch (currentStepIndex) {
+          case 0: return 1;
+          case 1: return 3;
+          case 2: return 4;
+          case 3: return 8;
+          case 4: return developerSuccessLogs.length;
+          default: return 0;
+        }
+    }, [currentStepIndex, failedStepIndex, isComplete]);
+
     return (
         <section
             id="live-dashboard"
             className="w-full flex flex-col items-center justify-center bg-secondary/50 min-h-screen py-12"
         >
             <div className="container mx-auto px-4">
-                <div className="text-center mb-8">
+                <div className="text-center mb-4">
                     <h2 className="text-3xl font-bold tracking-tight">Live Transaction Dashboard</h2>
                     <p className="text-muted-foreground mt-2">Traceability, monitoring, and auditability of a live transaction.</p>
                 </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-                    <div className="lg:col-span-2">
-                        <TransactionSummaryCard status={getStatus()} />
-                        <TransactionTimeline
-                            currentStepIndex={currentStepIndex}
-                            failedStepIndex={failedStepIndex}
-                            timestamps={timestamps}
+                
+                <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as any)} className="w-full">
+                    <div className="flex justify-center my-4">
+                        <TabsList className="grid w-full max-w-md grid-cols-2">
+                            <TabsTrigger value="business"><Users className="mr-2"/>Business View</TabsTrigger>
+                            <TabsTrigger value="developer"><Activity className="mr-2"/>Developer View</TabsTrigger>
+                        </TabsList>
+                    </div>
+                    <TabsContent value="business">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                            <div className="lg:col-span-2">
+                                <TransactionSummaryCard status={getStatus()} />
+                                <TransactionTimeline
+                                    currentStepIndex={currentStepIndex}
+                                    failedStepIndex={failedStepIndex}
+                                    timestamps={timestamps}
+                                />
+                            </div>
+                            <div className="lg:col-span-1 space-y-8">
+                                <SystemHealthPanel isOverloaded={simulateFailure && failedStepIndex !== null} />
+                                <AnimatePresence>
+                                {failedStepIndex !== null && (
+                                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+                                        <Alert variant="destructive">
+                                            <FileClock className="h-4 w-4" />
+                                            <AlertTitle>Processing Failure</AlertTitle>
+                                            <AlertDescription>
+                                                The Core Banking System declined the transaction due to insufficient funds.
+                                            </AlertDescription>
+                                        </Alert>
+                                    </motion.div>
+                                )}
+                                </AnimatePresence>
+                            </div>
+                        </div>
+                    </TabsContent>
+                    <TabsContent value="developer">
+                        <DeveloperLogView 
+                            logs={simulateFailure ? developerFailureLogs : developerSuccessLogs} 
+                            visibleCount={devLogsToShow} 
                         />
-                    </div>
-                    <div className="lg:col-span-1 space-y-8">
-                        <SystemHealthPanel isOverloaded={simulateFailure && failedStepIndex !== null} />
-                        <AnimatePresence>
-                        {failedStepIndex !== null && (
-                            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                                <Alert variant="destructive">
-                                    <FileClock className="h-4 w-4" />
-                                    <AlertTitle>Processing Failure</AlertTitle>
-                                    <AlertDescription>
-                                        The Core Banking System declined the transaction due to insufficient funds.
-                                    </AlertDescription>
-                                </Alert>
-                            </motion.div>
-                        )}
-                        </AnimatePresence>
-                    </div>
-                </div>
+                    </TabsContent>
+                </Tabs>
 
                 <Card className="mt-8">
                     <CardFooter className="flex justify-between py-4">
