@@ -18,27 +18,27 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Smartphone, ShieldCheck, Shapes, Server, Cloud } from "lucide-react";
 
 const successLogs = [
-    { level: "INFO", text: "[12:01:03] Transaction #582910 initiated by User 'Juan dela Cruz'." },
-    { level: "INFO", text: "[12:01:04] Inbound request received by Azure Front Door. SSL handshake complete." },
-    { level: "INFO", text: "[12:01:04] Traffic scrubbing by Azure DDoS Protection. Status: CLEAN." },
-    { level: "INFO", text: "[12:01:05] Deep packet inspection by Palo Alto NGFW. Status: PASSED." },
-    { level: "INFO", text: "[12:01:06] Request routed to Temenos microservice on AKS." },
-    { level: "INFO", text: "[12:01:07] API call to On-Prem Core Banking via private ExpressRoute." },
-    { level: "SUCCESS", text: "[12:01:08] Transaction #582910 validated & completed by Core Banking." },
-    { level: "INFO", text: "[12:01:09] Success response propagating back through security layers." },
-    { level: "INFO", text: "[12:01:10] Confirmation delivered to user device." },
+    { level: "INFO", text: "[12:01:03] Transaction initiated by User 'Juan dela Cruz'." },
+    { level: "INFO", text: "[12:01:04] Inbound request received. SSL handshake completed via Azure Front Door." },
+    { level: "INFO", text: "[12:01:04] Traffic inspected by Azure DDoS Protection – no threat detected." },
+    { level: "INFO", text: "[12:01:05] Packet scanned by Palo Alto NGFW. Rule match: OUTBOUND_TRANSACTION_FLOW (Allowed)." },
+    { level: "INFO", text: "[12:01:06] Request received by TransactionService on AKS. Validating credentials..." },
+    { level: "INFO", text: "[12:01:07] Routing transaction through private ExpressRoute channel." },
+    { level: "SUCCESS", text: "[12:01:08] CoreBank: Transaction #582910 validated & completed." },
+    { level: "INFO", text: "[12:01:09] Confirmation sent to user device via secure channel." },
+    { level: "SUCCESS", text: "[12:01:10] TRANSACTION SUCCESSFUL. Elapsed Time: 7.0s" },
 ];
 
 const failureLogs = [
-    { level: "INFO", text: "[12:01:03] Transaction #582910 initiated by User 'Juan dela Cruz'." },
-    { level: "INFO", text: "[12:01:04] Inbound request received by Azure Front Door. SSL handshake complete." },
-    { level: "INFO", text: "[12:01:04] Traffic scrubbing by Azure DDoS Protection. Status: CLEAN." },
-    { level: "INFO", text: "[12:01:05] Deep packet inspection by Palo Alto NGFW. Status: PASSED." },
-    { level: "INFO", text: "[12:01:06] Request routed to Temenos microservice on AKS." },
-    { level: "INFO", text: "[12:01:07] API call to On-Prem Core Banking via private ExpressRoute." },
-    { level: "FAILED", text: "[12:01:08] FAILED: Transaction #582910 declined by Core Banking. Reason: NSF." },
-    { level: "INFO", text: "[12:01:09] Failure response propagating back through security layers." },
-    { level: "INFO", text: "[12:01:10] Failure notification delivered to user device." },
+    { level: "INFO", text: "[12:01:03] Transaction initiated by User 'Juan dela Cruz'." },
+    { level: "INFO", text: "[12:01:04] Inbound request received. SSL handshake completed via Azure Front Door." },
+    { level: "INFO", text: "[12:01:04] Traffic inspected by Azure DDoS Protection – no threat detected." },
+    { level: "INFO", text: "[12:01:05] Packet scanned by Palo Alto NGFW. Rule match: OUTBOUND_TRANSACTION_FLOW (Allowed)." },
+    { level: "INFO", text: "[12:01:06] Request received by TransactionService on AKS. Validating credentials..." },
+    { level: "INFO", text: "[12:01:07] Routing transaction through private ExpressRoute channel." },
+    { level: "FAILED", text: "[12:01:08] FAILED: CoreBank declined Transaction #582910. Reason: Insufficient Funds." },
+    { level: "INFO", text: "[12:01:09] Failure notification sent to user device via secure channel." },
+    { level: "FAILED", text: "[12:01:10] TRANSACTION FAILED. Elapsed Time: 7.0s" },
 ];
 
 function FlowArrow({
