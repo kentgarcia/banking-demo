@@ -67,6 +67,8 @@ export function FeatureCarouselContent({ onComplete }: { onComplete: () => void 
     }),
   };
 
+  const Icon = features[slide].icon;
+
   return (
     <div className="flex h-full w-full flex-col justify-between rounded-[2rem] bg-white p-5 font-body text-neutral-800">
       <header className="flex items-center justify-end h-8">
@@ -101,7 +103,7 @@ export function FeatureCarouselContent({ onComplete }: { onComplete: () => void 
               initial={{ scale: 0.5, opacity: 0 }}
               animate={{ scale: 1, opacity: 1, transition: { delay: 0.2, type: 'spring' } }}
             >
-              <features[slide].icon className={cn("h-24 w-24", features[slide].color)} strokeWidth={1.5} />
+              <Icon className={cn("h-24 w-24", features[slide].color)} strokeWidth={1.5} />
             </motion.div>
             <motion.div
               initial={{ y: 20, opacity: 0 }}
