@@ -264,7 +264,6 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
     const [isFlashingError, setIsFlashingError] = React.useState(false);
     
     const architectureFlowSteps = simulateFailure ? failureFlowSteps : successFlowSteps;
-    const currentStep = architectureFlowSteps[stepIndex];
     const isLastStep = stepIndex >= architectureFlowSteps.length - 1;
 
     const isFrontDoorStep = stepIndex === 2;
@@ -377,30 +376,13 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
                         <span>Response</span>
                     </div>
                 </div>
-
-                <div className="text-center max-w-3xl mx-auto min-h-[60px]">
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={stepIndex}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.3 }}
-                        >
-                            <p className="text-lg text-muted-foreground">
-                                <span className="font-bold text-foreground">Step {stepIndex}: </span>
-                                {currentStep.text}
-                            </p>
-                        </motion.div>
-                    </AnimatePresence>
-                </div>
             </div>
 
             <div className="fixed bottom-6 right-24 z-50 flex items-center gap-4">
-                <Button onClick={onBack} variant="outline" size="lg" disabled={stepIndex === 0} className="shadow-lg">
+                <Button onClick={onBack} variant="outline" size="lg" disabled={stepIndex === 0} className="shadow-lg rounded-full">
                     <ArrowLeft className="mr-2"/> Back
                 </Button>
-                <Button onClick={handleNext} size="lg" className="shadow-lg">
+                <Button onClick={handleNext} size="lg" className="shadow-lg rounded-full">
                     {isLastStep ? 'Finish & View Dashboard' : 'Next Step'} <ArrowRight className="ml-2"/>
                 </Button>
             </div>
