@@ -124,11 +124,6 @@ export function LiveThreatSimulationSection({ onBack, onRestart }: { onBack: () 
             className="flex w-full flex-col items-center justify-center bg-secondary/50 min-h-screen py-12"
         >
             <div className="container mx-auto px-4 flex flex-col items-center">
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold tracking-tight">Live Threat Simulation</h2>
-                    <p className="text-muted-foreground mt-2">Demonstrating real-time account takeover defense.</p>
-                </div>
-
                 <div className="flex flex-col items-center w-full max-w-7xl mx-auto my-12 min-h-[300px]">
                     <AnimatePresence>
                         {stepIndex === 3 && (
@@ -182,40 +177,38 @@ export function LiveThreatSimulationSection({ onBack, onRestart }: { onBack: () 
                             {currentStep.text}
                         </motion.p>
                     </AnimatePresence>
-                    <div className="mt-6 flex items-center justify-center gap-4 h-11">
-                        {!isFinalState ? (
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={stepIndex}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                >
-                                    <Button onClick={handleNext} size="lg">
-                                        {currentStep.button} <Forward className="ml-2" />
-                                    </Button>
-                                </motion.div>
-                            </AnimatePresence>
-                        ) : (
-                            <motion.div
-                                className="flex items-center justify-center gap-4"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ delay: 0.5 }}
-                            >
-                                <Button onClick={onBack} variant="outline" size="lg">
-                                    <ArrowLeft className="mr-2" /> Back
-                                </Button>
-                                <Button onClick={onRestart} size="lg">
-                                    Restart Demo <RotateCcw className="ml-2" />
-                                </Button>
-                            </motion.div>
-                        )}
-                    </div>
                 </div>
+            </div>
+            <div className="fixed bottom-6 right-24 z-50 flex items-center justify-center gap-4">
+                {!isFinalState ? (
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={stepIndex}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                        >
+                            <Button onClick={handleNext} size="lg" className="shadow-lg rounded-full">
+                                {currentStep.button} <Forward className="ml-2" />
+                            </Button>
+                        </motion.div>
+                    </AnimatePresence>
+                ) : (
+                    <motion.div
+                        className="flex items-center justify-center gap-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5 }}
+                    >
+                        <Button onClick={onBack} variant="outline" size="lg" className="shadow-lg rounded-full">
+                            <ArrowLeft className="mr-2" /> Back
+                        </Button>
+                        <Button onClick={onRestart} variant="secondary" size="lg" className="shadow-lg rounded-full">
+                            Restart Demo <RotateCcw className="ml-2" />
+                        </Button>
+                    </motion.div>
+                )}
             </div>
         </section>
     );
 }
-
-    
