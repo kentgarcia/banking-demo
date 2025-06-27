@@ -3,7 +3,7 @@
 
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Smartphone, ShieldCheck, Shapes, Server, ArrowRight, ArrowLeft, Cloud, Waypoints, Lock } from "lucide-react";
+import { ShieldCheck, Shapes, Server, ArrowRight, ArrowLeft, Cloud, Waypoints, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -52,7 +52,7 @@ function FlowArrow({
                 fill={color}
                 style={{ 
                     offsetPath: `path("${path}")`,
-                    offsetDistance: "var(--offset, 0%)"
+                    offsetDistance: "var(--offset)"
                 }}
                 initial={{ "--offset": "0%" }}
                 animate={{ "--offset": "100%" }}
@@ -84,6 +84,25 @@ function FlowArrow({
                 </AnimatePresence>
             </svg>
         </div>
+    );
+}
+
+function PhoneDemoIcon({ className }: { className?: string }) {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 35 70"
+            className={className}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <rect x="2" y="2" width="31" height="66" rx="7" />
+            <path d="M12 5 H 23" strokeWidth="4" />
+            <rect x="5" y="9" width="25" height="52" rx="2" fill="hsl(var(--primary) / 0.1)" stroke="none" />
+        </svg>
     );
 }
 
@@ -200,7 +219,7 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
                 </div>
 
                 <div className="flex items-center justify-center w-full max-w-7xl mx-auto my-12">
-                    <ArchitectureNode icon={Smartphone} label="User's Device" isActive={stepIndex === 1 || stepIndex >= 9} />
+                    <ArchitectureNode icon={PhoneDemoIcon} label="User's Device" isActive={stepIndex === 1 || stepIndex >= 9} />
 
                     <div className="flex flex-col items-center">
                         <FlowArrow forward={stepIndex >= 2 && stepIndex <= 5} backward={stepIndex >= 7} />
@@ -285,4 +304,5 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
             </div>
         </section>
     );
-}
+
+    
