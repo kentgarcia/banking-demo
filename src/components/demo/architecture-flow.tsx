@@ -283,15 +283,10 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
     return (
         <section
             id="architecture"
-            className="flex w-full flex-col items-center justify-center bg-secondary/50 min-h-screen py-12"
+            className="flex w-full flex-col items-center justify-center bg-secondary/50 min-h-screen"
         >
-            <div className="container mx-auto px-4 flex flex-col items-center">
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold tracking-tight">The Architecture Flow</h2>
-                    <p className="text-muted-foreground mt-2">A look behind the scenes of the transaction.</p>
-                </div>
-
-                <div className="flex items-center justify-center w-full max-w-7xl mx-auto my-12">
+            <div className="container mx-auto px-4 flex flex-col items-center flex-1 justify-center">
+                <div className="flex items-center justify-center w-full max-w-7xl mx-auto">
                      <div className="w-48 flex flex-col justify-center items-center gap-2">
                         <div className="origin-center -mb-32" style={{ transform: "scale(0.45)" }}>
                             <ArchitecturePhoneDisplay status={phoneStatus} simulateFailure={simulateFailure} />
@@ -344,7 +339,7 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
                     <ArchitectureNode icon={Server} label="On-Premise Core" isActive={stepIndex === 5 || stepIndex === 6} isError={isFlashingError}/>
                 </div>
                 
-                <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground mb-8">
+                <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground my-8">
                     <div className="flex items-center gap-2">
                          <div className="w-8 h-px bg-primary border-t-2 border-dashed border-primary"/>
                         <span>Request</span>
@@ -355,7 +350,7 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
                     </div>
                 </div>
 
-                <div className="mt-8 text-center max-w-2xl mx-auto">
+                <div className="text-center max-w-2xl mx-auto">
                     <AnimatePresence mode="wait">
                         <motion.p
                             key={stepIndex}
