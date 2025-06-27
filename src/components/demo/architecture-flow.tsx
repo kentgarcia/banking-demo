@@ -3,9 +3,98 @@
 
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ShieldCheck, Shapes, Server, ArrowRight, ArrowLeft, Cloud, Waypoints, Lock } from "lucide-react";
+import { ShieldCheck, Shapes, Server, ArrowRight, ArrowLeft, Cloud, Waypoints, Lock, Loader2, XCircle, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+
+// --- START: New components for dynamic phone display ---
+
+function ConfettiPiece({ initial, animate, transition, color }: { initial: any; animate: any; transition: any; color: string; }) {
+  return (
+    <motion.div
+      className="absolute top-1/2 left-1/2 pointer-events-none"
+      style={{
+        backgroundColor: color,
+        width: 8,
+        height: 16,
+        borderRadius: 4,
+      }}
+      initial={initial}
+      animate={animate}
+      transition={transition}
+    />
+  );
+}
+
+function Confetti() {
+  const colors = ["#a7f3d0", "#d9f99d", "#fde68a", "#fecaca", "#fca5a5"];
+  const pieces = React.useMemo(() => Array.from({ length: 30 }).map((_, i) => ({
+    initial: { opacity: 1, scale: 1, x: 0, y: 0, rotate: Math.random() * 360 },
+    animate: { 
+      opacity: 0, 
+      scale: 0.5 + Math.random() * 0.5, 
+      x: (Math.random() - 0.5) * 400,
+      y: (Math.random() - 0.2) * 400,
+      rotate: Math.random() * 360 + 180,
+    },
+    transition: { duration: 1.5 + Math.random(), ease: 'easeOut', delay: 0.1 + Math.random() * 0.2 },
+    color: colors[i % colors.length],
+  })), []);
+
+  return (
+    <div className="absolute inset-0 flex items-center justify-center overflow-hidden z-0">
+      {pieces.map((piece, i) => (
+        <ConfettiPiece key={i} {...piece} />
+      ))}
+    </div>
+  );
+}
+
+function PhoneScreenContent({ status, simulateFailure }: { status: 'sending' | 'complete', simulateFailure: boolean }) {
+    if (status === 'sending') {
+        return (
+            <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-100 text-neutral-800 p-4 text-center">
+                <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                <p className="mt-4 font-semibold text-lg">Processing Transaction...</p>
+                <p className="text-muted-foreground text-sm">Please wait a moment.</p>
+            </div>
+        )
+    }
+
+    return (
+        <div className="w-full h-full flex flex-col items-center justify-center text-center bg-neutral-100 text-neutral-800 relative">
+            {!simulateFailure && <Confetti />}
+            <div className="z-10 flex flex-col items-center p-4">
+                {simulateFailure ? (
+                    <XCircle className="h-20 w-20 text-destructive" />
+                ) : (
+                    <CheckCircle2 className="h-20 w-20 text-green-500" />
+                )}
+                <h3 className="text-xl font-bold mt-4">
+                    {simulateFailure ? "Transaction Failed" : "Transaction Sent!"}
+                </h3>
+                <p className="text-muted-foreground max-w-xs mt-2 text-sm">
+                    {simulateFailure ? "Insufficient funds in your account." : `You have successfully sent $50.00 to Maria Clara.`}
+                </p>
+                {!simulateFailure && <p className="font-mono mt-2 text-xs bg-muted p-2 rounded-md">Txn ID: #582910</p>}
+            </div>
+        </div>
+    )
+}
+
+function ArchitecturePhoneDisplay({ status, simulateFailure }: { status: 'sending' | 'complete', simulateFailure: boolean }) {
+    return (
+        <div className="relative h-[700px] w-[350px] rounded-[2.5rem] border-[14px] border-neutral-800 bg-neutral-800 shadow-2xl shrink-0">
+            <div className="absolute top-0 left-1/2 h-8 w-[160px] -translate-x-1/2 rounded-b-xl bg-neutral-800" />
+            <div className="h-full w-full overflow-hidden rounded-[2rem]">
+                <PhoneScreenContent status={status} simulateFailure={simulateFailure} />
+            </div>
+        </div>
+    )
+}
+
+// --- END: New components for dynamic phone display ---
+
 
 const successFlowSteps = [
     { text: "This diagram shows the secure, multi-layered journey of your transaction. Click 'Next Step' to begin." },
@@ -52,6 +141,7 @@ function FlowArrow({
                 fill={color}
                 style={{ 
                     offsetPath: `path("${path}")`,
+                    // @ts-ignore
                     offsetDistance: "var(--offset)"
                 }}
                 initial={{ "--offset": "0%" }}
@@ -84,25 +174,6 @@ function FlowArrow({
                 </AnimatePresence>
             </svg>
         </div>
-    );
-}
-
-function PhoneDemoIcon({ className }: { className?: string }) {
-    return (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 35 70"
-            className={className}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <rect x="2" y="2" width="31" height="66" rx="7" />
-            <path d="M12 5 H 23" strokeWidth="4" />
-            <rect x="5" y="9" width="25" height="52" rx="2" fill="hsl(var(--primary) / 0.1)" stroke="none" />
-        </svg>
     );
 }
 
@@ -207,6 +278,8 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
         }
     };
     
+    const phoneStatus = stepIndex < 9 ? 'sending' : 'complete';
+
     return (
         <section
             id="architecture"
@@ -219,7 +292,13 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
                 </div>
 
                 <div className="flex items-center justify-center w-full max-w-7xl mx-auto my-12">
-                    <ArchitectureNode icon={PhoneDemoIcon} label="User's Device" isActive={stepIndex === 1 || stepIndex >= 9} />
+                     <div className="w-48 flex flex-col justify-center items-center gap-2">
+                        <div className="origin-center -mb-32" style={{ transform: "scale(0.45)" }}>
+                            <ArchitecturePhoneDisplay status={phoneStatus} simulateFailure={simulateFailure} />
+                        </div>
+                        <h3 className="text-base font-bold">User's Device</h3>
+                    </div>
+
 
                     <div className="flex flex-col items-center">
                         <FlowArrow forward={stepIndex >= 2 && stepIndex <= 5} backward={stepIndex >= 7} />
@@ -304,5 +383,7 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
             </div>
         </section>
     );
+
+    
 
     
