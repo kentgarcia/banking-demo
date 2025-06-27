@@ -10,8 +10,6 @@ import {
   Signal,
   Wifi,
   User,
-  Mail,
-  Lock,
   Check,
   Bell,
   Plus,
@@ -26,6 +24,8 @@ import {
   Camera,
   ScanLine,
   FileCheck2,
+  Calendar,
+  MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -148,23 +148,22 @@ function OnboardingContent({ onGetStarted }: { onGetStarted: () => void }) {
   );
 }
 
-function CreateAccountContent({
-  onAccountCreated,
-}: {
-  onAccountCreated: () => void;
-}) {
-  const [status, setStatus] = React.useState<
-    "idle" | "submitting"
-  >("idle");
+function ReviewInfoContent({ onConfirm }: { onConfirm: () => void }) {
+  const [name, setName] = React.useState("Juan dela Cruz");
+  const [dob, setDob] = React.useState("January 1, 1990");
+  const [address, setAddress] = React.useState("123 Rizal St, Metro Manila");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (status !== "idle") return;
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15, delayChildren: 0.3 },
+    },
+  };
 
-    setStatus("submitting");
-    setTimeout(() => {
-      onAccountCreated();
-    }, 1500); // Simulate API call
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } },
   };
 
   return (
@@ -175,96 +174,76 @@ function CreateAccountContent({
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <h1 className="text-3xl font-bold tracking-tight">
-            Create Account
-          </h1>
-          <p className="mt-2 text-base text-neutral-300">Let's get you started.</p>
+          <h1 className="text-3xl font-bold tracking-tight">Review Your Information</h1>
+          <p className="mt-2 text-base text-neutral-300">
+            We've pre-filled your details from your ID. Please confirm they are correct.
+          </p>
         </motion.div>
 
-        <motion.form
+        <motion.div
           className="mt-8 flex-1 space-y-4"
-          onSubmit={handleSubmit}
+          variants={containerVariants}
           initial="hidden"
           animate="visible"
-          variants={{
-            hidden: { opacity: 0 },
-            visible: {
-              opacity: 1,
-              transition: { staggerChildren: 0.1, delayChildren: 0.3 },
-            },
-          }}
         >
-          <motion.div
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 },
-            }}
-            className="space-y-2"
-          >
+          <motion.div variants={itemVariants} className="space-y-2">
             <Label htmlFor="name">Full Name</Label>
             <div className="relative">
               <User className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
               <Input
                 id="name"
-                value="Juan dela Cruz"
-                readOnly
-                className="pl-10 bg-white/5 border-white/20 text-white placeholder:text-neutral-400"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="pl-10 bg-white/5 border-white/20 text-white"
               />
             </div>
           </motion.div>
-          <motion.div
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 },
-            }}
-            className="space-y-2"
-          >
-            <Label htmlFor="email">Email Address</Label>
+          <motion.div variants={itemVariants} className="space-y-2">
+            <Label htmlFor="dob">Date of Birth</Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
+              <Calendar className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
               <Input
-                id="email"
-                type="email"
-                placeholder="juan.delacruz@email.com"
-                className="pl-10 bg-white/5 border-white/20 text-white placeholder:text-neutral-400"
+                id="dob"
+                value={dob}
+                onChange={(e) => setDob(e.target.value)}
+                className="pl-10 bg-white/5 border-white/20 text-white"
               />
             </div>
           </motion.div>
-          <motion.div
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 },
-            }}
-            className="space-y-2"
-          >
-            <Label htmlFor="password">Password</Label>
+          <motion.div variants={itemVariants} className="space-y-2">
+            <Label htmlFor="address">Address</Label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
+              <MapPin className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
               <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                className="pl-10 bg-white/5 border-white/20 text-white placeholder:text-neutral-400"
+                id="address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                className="pl-10 bg-white/5 border-white/20 text-white"
               />
             </div>
           </motion.div>
-        </motion.form>
+        </motion.div>
       </main>
 
       <footer className="mt-auto pb-4">
-        <Button
-          size="lg"
-          className="h-14 w-full rounded-full bg-lime-300 font-bold text-green-900 shadow-lg shadow-lime-300/30 transition hover:bg-lime-400 disabled:bg-lime-300/50"
-          onClick={handleSubmit}
-          disabled={status !== "idle"}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.5, ease: 'easeOut' }}
         >
-          {status === "idle" && "Create Account"}
-          {status === "submitting" && "Creating Account..."}
-        </Button>
+          <Button
+            size="lg"
+            className="h-14 w-full rounded-full bg-lime-300 font-bold text-green-900 shadow-lg shadow-lime-300/30 transition hover:bg-lime-400"
+            onClick={onConfirm}
+          >
+            Confirm & Create Account
+          </Button>
+        </motion.div>
       </footer>
     </>
   );
 }
+
 
 function EkycContent({ onEkycComplete }: { onEkycComplete: () => void }) {
   const [status, setStatus] = React.useState<"idle" | "scanning">("idle");
@@ -817,7 +796,7 @@ export function MobileApp({
   onSimulateFailureChange: (value: boolean) => void;
 }) {
 
-  const onboardingSteps = ['onboarding', 'createAccount', 'eKYC', 'faceVerification', 'accountCreatedSuccess'];
+  const onboardingSteps = ['onboarding', 'eKYC', 'faceVerification', 'reviewInfo', 'accountCreatedSuccess'];
   if (onboardingSteps.includes(step)) {
     return (
       <div className="h-full w-full overflow-hidden rounded-[2rem] bg-[#0a2820] font-body text-white">
@@ -841,19 +820,7 @@ export function MobileApp({
                   transition={{ ease: "easeInOut", duration: 0.5 }}
                   className="flex h-full flex-col px-5"
                 >
-                  <OnboardingContent onGetStarted={() => setStep("createAccount")} />
-                </motion.div>
-              )}
-              {step === "createAccount" && (
-                <motion.div
-                  key="createAccount"
-                  initial={{ x: "100%" }}
-                  animate={{ x: "0%" }}
-                  exit={{ x: "-100%" }}
-                  transition={{ ease: "easeInOut", duration: 0.5 }}
-                  className="flex h-full flex-col px-5"
-                >
-                  <CreateAccountContent onAccountCreated={() => setStep("eKYC")} />
+                  <OnboardingContent onGetStarted={() => setStep("eKYC")} />
                 </motion.div>
               )}
                {step === "eKYC" && (
@@ -877,16 +844,24 @@ export function MobileApp({
                   transition={{ ease: "easeInOut", duration: 0.5 }}
                   className="flex h-full flex-col"
                 >
-                  <FaceVerificationContent onComplete={() => setStep("accountCreatedSuccess")} />
+                  <FaceVerificationContent onComplete={() => setStep("reviewInfo")} />
+                </motion.div>
+              )}
+              {step === "reviewInfo" && (
+                <motion.div
+                  key="reviewInfo"
+                  initial={{ x: "100%" }}
+                  animate={{ x: "0%" }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  transition={{ ease: "easeInOut", duration: 0.4 }}
+                  className="flex h-full flex-col px-5"
+                >
+                  <ReviewInfoContent onConfirm={() => setStep("accountCreatedSuccess")} />
                 </motion.div>
               )}
                {step === "accountCreatedSuccess" && (
                 <motion.div
                   key="accountCreatedSuccess"
-                  initial={{ x: "100%" }}
-                  animate={{ x: "0%" }}
-                  exit={{ x: "-100%" }}
-                  transition={{ ease: "easeInOut", duration: 0.5 }}
                   className="flex h-full flex-col"
                 >
                   <AccountCreatedSuccessScreen onAnimationComplete={() => setStep("welcome")} />
