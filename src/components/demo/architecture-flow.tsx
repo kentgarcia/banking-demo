@@ -53,13 +53,15 @@ function Confetti() {
   );
 }
 
-function PhoneScreenContent({ status, simulateFailure }: { status: 'sending' | 'complete', simulateFailure: boolean }) {
+function PhoneScreenContent({ status, simulateFailure }: { status: 'idle' | 'sending' | 'complete', simulateFailure: boolean }) {
+    if (status === 'idle') {
+        return <div className="w-full h-full bg-neutral-100" />;
+    }
+
     if (status === 'sending') {
         return (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-100 text-neutral-800 p-4 text-center">
-                <Loader2 className="h-12 w-12 animate-spin text-primary" />
-                <p className="mt-4 font-semibold text-lg">Processing Transaction...</p>
-                <p className="text-muted-foreground text-sm">Please wait a moment.</p>
+            <div className="w-full h-full flex flex-col items-center justify-center bg-accent/20 p-4 text-center">
+                <Loader2 className="h-16 w-16 animate-spin text-accent" />
             </div>
         )
     }
@@ -85,7 +87,7 @@ function PhoneScreenContent({ status, simulateFailure }: { status: 'sending' | '
     )
 }
 
-function ArchitecturePhoneDisplay({ status, simulateFailure }: { status: 'sending' | 'complete', simulateFailure: boolean }) {
+function ArchitecturePhoneDisplay({ status, simulateFailure }: { status: 'idle' | 'sending' | 'complete', simulateFailure: boolean }) {
     return (
         <div className="relative h-[700px] w-[350px] rounded-[2.5rem] border-[14px] border-neutral-800 bg-neutral-800 shadow-2xl shrink-0">
             <div className="absolute top-0 left-1/2 h-8 w-[160px] -translate-x-1/2 rounded-b-xl bg-neutral-800" />
@@ -284,7 +286,7 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
         }
     };
     
-    const phoneStatus = stepIndex < 9 ? 'sending' : 'complete';
+    const phoneStatus: 'idle' | 'sending' | 'complete' = stepIndex === 0 ? 'idle' : (stepIndex < 9 ? 'sending' : 'complete');
 
     return (
         <section
@@ -294,8 +296,26 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
             <div className="container mx-auto px-4 w-full max-w-7xl flex flex-1 flex-col items-center justify-center">
                 <div className="flex w-full flex-grow items-center justify-center">
                      <div className="w-48 flex flex-col justify-center items-center gap-2">
-                        <div className="origin-center -mb-32" style={{ transform: "scale(0.45)" }}>
-                            <ArchitecturePhoneDisplay status={phoneStatus} simulateFailure={simulateFailure} />
+                        <div className="relative">
+                            <div className="origin-center -mb-32" style={{ transform: "scale(0.45)" }}>
+                                <ArchitecturePhoneDisplay status={phoneStatus} simulateFailure={simulateFailure} />
+                            </div>
+                            <AnimatePresence>
+                                {phoneStatus === 'sending' && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.3, delay: 0.2 }}
+                                        className="absolute bottom-28 left-1/2 -translate-x-1/2 w-max bg-background/80 backdrop-blur-sm p-3 rounded-lg shadow-lg border border-border z-10"
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                                            <p className="text-sm font-semibold whitespace-nowrap">Processing Transaction...</p>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
                         <h3 className="text-base font-bold">User's Device</h3>
                     </div>
