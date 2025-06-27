@@ -12,8 +12,8 @@ const successFlowSteps = [
     { text: "A user initiates a fund transfer. The request is sent securely over HTTPS to the Azure cloud." },
     { text: "The request hits Azure Front Door, which provides load balancing, SSL offloading, and Web Application Firewall (WAF) protection." },
     { text: "The request is actively scanned. Azure DDoS Protection handles traffic scrubbing while the Palo Alto NGFW performs deep packet inspection for advanced threats." },
-    { text: "The validated request is routed to the Application Layer, where Temenos on Azure Kubernetes Service (AKS) processes the business logic." },
-    { text: "Using a private ExpressRoute link, the request securely reaches the On-Premise Core Banking System." },
+    { text: "The request is routed to the Application Layer, where Temenos Digital Banking Microservices on AKS process the business logic in a secure Private VNet." },
+    { text: "Using a dedicated ExpressRoute link, the request securely reaches the On-Premise Core Banking System without touching the public internet." },
     { text: "The Core Banking System confirms the transaction and initiates the response back to the Application Layer." },
     { text: "The success message travels back through the security layers, confirming a secure and complete transaction." },
     { text: "Finally, the confirmation is securely sent back to the user's device, completing the transaction." },
@@ -25,8 +25,8 @@ const failureFlowSteps = [
     { text: "A user initiates a fund transfer. The request is sent securely over HTTPS to the Azure cloud." },
     { text: "The request hits Azure Front Door, which provides load balancing, SSL offloading, and Web Application Firewall (WAF) protection." },
     { text: "The request is actively scanned. Azure DDoS Protection handles traffic scrubbing while the Palo Alto NGFW performs deep packet inspection for advanced threats." },
-    { text: "The validated request is routed to the Application Layer, where Temenos on Azure Kubernetes Service (AKS) processes the business logic." },
-    { text: "Using a private ExpressRoute link, the request securely reaches the On-Premise Core Banking System." },
+    { text: "The request is routed to the Application Layer, where Temenos Digital Banking Microservices on AKS process the business logic in a secure Private VNet." },
+    { text: "Using a dedicated ExpressRoute link, the request securely reaches the On-Premise Core Banking System without touching the public internet." },
     { text: "The Core Banking System declines the transaction due to insufficient funds and initiates the response." },
     { text: "The failure message travels back through the security layers, handled gracefully by the system." },
     { text: "The app is informed of the issue, and the failure message is securely delivered to your device." },
@@ -284,5 +284,6 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
     );
 }
 
+    
     
     
