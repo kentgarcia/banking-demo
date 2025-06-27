@@ -144,12 +144,13 @@ function FlowArrow({
                 fill={color}
                 style={{
                     offsetPath: `path("${path}")`,
+                    offsetDistance: "var(--offset, 0%)",
                 }}
                 animate={{
-                    offsetDistance: "100%"
+                    "--offset": "100%"
                 }}
                 initial={{
-                    offsetDistance: "0%"
+                    "--offset": "0%"
                 }}
                 transition={{
                     duration: duration,
@@ -290,8 +291,8 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
             id="architecture"
             className="flex w-full flex-col items-center justify-center bg-secondary/50 min-h-screen p-4"
         >
-            <div className="w-full flex-1 flex flex-col items-center justify-center">
-                <div className="flex w-full flex-grow items-center justify-around">
+            <div className="container mx-auto px-4 w-full max-w-7xl flex flex-1 flex-col items-center justify-center">
+                <div className="flex w-full flex-grow items-center justify-center">
                      <div className="w-48 flex flex-col justify-center items-center gap-2">
                         <div className="origin-center -mb-32" style={{ transform: "scale(0.45)" }}>
                             <ArchitecturePhoneDisplay status={phoneStatus} simulateFailure={simulateFailure} />
