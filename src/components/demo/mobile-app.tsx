@@ -21,6 +21,10 @@ import {
   BarChart2 as BarChartIcon,
   Loader2,
   AlertCircle,
+  UploadCloud,
+  Camera,
+  ScanLine,
+  FileCheck2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,6 +46,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell } from "recharts";
+import { Progress } from "@/components/ui/progress";
 
 function CreditCardContent() {
   return (
@@ -65,67 +70,66 @@ function CreditCardContent() {
 
 function OnboardingContent({ onGetStarted }: { onGetStarted: () => void }) {
   return (
-    <>
-      <main className="flex flex-1 flex-col">
-        <div className="mt-8">
-          <motion.h1
-            className="text-4xl font-bold leading-tight tracking-tight"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-          >
-            Welcome to the
-            <br />
-            Future of Banking
-          </motion.h1>
-          <motion.p
-            className="mt-4 max-w-xs text-base text-neutral-300"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-          >
-            Experience cutting-edge features, top-notch security, and instant
-            access to your banking made better for you
-          </motion.p>
-        </div>
+    <div className="flex flex-1 flex-col">
+      <div className="mt-8">
+        <motion.h1
+          className="text-4xl font-bold leading-tight tracking-tight"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          Welcome to the
+          <br />
+          Future of Banking
+        </motion.h1>
+        <motion.p
+          className="mt-4 max-w-xs text-base text-neutral-300"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          Experience cutting-edge features, top-notch security, and instant
+          access to your banking made better for you
+        </motion.p>
+      </div>
 
-        <div className="relative mt-12 h-40 flex-shrink-0">
-          <motion.div
-            className="absolute top-0 left-1/2 z-20 w-36 -translate-x-1/2 rounded-xl border border-white/10 bg-white/20 p-3 text-center shadow-lg backdrop-blur-md"
-            initial={{ opacity: 0, y: 20, rotate: -5 }}
-            animate={{ opacity: 1, y: 0, rotate: -5 }}
-            transition={{
-              delay: 1,
-              duration: 0.5,
-              type: "spring",
-              stiffness: 100,
-            }}
-          >
-            <p className="text-xl font-semibold">$2537.98</p>
-            <p className="text-xs text-neutral-200">Balance</p>
-          </motion.div>
-
-          <motion.div
-            className="absolute top-8 -left-4 h-40 w-64 origin-bottom-right rounded-2xl border border-white/20 bg-green-400/30 p-4 shadow-2xl backdrop-blur-lg"
-            initial={{ opacity: 0, x: -50, rotate: -30 }}
-            animate={{ opacity: 1, x: 0, rotate: -20 }}
-            transition={{ delay: 0.6, type: "spring" }}
-          >
-            <CreditCardContent />
-          </motion.div>
-          <motion.div
-            className="absolute top-12 left-8 h-40 w-64 origin-bottom-left rounded-2xl border border-white/20 bg-lime-300/30 p-4 shadow-2xl backdrop-blur-lg"
-            initial={{ opacity: 0, x: 50, rotate: 25 }}
-            animate={{ opacity: 1, x: 0, rotate: -5 }}
-            transition={{ delay: 0.8, type: "spring" }}
-          >
-            <CreditCardContent />
-          </motion.div>
-        </div>
-      </main>
-
-      <footer className="mt-auto pb-4">
+      <div className="relative mt-12 h-40 flex-shrink-0">
         <motion.div
+          className="absolute top-0 left-1/2 z-20 w-36 -translate-x-1/2 rounded-xl border border-white/10 bg-white/20 p-3 text-center shadow-lg backdrop-blur-md"
+          initial={{ opacity: 0, y: 20, rotate: -5 }}
+          animate={{ opacity: 1, y: 0, rotate: -5 }}
+          transition={{
+            delay: 1,
+            duration: 0.5,
+            type: "spring",
+            stiffness: 100,
+          }}
+        >
+          <p className="text-xl font-semibold">$2537.98</p>
+          <p className="text-xs text-neutral-200">Balance</p>
+        </motion.div>
+
+        <motion.div
+          className="absolute top-8 -left-4 h-40 w-64 origin-bottom-right rounded-2xl border border-white/20 bg-green-400/30 p-4 shadow-2xl backdrop-blur-lg"
+          initial={{ opacity: 0, x: -50, rotate: -30 }}
+          animate={{ opacity: 1, x: 0, rotate: -20 }}
+          transition={{ delay: 0.6, type: "spring" }}
+        >
+          <CreditCardContent />
+        </motion.div>
+        <motion.div
+          className="absolute top-12 left-8 h-40 w-64 origin-bottom-left rounded-2xl border border-white/20 bg-lime-300/30 p-4 shadow-2xl backdrop-blur-lg"
+          initial={{ opacity: 0, x: 50, rotate: 25 }}
+          animate={{ opacity: 1, x: 0, rotate: -5 }}
+          transition={{ delay: 0.8, type: "spring" }}
+        >
+          <CreditCardContent />
+        </motion.div>
+      </div>
+
+      <footer className="mt-auto flex-1 flex items-end pb-4">
+        <motion.div
+          className="w-full"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2, duration: 0.5 }}
@@ -139,7 +143,7 @@ function OnboardingContent({ onGetStarted }: { onGetStarted: () => void }) {
           </Button>
         </motion.div>
       </footer>
-    </>
+    </div>
   );
 }
 
@@ -149,7 +153,7 @@ function CreateAccountContent({
   onAccountCreated: () => void;
 }) {
   const [status, setStatus] = React.useState<
-    "idle" | "submitting" | "success"
+    "idle" | "submitting"
   >("idle");
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -158,11 +162,8 @@ function CreateAccountContent({
 
     setStatus("submitting");
     setTimeout(() => {
-      setStatus("success");
-      setTimeout(() => {
-        onAccountCreated();
-      }, 2000); // Show success for 2s then transition
-    }, 2500); // Simulate API call
+      onAccountCreated();
+    }, 1500); // Simulate API call
   };
 
   return (
@@ -260,40 +261,151 @@ function CreateAccountContent({
           {status === "submitting" && "Creating Account..."}
         </Button>
       </footer>
-      <AnimatePresence>
-        {status === "success" && (
-          <motion.div
-            className="absolute inset-0 flex flex-col items-center justify-center space-y-4 bg-green-500"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              className="flex h-24 w-24 items-center justify-center rounded-full bg-white/30"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{
-                delay: 0.2,
-                type: "spring",
-                stiffness: 260,
-                damping: 20,
-              }}
-            >
-              <Check className="h-16 w-16 text-white" />
-            </motion.div>
-            <motion.h2
-              className="text-2xl font-bold text-white"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0, transition: { delay: 0.4 } }}
-            >
-              Account Created!
-            </motion.h2>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 }
+
+function EkycContent({ onEkycComplete }: { onEkycComplete: () => void }) {
+  const [status, setStatus] = React.useState<"idle" | "scanning">("idle");
+  const [progress, setProgress] = React.useState(0);
+
+  const handleUpload = () => {
+    setStatus("scanning");
+  };
+
+  React.useEffect(() => {
+    if (status === "scanning") {
+      setProgress(0);
+      const timer = setTimeout(() => setProgress(100), 100);
+      const completionTimer = setTimeout(() => {
+        onEkycComplete();
+      }, 3000);
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(completionTimer);
+      };
+    }
+  }, [status, onEkycComplete]);
+
+  return (
+    <main className="flex h-full flex-col px-5 pt-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <h1 className="text-3xl font-bold tracking-tight">Verify Your Identity</h1>
+        <p className="mt-2 text-base text-neutral-300">
+          For your security, please upload a government-issued ID.
+        </p>
+      </motion.div>
+
+      <div className="flex flex-1 flex-col items-center justify-center">
+        <AnimatePresence mode="wait">
+          {status === "idle" ? (
+            <motion.div
+              key="idle"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="w-full text-center"
+            >
+              <div
+                onClick={handleUpload}
+                className="relative cursor-pointer rounded-2xl border-2 border-dashed border-white/30 bg-white/5 p-8 transition-colors hover:bg-white/10"
+              >
+                <motion.div 
+                  className="absolute inset-0 rounded-2xl border-2 border-lime-400"
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                />
+                <UploadCloud className="mx-auto h-12 w-12 text-lime-300" />
+                <p className="mt-4 font-semibold">Tap to upload your ID</p>
+                <p className="text-xs text-neutral-400">or use camera</p>
+              </div>
+              <div className="mt-6 text-left">
+                <p className="text-sm font-semibold text-neutral-300">We accept:</p>
+                <ul className="mt-2 space-y-1 text-xs text-neutral-400 list-disc list-inside">
+                  <li>Passport, Driver's License</li>
+                  <li>UMID, PhilSys ID (National ID)</li>
+                  <li>Postal ID</li>
+                </ul>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="scanning"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="w-full flex flex-col items-center"
+            >
+              <div className="relative h-40 w-64">
+                <div className="absolute inset-0 overflow-hidden rounded-xl">
+                    <svg width="256" height="160" viewBox="0 0 256 160" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-full w-full">
+                        <rect width="256" height="160" rx="12" fill="#4A5568"/>
+                        <rect x="20" y="25" width="50" height="60" rx="4" fill="#718096"/>
+                        <rect x="82" y="40" width="112" height="10" rx="5" fill="#A0AEC0"/>
+                        <rect x="82" y="60" width="140" height="10" rx="5" fill="#A0AEC0"/>
+                        <rect x="20" y="100" width="216" height="8" rx="4" fill="#718096"/>
+                        <rect x="20" y="118" width="154" height="8" rx="4" fill="#718096"/>
+                    </svg>
+                  <motion.div 
+                    className="absolute inset-x-0 h-1 bg-lime-300/80 shadow-[0_0_10px_2px_#A3E635]"
+                    style={{ y: '-100%' }}
+                    animate={{ y: '160px' }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                  />
+                </div>
+              </div>
+              <p className="mt-4 font-semibold">Scanning ID...</p>
+              <Progress value={progress} className="mt-2 h-2 w-64 bg-white/10" indicatorClassName="bg-lime-400" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <footer className="h-14 pb-4" />
+    </main>
+  );
+}
+
+
+function AccountCreatedSuccessScreen({ onAnimationComplete }: { onAnimationComplete: () => void; }) {
+  React.useEffect(() => {
+    const timer = setTimeout(onAnimationComplete, 2000);
+    return () => clearTimeout(timer);
+  }, [onAnimationComplete]);
+
+  return (
+    <motion.div
+      className="absolute inset-0 flex flex-col items-center justify-center space-y-4 bg-green-500"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <motion.div
+        className="flex h-24 w-24 items-center justify-center rounded-full bg-white/30"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{
+          delay: 0.2,
+          type: "spring",
+          stiffness: 260,
+          damping: 20,
+        }}
+      >
+        <FileCheck2 className="h-16 w-16 text-white" />
+      </motion.div>
+      <motion.h2
+        className="text-2xl font-bold text-white"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0, transition: { delay: 0.4 } }}
+      >
+        Account Verified!
+      </motion.h2>
+    </motion.div>
+  );
+}
+
 
 function WelcomeScreen({ onContinue }: { onContinue: () => void }) {
   return (
@@ -607,12 +719,14 @@ export function MobileApp({
   simulateFailure: boolean;
   onSimulateFailureChange: (value: boolean) => void;
 }) {
-  if (step === "onboarding" || step === "createAccount") {
+
+  const onboardingSteps = ['onboarding', 'createAccount', 'eKYC', 'accountCreatedSuccess'];
+  if (onboardingSteps.includes(step)) {
     return (
       <div className="h-full w-full overflow-hidden rounded-[2rem] bg-[#0a2820] font-body text-white">
-        <div className="relative flex h-full flex-col bg-gradient-to-br from-green-500/20 via-transparent to-green-900/20 p-5">
-          <header className="z-10 flex items-center justify-between text-xs font-light text-neutral-300">
-            <span>{step === "onboarding" ? "9:41" : "9:42"}</span>
+        <div className="relative flex h-full flex-col bg-gradient-to-br from-green-500/20 via-transparent to-green-900/20">
+          <header className="z-10 flex items-center justify-between text-xs font-light text-neutral-300 p-5 pt-3">
+            <span>9:41</span>
             <div className="flex items-center gap-1.5">
               <Signal className="h-4 w-4" />
               <Wifi className="h-4 w-4" />
@@ -624,9 +738,11 @@ export function MobileApp({
               {step === "onboarding" && (
                 <motion.div
                   key="onboarding"
+                  initial={{ x: "100%" }}
+                  animate={{ x: "0%" }}
                   exit={{ x: "-100%" }}
-                  transition={{ ease: "easeInOut", duration: 0.4 }}
-                  className="flex h-full flex-col"
+                  transition={{ ease: "easeInOut", duration: 0.5 }}
+                  className="flex h-full flex-col px-5"
                 >
                   <OnboardingContent onGetStarted={() => setStep("createAccount")} />
                 </motion.div>
@@ -636,10 +752,35 @@ export function MobileApp({
                   key="createAccount"
                   initial={{ x: "100%" }}
                   animate={{ x: "0%" }}
-                  transition={{ ease: "easeInOut", duration: 0.4 }}
+                  exit={{ x: "-100%" }}
+                  transition={{ ease: "easeInOut", duration: 0.5 }}
+                  className="flex h-full flex-col px-5"
+                >
+                  <CreateAccountContent onAccountCreated={() => setStep("eKYC")} />
+                </motion.div>
+              )}
+               {step === "eKYC" && (
+                <motion.div
+                  key="eKYC"
+                  initial={{ x: "100%" }}
+                  animate={{ x: "0%" }}
+                  exit={{ x: "-100%" }}
+                  transition={{ ease: "easeInOut", duration: 0.5 }}
                   className="flex h-full flex-col"
                 >
-                  <CreateAccountContent onAccountCreated={() => setStep("welcome")} />
+                  <EkycContent onEkycComplete={() => setStep("accountCreatedSuccess")} />
+                </motion.div>
+              )}
+               {step === "accountCreatedSuccess" && (
+                <motion.div
+                  key="accountCreatedSuccess"
+                  initial={{ x: "100%" }}
+                  animate={{ x: "0%" }}
+                  exit={{ x: "-100%" }}
+                  transition={{ ease: "easeInOut", duration: 0.5 }}
+                  className="flex h-full flex-col"
+                >
+                  <AccountCreatedSuccessScreen onAnimationComplete={() => setStep("welcome")} />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -668,7 +809,6 @@ export function MobileApp({
           />
         );
       default:
-        // This case should ideally not be reached with the new structure
         return null;
     }
   };
