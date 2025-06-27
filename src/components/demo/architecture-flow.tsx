@@ -6,9 +6,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ShieldCheck, Shapes, Server, ArrowRight, ArrowLeft, Cloud, Lock, Loader2, XCircle, CheckCircle2, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-
 
 // --- START: New components for dynamic phone display ---
 
@@ -291,56 +288,42 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
     
     const phoneStatus: 'idle' | 'sending' | 'complete' = stepIndex === 0 ? 'idle' : (stepIndex < 9 ? 'sending' : 'complete');
 
-    // Popover logic
-    const userDevicePopoverOpen = [1, 8, 9].includes(stepIndex);
-    const securityPopoverOpen = [2, 3, 7].includes(stepIndex);
-    const appLayerPopoverOpen = stepIndex === 4;
-    const onPremPopoverOpen = [5, 6].includes(stepIndex);
-
     return (
         <section
             id="architecture"
             className="flex w-full flex-col items-center justify-center bg-secondary/50 min-h-screen p-4"
         >
             <div className="container mx-auto px-4 w-full max-w-7xl flex flex-1 flex-col items-center justify-center">
-
                 <div className="flex w-full flex-grow items-center justify-center">
-                    <Popover open={userDevicePopoverOpen}>
-                        <PopoverTrigger asChild>
-                            <div className="w-48 flex flex-col justify-center items-center gap-2">
-                                <div className="relative">
-                                    <div className="origin-center -mb-32" style={{ transform: "scale(0.45)" }}>
-                                        <ArchitecturePhoneDisplay status={phoneStatus} simulateFailure={simulateFailure} />
-                                    </div>
-                                    <AnimatePresence>
-                                        {phoneStatus === 'sending' && (
-                                            <motion.div
-                                                initial={{ opacity: 0, y: 10 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0 }}
-                                                transition={{ duration: 0.3, delay: 0.2 }}
-                                                className="absolute bottom-28 left-1/2 -translate-x-1/2 w-max bg-background/80 backdrop-blur-sm p-3 rounded-lg shadow-lg border border-border z-10"
-                                            >
-                                                <div className="flex items-center gap-2">
-                                                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                                                    <p className="text-sm font-semibold whitespace-nowrap">Processing Transaction...</p>
-                                                </div>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
-                                </div>
-                                <h3 className="text-base font-bold">User's Device</h3>
+                    <div className="w-48 flex flex-col justify-center items-center gap-2">
+                        <div className="relative">
+                            <div className="origin-center -mb-32" style={{ transform: "scale(0.45)" }}>
+                                <ArchitecturePhoneDisplay status={phoneStatus} simulateFailure={simulateFailure} />
                             </div>
-                        </PopoverTrigger>
-                        <PopoverContent side="right" className="max-w-xs">
-                             <p><span className="font-bold text-foreground">Step {stepIndex}: </span>{currentStep.text}</p>
-                        </PopoverContent>
-                    </Popover>
+                            <AnimatePresence>
+                                {phoneStatus === 'sending' && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.3, delay: 0.2 }}
+                                        className="absolute bottom-28 left-1/2 -translate-x-1/2 w-max bg-background/80 backdrop-blur-sm p-3 rounded-lg shadow-lg border border-border z-10"
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                                            <p className="text-sm font-semibold whitespace-nowrap">Processing Transaction...</p>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                        <h3 className="text-base font-bold text-center mt-2">User's Device</h3>
+                    </div>
 
                     <div className="flex flex-col items-center">
-                        <FlowArrow forward={stepIndex >= 2 && stepIndex <= 5} backward={stepIndex >= 7} />
+                        <FlowArrow forward={stepIndex >= 1 && stepIndex <= 5} backward={stepIndex >= 7} />
                         <AnimatePresence>
-                        {stepIndex >= 1 && (
+                        {(stepIndex >= 1 && stepIndex <= 5) && (
                             <motion.div initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 0}}>
                                 <p className="text-xs text-muted-foreground mt-[-20px]">HTTPS Request</p>
                             </motion.div>
@@ -354,44 +337,26 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
                             <span className="font-bold text-lg">Azure Cloud</span>
                         </div>
                         <div className="flex items-center justify-around gap-4">
-                            <Popover open={securityPopoverOpen}>
-                                <PopoverTrigger asChild>
-                                    <div>
-                                    <ArchitectureNode
-                                        icon={ShieldCheck}
-                                        label="Security Checkpoint"
-                                        description="Front Door, WAF & Firewall"
-                                        isActive={stepIndex === 2 || stepIndex === 3 || stepIndex === 7}
-                                        isPulsing={isFrontDoorStep || isFirewallStep}
-                                        overlayIcon={Lock}
-                                        overlayActive={isFrontDoorStep}
-                                    />
-                                    </div>
-                                </PopoverTrigger>
-                                <PopoverContent side="bottom" className="max-w-xs">
-                                     <p><span className="font-bold text-foreground">Step {stepIndex}: </span>{currentStep.text}</p>
-                                </PopoverContent>
-                            </Popover>
+                            <ArchitectureNode
+                                icon={ShieldCheck}
+                                label="Security Checkpoint"
+                                description="Front Door, WAF & Firewall"
+                                isActive={stepIndex === 2 || stepIndex === 3 || stepIndex === 7}
+                                isPulsing={isFrontDoorStep || isFirewallStep}
+                                overlayIcon={Lock}
+                                overlayActive={isFrontDoorStep}
+                            />
                             
                             <FlowArrow forward={stepIndex >= 4 && stepIndex <= 5} backward={stepIndex >= 7 && stepIndex < 8} />
                             
-                            <Popover open={appLayerPopoverOpen}>
-                                <PopoverTrigger asChild>
-                                    <div>
-                                    <ArchitectureNode icon={Shapes} label="Application Layer" description="Temenos on AKS" isActive={stepIndex === 4 || (stepIndex >= 6 && stepIndex < 7)} />
-                                    </div>
-                                </PopoverTrigger>
-                                <PopoverContent side="bottom" className="max-w-xs">
-                                     <p><span className="font-bold text-foreground">Step {stepIndex}: </span>{currentStep.text}</p>
-                                </PopoverContent>
-                            </Popover>
+                            <ArchitectureNode icon={Shapes} label="Application Layer" description="Temenos on AKS" isActive={stepIndex === 4 || (stepIndex >= 6 && stepIndex < 7)} />
                         </div>
                     </div>
                     
                     <div className="flex flex-col items-center">
-                        <FlowArrow forward={stepIndex >= 5 && stepIndex <= 6} backward={stepIndex >= 6 && stepIndex < 7} />
+                        <FlowArrow forward={stepIndex >= 5 && stepIndex < 7} backward={stepIndex >= 6 && stepIndex < 7} />
                          <AnimatePresence>
-                        {stepIndex >= 5 && (
+                        {(stepIndex >= 5 && stepIndex < 7) && (
                             <motion.div initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 0}}>
                                <p className="text-xs text-muted-foreground mt-[-20px]">ExpressRoute</p>
                             </motion.div>
@@ -399,16 +364,7 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
                         </AnimatePresence>
                     </div>
                     
-                    <Popover open={onPremPopoverOpen}>
-                        <PopoverTrigger asChild>
-                           <div>
-                           <ArchitectureNode icon={Server} label="On-Premise Core" isActive={stepIndex === 5 || stepIndex === 6} isError={isFlashingError}/>
-                           </div>
-                        </PopoverTrigger>
-                        <PopoverContent side="left" className="max-w-xs">
-                             <p><span className="font-bold text-foreground">Step {stepIndex}: </span>{currentStep.text}</p>
-                        </PopoverContent>
-                    </Popover>
+                   <ArchitectureNode icon={Server} label="On-Premise Core" isActive={stepIndex === 5 || stepIndex === 6} isError={isFlashingError}/>
                 </div>
                 
                 <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground my-8">
@@ -420,6 +376,23 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
                         <div className="w-8 h-px bg-accent border-t-2 border-dashed border-accent"/>
                         <span>Response</span>
                     </div>
+                </div>
+
+                <div className="text-center max-w-3xl mx-auto min-h-[60px]">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={stepIndex}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.3 }}
+                        >
+                            <p className="text-lg text-muted-foreground">
+                                <span className="font-bold text-foreground">Step {stepIndex}: </span>
+                                {currentStep.text}
+                            </p>
+                        </motion.div>
+                    </AnimatePresence>
                 </div>
 
                 <div className="mt-6 flex items-center justify-center gap-4">
