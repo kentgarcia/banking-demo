@@ -394,18 +394,15 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
                         </motion.div>
                     </AnimatePresence>
                 </div>
+            </div>
 
-                <div className="mt-6 flex items-center justify-center gap-4">
-                    <Button onClick={onBack} variant="outline" size="lg" disabled={stepIndex === 0}>
-                        <ArrowLeft className="mr-2"/> Back
-                    </Button>
-                    <Button
-                        onClick={handleNext}
-                        size="lg"
-                    >
-                        {isLastStep ? 'Finish & View Dashboard' : 'Next Step'} <ArrowRight className="ml-2"/>
-                    </Button>
-                </div>
+            <div className="fixed bottom-6 right-24 z-50 flex items-center gap-4">
+                <Button onClick={onBack} variant="outline" size="lg" disabled={stepIndex === 0} className="shadow-lg">
+                    <ArrowLeft className="mr-2"/> Back
+                </Button>
+                <Button onClick={handleNext} size="lg" className="shadow-lg">
+                    {isLastStep ? 'Finish & View Dashboard' : 'Next Step'} <ArrowRight className="ml-2"/>
+                </Button>
             </div>
         </section>
     );
