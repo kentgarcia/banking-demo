@@ -50,9 +50,12 @@ function FlowArrow({
                 key={i}
                 r="4"
                 fill={color}
-                style={{ offsetPath: `path("${path}")` }}
-                initial={{ offsetDistance: "0%" }}
-                animate={{ offsetDistance: "100%" }}
+                style={{ 
+                    offsetPath: `path("${path}")`,
+                    offsetDistance: "var(--offset, 0%)"
+                }}
+                initial={{ "--offset": "0%" }}
+                animate={{ "--offset": "100%" }}
                 transition={{
                     duration: duration,
                     delay: i * (duration / 3),
