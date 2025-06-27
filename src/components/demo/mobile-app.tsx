@@ -444,86 +444,96 @@ function FaceVerificationContent({ onComplete }: { onComplete: () => void }) {
   );
 }
 
-
-function AccountCreatedSuccessScreen({ onAnimationComplete }: { onAnimationComplete: () => void; }) {
-  React.useEffect(() => {
-    const timer = setTimeout(onAnimationComplete, 2000);
-    return () => clearTimeout(timer);
-  }, [onAnimationComplete]);
-
+function ConfettiPiece({ initial, animate, transition, color }: { initial: any; animate: any; transition: any; color: string; }) {
   return (
     <motion.div
-      className="absolute inset-0 flex flex-col items-center justify-center space-y-4 bg-green-500"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      <motion.div
-        className="flex h-24 w-24 items-center justify-center rounded-full bg-white/30"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{
-          delay: 0.2,
-          type: "spring",
-          stiffness: 260,
-          damping: 20,
-        }}
-      >
-        <FileCheck2 className="h-16 w-16 text-white" />
-      </motion.div>
-      <motion.h2
-        className="text-2xl font-bold text-white"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0, transition: { delay: 0.4 } }}
-      >
-        Account Verified!
-      </motion.h2>
-    </motion.div>
+      className="absolute top-1/2 left-1/2 pointer-events-none"
+      style={{
+        backgroundColor: color,
+        width: 8,
+        height: 16,
+        borderRadius: 4,
+      }}
+      initial={initial}
+      animate={animate}
+      transition={transition}
+    />
   );
 }
 
+function Confetti() {
+  const colors = ["#a7f3d0", "#d9f99d", "#fde68a", "#fecaca", "#fca5a5"];
+  const pieces = React.useMemo(() => Array.from({ length: 30 }).map((_, i) => ({
+    initial: { opacity: 1, scale: 1, x: 0, y: 0, rotate: Math.random() * 360 },
+    animate: { 
+      opacity: 0, 
+      scale: 0.5 + Math.random() * 0.5, 
+      x: (Math.random() - 0.5) * 400,
+      y: (Math.random() - 0.2) * 400,
+      rotate: Math.random() * 360 + 180,
+    },
+    transition: { duration: 1.5 + Math.random(), ease: 'easeOut', delay: 0.1 + Math.random() * 0.2 },
+    color: colors[i % colors.length],
+  })), []);
 
-function WelcomeScreen({ onContinue }: { onContinue: () => void }) {
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center space-y-4 rounded-[2rem] bg-white p-5 font-body">
+    <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+      {pieces.map((piece, i) => (
+        <ConfettiPiece key={i} {...piece} />
+      ))}
+    </div>
+  );
+}
+
+function AccountCreatedSuccessScreen({ onContinueToDashboard }: { onContinueToDashboard: () => void; }) {
+  return (
+    <div className="flex h-full w-full flex-col items-center justify-center space-y-4 rounded-[2rem] bg-white p-5 font-body relative overflow-hidden">
+      <Confetti />
       <motion.div
-        className="flex h-24 w-24 items-center justify-center rounded-full bg-green-500/20"
+        className="flex h-24 w-24 items-center justify-center rounded-full bg-green-500/20 z-10"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
-        transition={{ type: "spring", stiffness: 260, damping: 20 }}
+        transition={{ 
+          delay: 0.4,
+          type: "spring", 
+          stiffness: 260, 
+          damping: 15 
+        }}
       >
         <Check className="h-16 w-16 text-green-600" />
       </motion.div>
       <motion.h2
-        className="text-center text-2xl font-bold"
+        className="text-center text-3xl font-bold z-10"
         initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0, transition: { delay: 0.2 } }}
+        animate={{ opacity: 1, y: 0, transition: { delay: 0.6 } }}
       >
-        Welcome, Juan!
+        Account Created!
       </motion.h2>
       <motion.p
-        className="text-center text-muted-foreground"
+        className="text-center text-muted-foreground max-w-xs z-10"
         initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0, transition: { delay: 0.3 } }}
+        animate={{ opacity: 1, y: 0, transition: { delay: 0.7 } }}
       >
-        Your account is ready.
+        You're now ready to bank smart.
       </motion.p>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0, transition: { delay: 0.4 } }}
-        className="pt-8"
+        animate={{ opacity: 1, y: 0, transition: { delay: 0.9 } }}
+        className="pt-8 z-10 w-full max-w-xs"
       >
         <Button
           size="lg"
-          className="h-14 rounded-full"
-          onClick={onContinue}
+          className="h-14 w-full rounded-full relative overflow-hidden group"
+          onClick={onContinueToDashboard}
         >
-          Continue to Dashboard
+          <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full transition-transform duration-700 ease-in-out group-hover:translate-x-full" />
+          <span className="relative">Go to Dashboard</span>
         </Button>
       </motion.div>
     </div>
   );
 }
+
 
 const chartData = [
   { day: "Sun", income: 2800 },
@@ -796,7 +806,7 @@ export function MobileApp({
   onSimulateFailureChange: (value: boolean) => void;
 }) {
 
-  const onboardingSteps = ['onboarding', 'eKYC', 'faceVerification', 'reviewInfo', 'accountCreatedSuccess'];
+  const onboardingSteps = ['onboarding', 'eKYC', 'faceVerification', 'reviewInfo'];
   if (onboardingSteps.includes(step)) {
     return (
       <div className="h-full w-full overflow-hidden rounded-[2rem] bg-[#0a2820] font-body text-white">
@@ -859,14 +869,6 @@ export function MobileApp({
                   <ReviewInfoContent onConfirm={() => setStep("accountCreatedSuccess")} />
                 </motion.div>
               )}
-               {step === "accountCreatedSuccess" && (
-                <motion.div
-                  key="accountCreatedSuccess"
-                  className="flex h-full flex-col"
-                >
-                  <AccountCreatedSuccessScreen onAnimationComplete={() => setStep("welcome")} />
-                </motion.div>
-              )}
             </AnimatePresence>
           </div>
         </div>
@@ -876,8 +878,8 @@ export function MobileApp({
 
   const renderStep = () => {
     switch (step) {
-      case "welcome":
-        return <WelcomeScreen onContinue={() => setStep("dashboard")} />;
+      case "accountCreatedSuccess":
+        return <AccountCreatedSuccessScreen onContinueToDashboard={() => setStep("dashboard")} />;
       case "dashboard":
         return <DashboardScreen onSendMoney={() => setStep("sendMoney")} />;
       case "sendMoney":
@@ -885,6 +887,8 @@ export function MobileApp({
           <SendMoneyScreen
             onBack={() => setStep("dashboard")}
             onSendSuccess={() => {
+              const customerStatus = step === "welcome" ? "onboarding" : "active";
+              const crmVisible = step === "welcome" || step === "dashboard" || step === "sendMoney";
               setStep("dashboard");
               onTransferSuccess();
             }}
@@ -914,3 +918,5 @@ export function MobileApp({
     </div>
   );
 }
+
+    
