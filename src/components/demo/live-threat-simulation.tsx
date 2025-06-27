@@ -60,7 +60,7 @@ function AttackArrow({ isActive, isBlocked }: { isActive?: boolean; isBlocked?: 
                         fill="hsl(var(--destructive))"
                         style={{
                             offsetPath: `path('${path}')`,
-                            'offset-distance': "var(--offset, 0%)"
+                            offsetDistance: "var(--offset, 0%)"
                         }}
                         initial={{ "--offset": "0%" }}
                         animate={{ "--offset": "100%" }}
