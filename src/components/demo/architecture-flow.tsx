@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const successFlowSteps = [
-    { text: "This diagram shows the secure, multi-layered journey of your transaction." },
+    { text: "This diagram shows the secure, multi-layered journey of your transaction. Click 'Next Step' to begin." },
     { text: "Your request leaves your device and enters the Azure cloud through an encrypted channel." },
     { text: "At the edge, traffic is inspected by Azure DDoS Protection and a Palo Alto Next-Generation Firewall (NGFW)." },
     { text: "The validated request is routed to the Application Layer, where Temenos on Azure Kubernetes Service (AKS) processes the business logic." },
@@ -20,7 +20,7 @@ const successFlowSteps = [
 ];
 
 const failureFlowSteps = [
-    { text: "This diagram shows the secure, multi-layered journey of your transaction." },
+    { text: "This diagram shows the secure, multi-layered journey of your transaction. Click 'Next Step' to begin." },
     { text: "Your request leaves your device and enters the Azure cloud through an encrypted channel." },
     { text: "At the edge, traffic is inspected by Azure DDoS Protection and a Palo Alto Next-Generation Firewall (NGFW)." },
     { text: "The validated request is routed to the Application Layer, where Temenos on Azure Kubernetes Service (AKS) processes the business logic." },
@@ -134,7 +134,7 @@ function ArchitectureNode({
             >
                 <div
                     className={cn(
-                        "flex h-full w-full flex-col items-center gap-2 rounded-[calc(var(--radius)-2px)] bg-background p-4 text-center"
+                        "flex h-full w-full flex-col items-center gap-2 rounded-[calc(var(--radius)-2px)] bg-background p-4 text-center min-h-[150px] justify-center"
                     )}
                 >
                     <Icon
@@ -190,7 +190,7 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
 
                 <div className="flex items-center justify-center w-full max-w-7xl mx-auto my-12">
                     <ArchitectureNode icon={Smartphone} label="User's Device" isActive={stepIndex >= 1} />
-                    <AnimatedArrow forward={stepIndex >= 2} backward={stepIndex >= 7} />
+                    <AnimatedArrow forward={stepIndex >= 2} backward={stepIndex >= 8} />
 
                     <div className="relative rounded-lg border-2 border-dashed border-border p-8 pt-12 bg-background/50 mx-4">
                         <div className="absolute top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 text-muted-foreground">
@@ -198,14 +198,14 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
                             <span className="font-bold text-lg">Azure Cloud</span>
                         </div>
                         <div className="flex items-center justify-around gap-4">
-                            <ArchitectureNode icon={ShieldCheck} label="Security Layer" description="DDoS & Palo Alto NGFW" isActive={stepIndex >= 2} />
-                            <AnimatedArrow forward={stepIndex >= 3} backward={stepIndex >= 6} />
-                            <ArchitectureNode icon={Shapes} label="Application Layer" description="Temenos on AKS" isActive={stepIndex >= 3} />
+                            <ArchitectureNode icon={ShieldCheck} label="Security Layer" description="DDoS & Palo Alto NGFW" isActive={stepIndex >= 3} />
+                            <AnimatedArrow forward={stepIndex >= 4} backward={stepIndex >= 7} />
+                            <ArchitectureNode icon={Shapes} label="Application Layer" description="Temenos on AKS" isActive={stepIndex >= 4} />
                         </div>
                     </div>
                     
-                    <AnimatedArrow forward={stepIndex >= 4} backward={stepIndex >= 5} />
-                    <ArchitectureNode icon={Server} label="On-Premise Core" description="Via ExpressRoute" isActive={stepIndex >= 4} isError={isFlashingError}/>
+                    <AnimatedArrow forward={stepIndex >= 5} backward={stepIndex >= 6} />
+                    <ArchitectureNode icon={Server} label="On-Premise Core" description="Via ExpressRoute" isActive={stepIndex >= 5} isError={isFlashingError}/>
                 </div>
                 
                 <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground mb-8">
