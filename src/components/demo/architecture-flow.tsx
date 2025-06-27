@@ -21,6 +21,7 @@ function ConfettiPiece({ initial, animate, transition, color }: { initial: any; 
       }}
       initial={initial}
       animate={animate}
+      exit={{ opacity: 0 }}
       transition={transition}
     />
   );
@@ -43,9 +44,11 @@ function Confetti() {
 
   return (
     <div className="absolute inset-0 flex items-center justify-center overflow-hidden z-0">
-      {pieces.map((piece, i) => (
-        <ConfettiPiece key={i} {...piece} />
-      ))}
+      <AnimatePresence>
+        {pieces.map((piece, i) => (
+          <ConfettiPiece key={i} {...piece} />
+        ))}
+      </AnimatePresence>
     </div>
   );
 }
@@ -139,13 +142,15 @@ function FlowArrow({
                 key={i}
                 r="4"
                 fill={color}
-                style={{ 
+                style={{
                     offsetPath: `path("${path}")`,
-                    // @ts-ignore
-                    offsetDistance: "var(--offset)"
                 }}
-                initial={{ "--offset": "0%" }}
-                animate={{ "--offset": "100%" }}
+                animate={{
+                    offsetDistance: "100%"
+                }}
+                initial={{
+                    offsetDistance: "0%"
+                }}
                 transition={{
                     duration: duration,
                     delay: i * (duration / 3),
@@ -283,10 +288,10 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
     return (
         <section
             id="architecture"
-            className="flex w-full flex-col items-center justify-center bg-secondary/50 min-h-screen"
+            className="flex w-full flex-col items-center justify-center bg-secondary/50 min-h-screen p-4"
         >
-            <div className="container mx-auto px-4 flex flex-col items-center flex-1 justify-center">
-                <div className="flex items-center justify-center w-full max-w-7xl mx-auto">
+            <div className="w-full flex-1 flex flex-col items-center justify-center">
+                <div className="flex w-full flex-grow items-center justify-around">
                      <div className="w-48 flex flex-col justify-center items-center gap-2">
                         <div className="origin-center -mb-32" style={{ transform: "scale(0.45)" }}>
                             <ArchitecturePhoneDisplay status={phoneStatus} simulateFailure={simulateFailure} />
@@ -378,7 +383,4 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
             </div>
         </section>
     );
-
-    
-
-    
+}
