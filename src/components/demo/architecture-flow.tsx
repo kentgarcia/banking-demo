@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ShieldCheck, Shapes, Server, ArrowRight, ArrowLeft, Cloud, Lock, Loader2, XCircle, CheckCircle2, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // --- START: New components for dynamic phone display ---
 
@@ -54,16 +55,20 @@ function Confetti() {
 }
 
 function PhoneScreenContent({ status, simulateFailure }: { status: 'idle' | 'sending' | 'complete', simulateFailure: boolean }) {
-    if (status === 'idle') {
-        return <div className="w-full h-full bg-neutral-100" />;
-    }
+    const SendMoneyView = () => (
+      <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-100 text-neutral-800 p-4 text-center font-sans">
+        <Avatar className="h-24 w-24 border-4 border-white shadow-md">
+          <AvatarImage src="https://randomuser.me/api/portraits/women/44.jpg" alt="Maria Clara" />
+          <AvatarFallback>MC</AvatarFallback>
+        </Avatar>
+        <p className="text-muted-foreground mt-4">Sending to</p>
+        <p className="text-xl font-bold">Maria Clara</p>
+        <p className="text-5xl font-extrabold mt-6">$50.00</p>
+      </div>
+    );
 
-    if (status === 'sending') {
-        return (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-accent/20 p-4 text-center">
-                <Loader2 className="h-16 w-16 animate-spin text-accent" />
-            </div>
-        )
+    if (status === 'idle' || status === 'sending') {
+        return <SendMoneyView />;
     }
 
     return (
@@ -292,7 +297,7 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
             id="architecture"
             className="flex w-full flex-col items-center justify-center bg-secondary/50 min-h-screen p-4"
         >
-            <div className="container mx-auto px-4 w-full max-w-7xl flex flex-1 flex-col items-center justify-center">
+            <div className="container mx-auto px-4 w-full flex flex-1 flex-col items-center justify-center">
                 <div className="flex w-full flex-grow items-center justify-center">
                     <div className="w-48 flex flex-col justify-center items-center gap-2">
                         <div className="relative">
