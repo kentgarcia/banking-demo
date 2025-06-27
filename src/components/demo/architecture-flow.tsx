@@ -3,9 +3,12 @@
 
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ShieldCheck, Shapes, Server, ArrowRight, ArrowLeft, Cloud, Waypoints, Lock, Loader2, XCircle, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, Shapes, Server, ArrowRight, ArrowLeft, Cloud, Lock, Loader2, XCircle, CheckCircle2, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
 
 // --- START: New components for dynamic phone display ---
 
@@ -288,38 +291,69 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
     
     const phoneStatus: 'idle' | 'sending' | 'complete' = stepIndex === 0 ? 'idle' : (stepIndex < 9 ? 'sending' : 'complete');
 
+    // Popover logic
+    const userDevicePopoverOpen = [1, 8, 9].includes(stepIndex);
+    const securityPopoverOpen = [2, 3, 7].includes(stepIndex);
+    const appLayerPopoverOpen = stepIndex === 4;
+    const onPremPopoverOpen = [5, 6].includes(stepIndex);
+
     return (
         <section
             id="architecture"
             className="flex w-full flex-col items-center justify-center bg-secondary/50 min-h-screen p-4"
         >
             <div className="container mx-auto px-4 w-full max-w-7xl flex flex-1 flex-col items-center justify-center">
-                <div className="flex w-full flex-grow items-center justify-center">
-                     <div className="w-48 flex flex-col justify-center items-center gap-2">
-                        <div className="relative">
-                            <div className="origin-center -mb-32" style={{ transform: "scale(0.45)" }}>
-                                <ArchitecturePhoneDisplay status={phoneStatus} simulateFailure={simulateFailure} />
-                            </div>
-                            <AnimatePresence>
-                                {phoneStatus === 'sending' && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0 }}
-                                        transition={{ duration: 0.3, delay: 0.2 }}
-                                        className="absolute bottom-28 left-1/2 -translate-x-1/2 w-max bg-background/80 backdrop-blur-sm p-3 rounded-lg shadow-lg border border-border z-10"
-                                    >
-                                        <div className="flex items-center gap-2">
-                                            <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                                            <p className="text-sm font-semibold whitespace-nowrap">Processing Transaction...</p>
-                                        </div>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-                        <h3 className="text-base font-bold">User's Device</h3>
-                    </div>
 
+                <AnimatePresence>
+                {stepIndex === 0 && (
+                    <motion.div 
+                        className="w-full max-w-2xl mb-8"
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                    >
+                        <Alert>
+                            <Info className="h-4 w-4" />
+                            <AlertTitle>Follow the Flow!</AlertTitle>
+                            <AlertDescription>{architectureFlowSteps[0].text}</AlertDescription>
+                        </Alert>
+                    </motion.div>
+                )}
+                </AnimatePresence>
+
+                <div className="flex w-full flex-grow items-center justify-center">
+                    <Popover open={userDevicePopoverOpen}>
+                        <PopoverTrigger asChild>
+                            <div className="w-48 flex flex-col justify-center items-center gap-2">
+                                <div className="relative">
+                                    <div className="origin-center -mb-32" style={{ transform: "scale(0.45)" }}>
+                                        <ArchitecturePhoneDisplay status={phoneStatus} simulateFailure={simulateFailure} />
+                                    </div>
+                                    <AnimatePresence>
+                                        {phoneStatus === 'sending' && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0 }}
+                                                transition={{ duration: 0.3, delay: 0.2 }}
+                                                className="absolute bottom-28 left-1/2 -translate-x-1/2 w-max bg-background/80 backdrop-blur-sm p-3 rounded-lg shadow-lg border border-border z-10"
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                                                    <p className="text-sm font-semibold whitespace-nowrap">Processing Transaction...</p>
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+                                <h3 className="text-base font-bold">User's Device</h3>
+                            </div>
+                        </PopoverTrigger>
+                        <PopoverContent side="right" className="max-w-xs">
+                             <p><span className="font-bold text-foreground">Step {stepIndex}: </span>{currentStep.text}</p>
+                        </PopoverContent>
+                    </Popover>
 
                     <div className="flex flex-col items-center">
                         <FlowArrow forward={stepIndex >= 2 && stepIndex <= 5} backward={stepIndex >= 7} />
@@ -338,17 +372,37 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
                             <span className="font-bold text-lg">Azure Cloud</span>
                         </div>
                         <div className="flex items-center justify-around gap-4">
-                            <ArchitectureNode
-                                icon={ShieldCheck}
-                                label="Security Checkpoint"
-                                description="Front Door, WAF & Firewall"
-                                isActive={stepIndex === 2 || stepIndex === 3 || stepIndex === 7}
-                                isPulsing={isFrontDoorStep || isFirewallStep}
-                                overlayIcon={Lock}
-                                overlayActive={isFrontDoorStep}
-                            />
+                            <Popover open={securityPopoverOpen}>
+                                <PopoverTrigger asChild>
+                                    <div>
+                                    <ArchitectureNode
+                                        icon={ShieldCheck}
+                                        label="Security Checkpoint"
+                                        description="Front Door, WAF & Firewall"
+                                        isActive={stepIndex === 2 || stepIndex === 3 || stepIndex === 7}
+                                        isPulsing={isFrontDoorStep || isFirewallStep}
+                                        overlayIcon={Lock}
+                                        overlayActive={isFrontDoorStep}
+                                    />
+                                    </div>
+                                </PopoverTrigger>
+                                <PopoverContent side="bottom" className="max-w-xs">
+                                     <p><span className="font-bold text-foreground">Step {stepIndex}: </span>{currentStep.text}</p>
+                                </PopoverContent>
+                            </Popover>
+                            
                             <FlowArrow forward={stepIndex >= 4 && stepIndex <= 5} backward={stepIndex >= 7 && stepIndex < 8} />
-                            <ArchitectureNode icon={Shapes} label="Application Layer" description="Temenos on AKS" isActive={stepIndex === 4 || (stepIndex >= 6 && stepIndex < 7)} />
+                            
+                            <Popover open={appLayerPopoverOpen}>
+                                <PopoverTrigger asChild>
+                                    <div>
+                                    <ArchitectureNode icon={Shapes} label="Application Layer" description="Temenos on AKS" isActive={stepIndex === 4 || (stepIndex >= 6 && stepIndex < 7)} />
+                                    </div>
+                                </PopoverTrigger>
+                                <PopoverContent side="bottom" className="max-w-xs">
+                                     <p><span className="font-bold text-foreground">Step {stepIndex}: </span>{currentStep.text}</p>
+                                </PopoverContent>
+                            </Popover>
                         </div>
                     </div>
                     
@@ -362,7 +416,17 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
                         )}
                         </AnimatePresence>
                     </div>
-                    <ArchitectureNode icon={Server} label="On-Premise Core" isActive={stepIndex === 5 || stepIndex === 6} isError={isFlashingError}/>
+                    
+                    <Popover open={onPremPopoverOpen}>
+                        <PopoverTrigger asChild>
+                           <div>
+                           <ArchitectureNode icon={Server} label="On-Premise Core" isActive={stepIndex === 5 || stepIndex === 6} isError={isFlashingError}/>
+                           </div>
+                        </PopoverTrigger>
+                        <PopoverContent side="left" className="max-w-xs">
+                             <p><span className="font-bold text-foreground">Step {stepIndex}: </span>{currentStep.text}</p>
+                        </PopoverContent>
+                    </Popover>
                 </div>
                 
                 <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground my-8">
@@ -376,30 +440,16 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
                     </div>
                 </div>
 
-                <div className="text-center max-w-2xl mx-auto">
-                    <AnimatePresence mode="wait">
-                        <motion.p
-                            key={stepIndex}
-                            className="text-lg text-muted-foreground min-h-[84px]"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.3 }}
-                        >
-                            <span className="font-bold text-foreground">Step {stepIndex > 0 ? stepIndex : 1}: </span>{currentStep.text}
-                        </motion.p>
-                    </AnimatePresence>
-                    <div className="mt-6 flex items-center justify-center gap-4">
-                        <Button onClick={onBack} variant="outline" size="lg" disabled={stepIndex === 0}>
-                            <ArrowLeft className="mr-2"/> Back
-                        </Button>
-                        <Button
-                            onClick={handleNext}
-                            size="lg"
-                        >
-                            {isLastStep ? 'Finish & View Dashboard' : 'Next Step'} <ArrowRight className="ml-2"/>
-                        </Button>
-                    </div>
+                <div className="mt-6 flex items-center justify-center gap-4">
+                    <Button onClick={onBack} variant="outline" size="lg" disabled={stepIndex === 0}>
+                        <ArrowLeft className="mr-2"/> Back
+                    </Button>
+                    <Button
+                        onClick={handleNext}
+                        size="lg"
+                    >
+                        {isLastStep ? 'Finish & View Dashboard' : 'Next Step'} <ArrowRight className="ml-2"/>
+                    </Button>
                 </div>
             </div>
         </section>
