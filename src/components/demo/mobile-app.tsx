@@ -490,7 +490,7 @@ function Confetti() {
   );
 }
 
-function AccountCreatedSuccessScreen({ onContinue }: { onContinue: () => void; }) {
+function AccountCreatedSuccessScreen({ onContinue }: { onContinue: () => void }) {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center space-y-4 rounded-[2rem] bg-white p-5 font-body relative overflow-hidden">
       <Confetti />
