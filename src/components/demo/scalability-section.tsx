@@ -211,11 +211,6 @@ export function ScalabilitySection({ onBack, onRestart, onNext }: { onBack: () =
             className="flex w-full flex-col items-center justify-center bg-secondary/50 min-h-screen py-12"
         >
             <div className="container mx-auto px-4 flex flex-col items-center">
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold tracking-tight">Scalability Demonstration</h2>
-                    <p className="text-muted-foreground mt-2">This proves the platform is elastic and can handle peak demand.</p>
-                </div>
-
                 <div className="flex items-center justify-center w-full max-w-7xl mx-auto my-12">
                      <ScalabilityNode icon={Smartphone} label="User Traffic" description="Mobile & Web" />
                     <FlowArrow 
@@ -280,40 +275,40 @@ export function ScalabilitySection({ onBack, onRestart, onNext }: { onBack: () =
                            {currentStep.text}
                         </motion.p>
                     </AnimatePresence>
-                     <div className="mt-6 flex items-center justify-center gap-4 h-11">
-                       {!isFinalState ? (
-                           <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={stepIndex}
-                                    initial={{ opacity: 0, y: 10}}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                >
-                                    <Button onClick={handleNext} size="lg">
-                                        {currentStep.buttonText} <Forward className="ml-2"/>
-                                    </Button>
-                                </motion.div>
-                           </AnimatePresence>
-                       ) : (
-                           <motion.div 
-                                className="flex items-center justify-center gap-4"
-                                initial={{opacity: 0}}
-                                animate={{opacity: 1}}
-                                transition={{delay: 0.5}}
-                            >
-                                <Button onClick={onBack} variant="outline" size="lg">
-                                    <ArrowLeft className="mr-2"/> Back
-                                </Button>
-                                <Button onClick={onRestart} variant="secondary" size="lg">
-                                    Restart Demo <RotateCcw className="ml-2"/>
-                                </Button>
-                                <Button onClick={onNext} size="lg">
-                                    Next: Threat Simulation <ArrowRight className="ml-2" />
-                                </Button>
-                           </motion.div>
-                       )}
-                    </div>
                 </div>
+            </div>
+            <div className="fixed bottom-6 right-24 z-50 flex items-center justify-center gap-4">
+                {!isFinalState ? (
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={stepIndex}
+                            initial={{ opacity: 0, y: 10}}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                        >
+                            <Button onClick={handleNext} size="lg" className="shadow-lg rounded-full">
+                                {currentStep.buttonText} <Forward className="ml-2"/>
+                            </Button>
+                        </motion.div>
+                    </AnimatePresence>
+                ) : (
+                    <motion.div 
+                        className="flex items-center justify-center gap-4"
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
+                        transition={{delay: 0.5}}
+                    >
+                        <Button onClick={onBack} variant="outline" size="lg" className="shadow-lg rounded-full">
+                            <ArrowLeft className="mr-2"/> Back
+                        </Button>
+                        <Button onClick={onRestart} variant="secondary" size="lg" className="shadow-lg rounded-full">
+                            Restart Demo <RotateCcw className="ml-2"/>
+                        </Button>
+                        <Button onClick={onNext} size="lg" className="shadow-lg rounded-full">
+                            Next: Threat Simulation <ArrowRight className="ml-2" />
+                        </Button>
+                    </motion.div>
+                )}
             </div>
         </section>
     );
