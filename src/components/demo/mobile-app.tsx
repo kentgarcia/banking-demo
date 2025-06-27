@@ -27,7 +27,7 @@ export function MobileApp({
   onSimulateFailureChange: (value: boolean) => void;
 }) {
 
-  const onboardingSteps = ['onboarding', 'eKYC', 'faceVerification', 'reviewInfo'];
+  const onboardingSteps = ['onboarding', 'eKYC', 'faceVerification', 'reviewInfo', 'accountCreatedSuccess', 'featureCarousel'];
   if (onboardingSteps.includes(step)) {
     return (
       <div className="h-full w-full overflow-hidden rounded-[2rem] bg-[#0a2820] font-body text-white">
@@ -83,11 +83,35 @@ export function MobileApp({
                   key="reviewInfo"
                   initial={{ x: "100%" }}
                   animate={{ x: "0%" }}
-                  exit={{ scale: 0.8, opacity: 0 }}
-                  transition={{ ease: "easeInOut", duration: 0.4 }}
+                  exit={{ x: "-100%" }}
+                  transition={{ ease: "easeInOut", duration: 0.5 }}
                   className="flex h-full flex-col px-5"
                 >
                   <ReviewInfoContent onConfirm={() => setStep("accountCreatedSuccess")} />
+                </motion.div>
+              )}
+              {step === "accountCreatedSuccess" && (
+                <motion.div
+                  key="accountCreatedSuccess"
+                  initial={{ x: "100%" }}
+                  animate={{ x: "0%" }}
+                  exit={{ x: "-100%" }}
+                  transition={{ ease: "easeInOut", duration: 0.5 }}
+                  className="flex h-full flex-col"
+                >
+                  <AccountCreatedSuccessScreen onContinue={() => setStep("featureCarousel")} />
+                </motion.div>
+              )}
+              {step === "featureCarousel" && (
+                <motion.div
+                  key="featureCarousel"
+                  initial={{ x: "100%" }}
+                  animate={{ x: "0%" }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ ease: "easeInOut", duration: 0.5 }}
+                  className="flex h-full flex-col"
+                >
+                  <FeatureCarouselContent onComplete={() => setStep("dashboard")} />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -99,10 +123,6 @@ export function MobileApp({
 
   const renderStep = () => {
     switch (step) {
-      case "accountCreatedSuccess":
-        return <AccountCreatedSuccessScreen onContinue={() => setStep("featureCarousel")} />;
-      case "featureCarousel":
-        return <FeatureCarouselContent onComplete={() => setStep("dashboard")} />;
       case "dashboard":
         return <DashboardScreen onSendMoney={() => setStep("sendMoney")} />;
       case "sendMoney":

@@ -70,7 +70,7 @@ export function FeatureCarouselContent({ onComplete }: { onComplete: () => void 
   const Icon = features[slide].icon;
 
   return (
-    <div className="flex h-full w-full flex-col justify-between rounded-[2rem] bg-white p-5 font-body text-neutral-800">
+    <div className="flex h-full w-full flex-col justify-between p-5 font-body">
       <header className="flex items-center justify-end h-8">
         <Button variant="ghost" size="sm" onClick={onComplete}>Skip</Button>
       </header>
@@ -110,7 +110,7 @@ export function FeatureCarouselContent({ onComplete }: { onComplete: () => void 
               animate={{ y: 0, opacity: 1, transition: { delay: 0.3 } }}
             >
               <h2 className="text-2xl font-bold">{features[slide].title}</h2>
-              <p className="mt-2 text-muted-foreground">{features[slide].text}</p>
+              <p className="mt-2 text-neutral-300">{features[slide].text}</p>
             </motion.div>
           </motion.div>
         </AnimatePresence>
@@ -121,10 +121,10 @@ export function FeatureCarouselContent({ onComplete }: { onComplete: () => void 
           {features.map((_, i) => (
             <motion.div
               key={i}
-              className="h-2 w-2 rounded-full bg-neutral-300"
+              className="h-2 w-2 rounded-full"
               animate={{
                 scale: i === slide ? 1.5 : 1,
-                backgroundColor: i === slide ? "hsl(var(--primary))" : "#E0E0E0",
+                backgroundColor: i === slide ? "#bef264" : "rgba(255, 255, 255, 0.3)",
               }}
               transition={{ type: "spring", stiffness: 500, damping: 30 }}
             />
@@ -132,7 +132,7 @@ export function FeatureCarouselContent({ onComplete }: { onComplete: () => void 
         </div>
         <Button
           size="lg"
-          className="h-14 w-full rounded-full"
+          className="h-14 w-full rounded-full bg-lime-300 font-bold text-green-900 shadow-lg shadow-lime-300/30 transition hover:bg-lime-400"
           onClick={handleNext}
         >
           {slide === features.length - 1 ? "Enter Dashboard" : "Next"}

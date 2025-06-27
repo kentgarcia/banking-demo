@@ -48,7 +48,7 @@ function Confetti() {
 
 export function AccountCreatedSuccessScreen({ onContinue }: { onContinue: () => void }) {
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center space-y-4 rounded-[2rem] bg-white p-5 font-body relative overflow-hidden">
+    <div className="flex h-full w-full flex-col items-center justify-center space-y-4 p-5 font-body relative overflow-hidden">
       <Confetti />
       <motion.div
         className="flex h-24 w-24 items-center justify-center rounded-full bg-green-500/20 z-10"
@@ -64,14 +64,14 @@ export function AccountCreatedSuccessScreen({ onContinue }: { onContinue: () => 
         <Check className="h-16 w-16 text-green-600" />
       </motion.div>
       <motion.h2
-        className="text-center text-3xl font-bold z-10 text-neutral-800"
+        className="text-center text-3xl font-bold z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0, transition: { delay: 0.6 } }}
       >
         Account Created!
       </motion.h2>
       <motion.p
-        className="text-center text-muted-foreground max-w-xs z-10"
+        className="text-center text-neutral-300 max-w-xs z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0, transition: { delay: 0.7 } }}
       >
@@ -84,11 +84,10 @@ export function AccountCreatedSuccessScreen({ onContinue }: { onContinue: () => 
       >
         <Button
           size="lg"
-          className="h-14 w-full rounded-full relative overflow-hidden group"
+          className="h-14 w-full rounded-full bg-lime-300 font-bold text-green-900 shadow-lg shadow-lime-300/30 transition hover:bg-lime-400"
           onClick={onContinue}
         >
-          <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full transition-transform duration-700 ease-in-out group-hover:translate-x-full" />
-          <span className="relative">Continue</span>
+          Continue
         </Button>
       </motion.div>
     </div>
