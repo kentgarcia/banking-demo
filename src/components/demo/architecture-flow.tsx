@@ -304,24 +304,6 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
         >
             <div className="container mx-auto px-4 w-full max-w-7xl flex flex-1 flex-col items-center justify-center">
 
-                <AnimatePresence>
-                {stepIndex === 0 && (
-                    <motion.div 
-                        className="w-full max-w-2xl mb-8"
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
-                        transition={{ duration: 0.5, ease: "easeOut" }}
-                    >
-                        <Alert>
-                            <Info className="h-4 w-4" />
-                            <AlertTitle>Follow the Flow!</AlertTitle>
-                            <AlertDescription>{architectureFlowSteps[0].text}</AlertDescription>
-                        </Alert>
-                    </motion.div>
-                )}
-                </AnimatePresence>
-
                 <div className="flex w-full flex-grow items-center justify-center">
                     <Popover open={userDevicePopoverOpen}>
                         <PopoverTrigger asChild>
