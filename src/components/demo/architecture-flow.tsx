@@ -9,20 +9,20 @@ import { cn } from "@/lib/utils";
 
 const successFlowSteps = [
     { text: "This diagram shows the secure, multi-layered journey of your transaction. Click 'Next Step' to begin." },
-    { text: "Your request leaves your device and enters the Azure cloud through an encrypted channel." },
-    { text: "At the edge, traffic is inspected by Azure DDoS Protection and a Palo Alto Next-Generation Firewall (NGFW)." },
+    { text: "A user initiates a fund transfer. The request is sent securely over HTTPS to the Azure cloud." },
+    { text: "At the Azure edge, traffic is inspected by Azure DDoS Protection and a Palo Alto Next-Generation Firewall (NGFW)." },
     { text: "The validated request is routed to the Application Layer, where Temenos on Azure Kubernetes Service (AKS) processes the business logic." },
     { text: "Using a private ExpressRoute link, the request securely reaches the On-Premise Core Banking System." },
     { text: "The Core Banking System confirms the transaction and initiates the response back to the Application Layer." },
     { text: "The success message travels back through the Security Layer." },
-    { text: "Finally, the confirmation is securely sent back to your device, completing the transaction." },
+    { text: "Finally, the confirmation is securely sent back to the user's device, completing the transaction." },
     { text: "The transaction is complete! This entire flow ensures speed, security, and reliability." },
 ];
 
 const failureFlowSteps = [
     { text: "This diagram shows the secure, multi-layered journey of your transaction. Click 'Next Step' to begin." },
-    { text: "Your request leaves your device and enters the Azure cloud through an encrypted channel." },
-    { text: "At the edge, traffic is inspected by Azure DDoS Protection and a Palo Alto Next-Generation Firewall (NGFW)." },
+    { text: "A user initiates a fund transfer. The request is sent securely over HTTPS to the Azure cloud." },
+    { text: "At the Azure edge, traffic is inspected by Azure DDoS Protection and a Palo Alto Next-Generation Firewall (NGFW)." },
     { text: "The validated request is routed to the Application Layer, where Temenos on Azure Kubernetes Service (AKS) processes the business logic." },
     { text: "Using a private ExpressRoute link, the request securely reaches the On-Premise Core Banking System." },
     { text: "The Core Banking System declines the transaction due to insufficient funds and initiates the response." },
@@ -31,72 +31,54 @@ const failureFlowSteps = [
     { text: "The transaction has failed, but the system handled it gracefully, providing clear feedback." },
 ]
 
-
-const arrowVariants = {
-    hidden: { pathLength: 0, opacity: 0 },
-    visible: {
-        pathLength: 1,
-        opacity: 1,
-        transition: { duration: 0.8, ease: "easeInOut" },
-    },
-};
-
-function AnimatedArrow({
+function FlowArrow({
     forward,
     backward,
 }: {
     forward: boolean;
     backward: boolean;
 }) {
-    return (
-        <motion.svg
-            width="150"
-            height="80"
-            viewBox="0 0 150 80"
-            className="flex-shrink-0"
-            initial="hidden"
-            animate="visible"
-            variants={{
-                hidden: { opacity: 0 },
-                visible: { opacity: 1, transition: { delay: 0.5, duration: 0.5 } },
-            }}
-        >
-            {/* Forward path */}
-            <motion.path
-                d="M10 25 L140 25"
-                stroke="hsl(var(--primary))"
-                strokeWidth="2"
-                strokeDasharray="5 5"
-                variants={arrowVariants}
-                animate={forward ? "visible" : "hidden"}
-            />
-            <motion.path
-                d="M132 20 L140 25 L132 30"
-                stroke="hsl(var(--primary))"
-                strokeWidth="2"
-                fill="none"
-                variants={arrowVariants}
-                animate={forward ? "visible" : "hidden"}
-            />
+    const duration = 2;
+    const forwardPath = "M10 25 L140 25";
+    const backwardPath = "M140 55 L10 55";
 
-            {/* Backward path */}
-            <motion.path
-                d="M140 55 L10 55"
-                stroke="hsl(var(--accent))"
-                strokeWidth="2"
-                strokeDasharray="5 5"
-                variants={arrowVariants}
-                animate={backward ? "visible" : "hidden"}
+    const renderPackets = (path: string, color: string) => {
+        return [0, 1, 2].map(i => (
+            <motion.circle
+                key={i}
+                r="4"
+                fill={color}
+                style={{ offsetPath: `path("${path}")` }}
+                initial={{ offsetDistance: "0%" }}
+                animate={{ offsetDistance: "100%" }}
+                transition={{
+                    duration: duration,
+                    delay: i * (duration / 3),
+                    repeat: Infinity,
+                    ease: "linear",
+                }}
             />
-            <motion.path
-                d="M18 50 L10 55 L18 60"
-                stroke="hsl(var(--accent))"
-                strokeWidth="2"
-                fill="none"
-                variants={arrowVariants}
-                animate={backward ? "visible" : "hidden"}
-            />
-        </motion.svg>
+        ));
+    };
+
+    return (
+        <div className="relative flex-shrink-0" style={{width: 150, height: 80}}>
+            <svg width="150" height="80" viewBox="0 0 150 80" className="absolute inset-0">
+                {/* Forward path */}
+                <path d={forwardPath} stroke="hsl(var(--primary))" strokeWidth="2" strokeDasharray="5 5" opacity={0.3}/>
+                <path d="M132 20 L140 25 L132 30" stroke="hsl(var(--primary))" strokeWidth="2" fill="none" opacity={0.3}/>
+                <AnimatePresence>
+                    {forward && renderPackets(forwardPath, 'hsl(var(--primary))')}
+                </AnimatePresence>
+
+                {/* Backward path */}
+                <path d={backwardPath} stroke="hsl(var(--accent))" strokeWidth="2" strokeDasharray="5 5" opacity={0.3}/>
+                <path d="M18 50 L10 55 L18 60" stroke="hsl(var(--accent))" strokeWidth="2" fill="none" opacity={0.3}/>
+                <AnimatePresence>
+                    {backward && renderPackets(backwardPath, 'hsl(var(--accent))')}
+                </AnimatePresence>
+            </svg>
+        </div>
     );
 }
 
@@ -189,8 +171,18 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
                 </div>
 
                 <div className="flex items-center justify-center w-full max-w-7xl mx-auto my-12">
-                    <ArchitectureNode icon={Smartphone} label="User's Device" isActive={stepIndex >= 1} />
-                    <AnimatedArrow forward={stepIndex >= 2} backward={stepIndex >= 8} />
+                    <ArchitectureNode icon={Smartphone} label="User's Device" isActive={stepIndex === 1 || stepIndex >= 8} />
+
+                    <div className="flex flex-col items-center">
+                        <FlowArrow forward={stepIndex >= 2 && stepIndex <= 4} backward={stepIndex >= 7} />
+                        <AnimatePresence>
+                        {stepIndex >= 1 && (
+                            <motion.div initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 0}}>
+                                <p className="text-xs text-muted-foreground mt-[-20px]">HTTPS Request</p>
+                            </motion.div>
+                        )}
+                        </AnimatePresence>
+                    </div>
 
                     <div className="relative rounded-lg border-2 border-dashed border-border p-8 pt-12 bg-background/50 mx-4">
                         <div className="absolute top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 text-muted-foreground">
@@ -198,14 +190,23 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
                             <span className="font-bold text-lg">Azure Cloud</span>
                         </div>
                         <div className="flex items-center justify-around gap-4">
-                            <ArchitectureNode icon={ShieldCheck} label="Security Layer" description="DDoS & Palo Alto NGFW" isActive={stepIndex >= 3} />
-                            <AnimatedArrow forward={stepIndex >= 4} backward={stepIndex >= 7} />
-                            <ArchitectureNode icon={Shapes} label="Application Layer" description="Temenos on AKS" isActive={stepIndex >= 4} />
+                            <ArchitectureNode icon={ShieldCheck} label="Security Layer" description="DDoS & Palo Alto NGFW" isActive={stepIndex === 2 || stepIndex === 6} />
+                            <FlowArrow forward={stepIndex >= 3 && stepIndex <= 4} backward={stepIndex >= 6 && stepIndex < 7} />
+                            <ArchitectureNode icon={Shapes} label="Application Layer" description="Temenos on AKS" isActive={stepIndex === 3} />
                         </div>
                     </div>
                     
-                    <AnimatedArrow forward={stepIndex >= 5} backward={stepIndex >= 6} />
-                    <ArchitectureNode icon={Server} label="On-Premise Core" description="Via ExpressRoute" isActive={stepIndex >= 5} isError={isFlashingError}/>
+                    <div className="flex flex-col items-center">
+                        <FlowArrow forward={stepIndex >= 4 && stepIndex <= 5} backward={stepIndex >= 5 && stepIndex < 6} />
+                         <AnimatePresence>
+                        {stepIndex >= 4 && (
+                            <motion.div initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 0}}>
+                               <p className="text-xs text-muted-foreground mt-[-20px]">ExpressRoute</p>
+                            </motion.div>
+                        )}
+                        </AnimatePresence>
+                    </div>
+                    <ArchitectureNode icon={Server} label="On-Premise Core" isActive={stepIndex === 4 || stepIndex === 5} isError={isFlashingError}/>
                 </div>
                 
                 <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground mb-8">
@@ -229,11 +230,11 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
                             exit={{ opacity: 0, y: -20 }}
                             transition={{ duration: 0.3 }}
                         >
-                            <span className="font-bold text-foreground">Step {stepIndex + 1}: </span>{currentStep.text}
+                            <span className="font-bold text-foreground">Step {stepIndex > 0 ? stepIndex : 1}: </span>{currentStep.text}
                         </motion.p>
                     </AnimatePresence>
                     <div className="mt-6 flex items-center justify-center gap-4">
-                        <Button onClick={onBack} variant="outline" size="lg">
+                        <Button onClick={onBack} variant="outline" size="lg" disabled={stepIndex === 0}>
                             <ArrowLeft className="mr-2"/> Back
                         </Button>
                         <Button
@@ -248,3 +249,5 @@ export function ArchitectureFlowSection({ onComplete, onBack, simulateFailure }:
         </section>
     );
 }
+
+    
